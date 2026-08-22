@@ -2,6 +2,14 @@
 
 All notable changes to the Piper website are documented here.
 
+## [1.3.0] — 2026-08-22
+
+### Polished
+
+- Completed a full-site interaction and responsive polish pass across the entry flow, hero, story, cast, quiz, map, books, activities and footer.
+- Added reliable section scroll offsets, stronger keyboard focus states, touch feedback and resilient narrow-screen layouts.
+- Tightened map and book frames, footer rhythm, mobile card spacing and cross-browser surface fallbacks.
+
 ## [1.2.0] — 2026-08-22
 
 ### Polished
