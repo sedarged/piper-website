@@ -24,7 +24,7 @@ export function Free() {
           <Reveal key={p.id} delay={i * 60}>
             {p.url ? (
               <a className="fc" href={p.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
-                <span style={{ width: 40, height: 40 }} aria-hidden="true">{FI[p.id]()}</span>
+                <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
                 <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
                 <span className="eyebrow">{p.n}</span>
                 <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>
@@ -32,7 +32,7 @@ export function Free() {
               </a>
             ) : (
               <button className="fc" onClick={() => document.getElementById("join")?.scrollIntoView({ behavior: "smooth" })}>
-                <span style={{ width: 40, height: 40 }} aria-hidden="true">{FI[p.id]()}</span>
+                <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
                 <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
                 <span className="eyebrow">{p.n}</span>
                 <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>

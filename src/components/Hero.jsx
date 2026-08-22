@@ -27,7 +27,9 @@ export function Hero({ found, onFind, onNameTap, chime }) {
             Piper
           </h1>
           <p className="hero-s">the Strawberry Food Kitten</p>
-          <p className="hero-display">Step into a world where courage tastes like strawberries.</p>
+          <p className="hero-display">
+            Step into a world where courage tastes like <span>strawberries.</span>
+          </p>
 
           <div className="hero-copy">
             <p>

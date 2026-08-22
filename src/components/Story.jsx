@@ -16,17 +16,17 @@ export function Story({ found, onFind }) {
     <section className="sec wrap" id="story">
       <Treasure id="croix" found={found.has("croix")} onFind={onFind} style={{ top: 26, right: "calc(var(--pad) - 4px)" }} />
 
-      <Reveal className="panel">
+      <Reveal className="panel story-panel">
         <div
           className="about-inner"
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,4vw,56px)", alignItems: "start" }}
         >
-          <div>
+          <div className="story-heading">
             <div className="eyebrow" style={{ marginBottom: 14 }}>Inside the story world</div>
             <h2 className="h2">A small hero. A big heart. An even bigger imagination.</h2>
           </div>
 
-          <div>
+          <div className="story-copy">
             <p style={{ color: "var(--ink60)", fontSize: 17.5 }}>
               Piper is the brave Strawberry Food Kitten at the heart of Snackville. With Croissant Kitty,
               Toast Kitty and Sandwich Kitty beside her, she discovers that courage can be gentle and the
@@ -36,9 +36,9 @@ export function Story({ found, onFind }) {
               Nobody in Snackville wins by being the strongest. Piper wins by noticing what everyone else
               missed: that the dragon shaking the mountain wasn't angry at anybody. He was just on his own.
             </p>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
+            <div className="story-facts">
               {FACTS.map(([k, v]) => (
-                <div key={k} style={{ background: "rgba(42,26,46,.06)", borderRadius: 18, padding: "14px 20px", flex: "1 1 120px" }}>
+                <div className="story-fact" key={k}>
                   <div className="d" style={{ fontSize: 32, color: "var(--straw)" }}>{k}</div>
                   <div className="eyebrow" style={{ marginTop: 2 }}>{v}</div>
                 </div>

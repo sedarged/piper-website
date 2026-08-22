@@ -35,10 +35,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
         <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>
           Tap a number to see what happens there. Number eight is best poked with caution.
         </p>
-        <div className="explore-counter" style={{
-          display: "inline-flex", alignItems: "center", gap: 9, marginTop: 16,
-          background: "var(--cream)", borderRadius: 100, padding: "8px 18px", boxShadow: "0 4px 0 rgba(42,26,46,.12)",
-        }}>
+        <div className="explore-counter">
           <span style={{ width: 20, height: 20 }}>{I.mapic()}</span>
           <span className="u" style={{ fontSize: 14.5 }}>{seenCount} of {PLACES.length} places explored</span>
         </div>
@@ -66,7 +63,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
           </div>
 
           <div>
-            <div style={{ background: `${selected.ink}1E`, border: `3px solid ${selected.ink}55`, borderRadius: 22, padding: 22, minHeight: 180 }}>
+            <div className="place-card" style={{ "--place-accent": selected.ink }}>
               <span className="pdot" style={{ background: selected.ink, marginBottom: 10 }}>{selected.n}</span>
               <h3 className="d" style={{ fontSize: 23, lineHeight: 1.05, marginTop: 8 }}>{selected.name}</h3>
               <div className="eyebrow" style={{ marginTop: 5 }}>{selected.who}</div>

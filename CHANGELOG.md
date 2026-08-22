@@ -2,6 +2,16 @@
 
 All notable changes to the Piper website are documented here.
 
+## [1.2.0] — 2026-08-22
+
+### Polished
+
+- Refined the approved dark storybook direction without changing the architecture, artwork or interactions.
+- Added a warmer editorial page system with layered parchment, book-edge borders, softer child-friendly corners and improved section rhythm.
+- Deepened the Snackville portal, character arches, map frame, book presentation and activity cards with restrained dimensional effects.
+- Improved map detail contrast, interactive states, keyboard focus, mobile spacing and small-screen typography.
+- Added selective strawberry, berry and gold accents so the professional visual system still feels made for children.
+
 ## [1.1.0] — 2026-08-22
 
 ### Added
