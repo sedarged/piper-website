@@ -25,9 +25,9 @@ export function Books({ mark, chime }) {
   return (
     <>
       <Reveal style={{ textAlign: "center", marginBottom: 44 }}>
-        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>The books</div>
-        <h2 className="h2 on-sky">Two so far</h2>
-        <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>Tap a book to spin it.</p>
+        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>The Piper collection</div>
+        <h2 className="h2 on-sky">The adventures so far</h2>
+        <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>Beautifully illustrated stories about courage, kindness and friendship.</p>
       </Reveal>
 
       <div style={{ display: "grid", gap: "clamp(30px,5vw,64px)" }}>

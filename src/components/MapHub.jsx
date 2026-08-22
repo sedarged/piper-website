@@ -30,12 +30,12 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
   return (
     <>
       <Reveal style={{ textAlign: "center", marginBottom: 34 }}>
-        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>The map</div>
-        <h2 className="h2 on-sky">All of Snackville</h2>
+        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>Explore the world</div>
+        <h2 className="h2 on-sky">Snackville is a world worth wandering</h2>
         <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>
           Tap a number to see what happens there. Number eight is best poked with caution.
         </p>
-        <div style={{
+        <div className="explore-counter" style={{
           display: "inline-flex", alignItems: "center", gap: 9, marginTop: 16,
           background: "var(--cream)", borderRadius: 100, padding: "8px 18px", boxShadow: "0 4px 0 rgba(42,26,46,.12)",
         }}>

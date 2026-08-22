@@ -12,8 +12,8 @@ export function Free() {
   return (
     <>
       <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-        <div className="eyebrow" style={{ marginBottom: 12 }}>Free stuff</div>
-        <h2 className="h2">Things to print on a rainy afternoon</h2>
+        <div className="eyebrow" style={{ marginBottom: 12 }}>The Snackville studio</div>
+        <h2 className="h2">Bring a little Snackville home</h2>
         <p className="lead" style={{ margin: "14px auto 0" }}>
           All free, all printable at home. Everything here comes in the welcome pack when you join.
         </p>

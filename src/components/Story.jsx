@@ -22,15 +22,15 @@ export function Story({ found, onFind }) {
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,4vw,56px)", alignItems: "start" }}
         >
           <div>
-            <div className="eyebrow" style={{ marginBottom: 14 }}>The story</div>
-            <h2 className="h2">Everything is made of something you'd want to eat</h2>
+            <div className="eyebrow" style={{ marginBottom: 14 }}>Inside the story world</div>
+            <h2 className="h2">A small hero. A big heart. An even bigger imagination.</h2>
           </div>
 
           <div>
             <p style={{ color: "var(--ink60)", fontSize: 17.5 }}>
-              Written by James Wallace-Smith and illustrated by Kamil Siedlarz, published from Edinburgh
-              and Katowice. Built to be read out loud at bedtime — short sentences, big pictures, and an
-              ending that settles rather than startles.
+              Piper is the brave Strawberry Food Kitten at the heart of Snackville. With Croissant Kitty,
+              Toast Kitty and Sandwich Kitty beside her, she discovers that courage can be gentle and the
+              best adventures begin by noticing who needs a friend.
             </p>
             <p style={{ color: "var(--ink60)", fontSize: 17.5, marginTop: 14 }}>
               Nobody in Snackville wins by being the strongest. Piper wins by noticing what everyone else

@@ -16,8 +16,8 @@ export function Cast({ found, onFind, onOpenCharacter, chime }) {
       <Treasure id="star" found={found.has("star")} onFind={onFind} style={{ top: 20, left: "calc(var(--pad) + 180px)" }} />
 
       <Reveal style={{ textAlign: "center", marginBottom: 42 }}>
-        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>The Snack Squad</div>
-        <h2 className="h2 on-sky">Four kittens, one small town</h2>
+        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>Meet the Snack Squad</div>
+        <h2 className="h2 on-sky">Every hero brings something different</h2>
         <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>
           Tap a character. They've each got a secret.
         </p>
@@ -30,6 +30,7 @@ export function Cast({ found, onFind, onOpenCharacter, chime }) {
               <div className="cc-f"><Img src={drive(c.img, 600)} alt={c.name} fb={c.name} /></div>
               <h3 className="cc-n">{c.name}</h3>
               <p className="cc-r">{c.role}</p>
+              <p className="cc-line">{c.line}</p>
               <span className="cc-b" style={{ background: c.ink }}>{c.badge}</span>
             </button>
           </Reveal>

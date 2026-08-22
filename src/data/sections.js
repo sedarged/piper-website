@@ -4,10 +4,10 @@
  * in App.jsx that highlights the current section as you scroll.
  */
 export const SECTIONS = [
-  { id: "story", label: "Story" },
-  { id: "cast", label: "The Squad" },
-  { id: "join", label: "Join" },
-  { id: "map", label: "Map" },
+  { id: "story", label: "Our story" },
+  { id: "cast", label: "Characters" },
+  { id: "map", label: "Snackville" },
   { id: "books", label: "Books" },
-  { id: "free", label: "Free stuff" },
+  { id: "free", label: "Activities" },
+  { id: "join", label: "Join the Squad" },
 ];

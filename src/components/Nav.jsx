@@ -9,10 +9,11 @@ import { I } from "./Icons.jsx";
  * that pill hides and a burger button opens a bottom sheet instead,
  * since six links don't comfortably fit a phone-width bar.
  */
-export function Nav({ active }) {
+export function Nav({ active, onNavigate }) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const go = (id) => {
+    onNavigate?.(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setSheetOpen(false);
   };
@@ -22,8 +23,11 @@ export function Nav({ active }) {
       <nav className="nav" style={{ paddingTop: 14, paddingBottom: 14 }}>
         <div className="nav-in">
           <button className="logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Piper — top">
-            <span style={{ width: 30, height: 30, display: "block" }} aria-hidden="true">{I.berry()}</span>
-            <span className="d" style={{ fontSize: 22 }}>Piper</span>
+            <span className="brand-monogram" aria-hidden="true">WS</span>
+            <span className="brand-lockup">
+              <strong>Wallace–Siedlarz</strong>
+              <small>Books · Story worlds</small>
+            </span>
           </button>
 
           <div className="nav-desk nav-pill">
@@ -38,7 +42,7 @@ export function Nav({ active }) {
             <span /><span /><span />
           </button>
 
-          <button className="btn b-straw btn-sm nav-desk-cta" onClick={() => go("join")}>Join</button>
+          <button className="btn b-straw btn-sm nav-desk-cta" onClick={() => go("join")}>Join the Squad</button>
         </div>
       </nav>
 
@@ -46,7 +50,7 @@ export function Nav({ active }) {
         <div className="scrim" onClick={() => setSheetOpen(false)} style={{ zIndex: 620 }}>
           <div className="msheet" onClick={(e) => e.stopPropagation()}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <span className="d" style={{ fontSize: 21 }}>Where to?</span>
+              <span className="d" style={{ fontSize: 21 }}>Explore Snackville</span>
               <button className="dr-x" onClick={() => setSheetOpen(false)} aria-label="Close menu">✕</button>
             </div>
             {SECTIONS.map((s) => (

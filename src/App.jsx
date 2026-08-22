@@ -228,6 +228,7 @@ export default function App() {
 
   return (
     <div ref={rootRef} className={shaking ? "shaker" : ""} data-night="0">
+      <a className="skip-link" href="#story">Skip to the story</a>
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
           See hooks/useScrollEngine.js. ═══ */}
@@ -262,7 +263,7 @@ export default function App() {
       ))}
 
       {!entered && <Gate onDone={() => setEntered(true)} />}
-      <Nav active={active} />
+      <Nav active={active} onNavigate={setActive} />
 
       <div className="page">
         <Hero found={doneKeys} onFind={onFindTreasure} onNameTap={() => burst(16)} chime={chime} />

@@ -12,8 +12,8 @@ export function Footer() {
         <div className="foot-g">
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
-              <span style={{ width: 28, height: 28, display: "block" }} aria-hidden="true">{I.berry()}</span>
-              <span className="d" style={{ fontSize: 26 }}>Piper</span>
+              <span className="footer-monogram" aria-hidden="true">WS</span>
+              <span className="footer-brand">Wallace–Siedlarz Books</span>
             </div>
             <p style={{ opacity: 0.62, fontSize: 15.5, maxWidth: "34ch" }}>
               A picture book series set in Snackville, published by Wallace-Siedlarz Books from

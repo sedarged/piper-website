@@ -1,0 +1,12 @@
+{
+  "name": "Piper the Strawberry Food Kitten",
+  "short_name": "Piper",
+  "description": "Explore Snackville with Piper and the Snack Squad.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030917",
+  "theme_color": "#071126",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
