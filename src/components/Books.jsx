@@ -56,7 +56,7 @@ export function Books({ mark, chime }) {
               <div>
                 <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 14, flexWrap: "wrap" }}>
                   <span className="eyebrow">{b.num}</span>
-                  <span className="pill" style={{ background: b.live ? C.mint : "rgba(42,26,46,.1)", color: b.live ? "#0A3D26" : "var(--ink60)" }}>
+                  <span className="pill" style={{ background: b.live ? C.mint : "var(--surface2)", border: b.live ? "none" : "1px solid var(--border)", color: b.live ? "#0A3D26" : "var(--ink60)" }}>
                     {b.status}
                   </span>
                 </div>

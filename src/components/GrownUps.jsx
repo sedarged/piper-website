@@ -39,9 +39,9 @@ export function GrownUps() {
         </div>
 
         <div>
-          <div style={{ borderTop: "2px solid rgba(42,26,46,.12)" }}>
+          <div style={{ borderTop: "1px solid var(--border)" }}>
             {FACT_TABLE.map(([k, v]) => (
-              <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "12px 0", borderBottom: "2px solid rgba(42,26,46,.12)" }}>
+              <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "12px 0", borderBottom: "1px solid var(--border)" }}>
                 <span className="eyebrow">{k}</span>
                 <span className="u" style={{ fontSize: 15.5, textAlign: "right" }}>{v}</span>
               </div>

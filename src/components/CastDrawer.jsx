@@ -52,7 +52,7 @@ export function CastDrawer({ index, onClose, onNavigate }) {
                 <p style={{ fontSize: 16.5 }}>{character.power}</p>
               </div>
 
-              <div className="chip" style={{ background: "rgba(42,26,46,.07)", border: "2px dashed rgba(42,26,46,.2)" }}>
+              <div className="chip" style={{ background: "var(--surface)", border: "1px dashed var(--border2)" }}>
                 <div className="eyebrow" style={{ marginBottom: 5 }}>A secret</div>
                 <p style={{ fontSize: 16.5, fontStyle: "italic" }}>{character.secret}</p>
               </div>
@@ -65,7 +65,7 @@ export function CastDrawer({ index, onClose, onNavigate }) {
                 onClick={() => onNavigate((index + 1) % CAST.length)}
                 style={{
                   display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center",
-                  marginTop: 26, paddingTop: 18, borderTop: "2px solid rgba(42,26,46,.1)", textAlign: "left",
+                  marginTop: 26, paddingTop: 18, borderTop: "1px solid var(--border)", textAlign: "left",
                 }}
               >
                 <span>

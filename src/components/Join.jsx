@@ -95,7 +95,7 @@ export function Join({ chime, burst, mark }) {
     <>
       <Reveal style={{ textAlign: "center", marginBottom: 34 }}>
         <div className="eyebrow" style={{ marginBottom: 12 }}>Join the Snack Squad</div>
-        <h2 className="h2" style={{ color: "var(--grapeD)" }}>Which kitten are you?</h2>
+        <h2 className="h2" style={{ color: "var(--grape)" }}>Which kitten are you?</h2>
         <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>
           Four questions, then you get your own member card with your name on it.
         </p>

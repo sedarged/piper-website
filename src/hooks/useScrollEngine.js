@@ -68,7 +68,7 @@ export function useScrollEngine({ landRefs, skyRefs, sunmoonRef, rootRef, onNigh
       if (skyRefs.day.current) skyRefs.day.current.style.opacity = day;
       if (skyRefs.dusk.current) skyRefs.dusk.current.style.opacity = dusk;
       if (skyRefs.night.current) skyRefs.night.current.style.opacity = night;
-      if (skyRefs.stars.current) skyRefs.stars.current.style.opacity = night;
+      if (skyRefs.stars.current) skyRefs.stars.current.style.opacity = Math.max(0.6, night);
 
       // sun/moon position + colour
       const nightOn = night > 0.5;

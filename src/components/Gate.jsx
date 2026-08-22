@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { drive, ASSET } from "../config.js";
 import { Img } from "./Img.jsx";
-import { TI } from "./Icons.jsx";
 
 /**
- * The full-screen entry animation: a closed picture-book cover that
- * swings open on a hinge to reveal the site underneath, echoing the
- * "the site is a book you're opening" concept from the design plan.
- *
- * Calls `onDone` once the opening animation finishes, so the parent can
- * unmount this and reveal the real page. Supports Enter/Space as a
- * keyboard-accessible trigger, not just a click.
+ * Full-screen entry animation: a premium dark book cover that swings
+ * open on a 3D hinge to reveal the site underneath. The cover uses a
+ * deep navy gradient with a gold spine accent, constellation of tiny
+ * star particles as the background texture, and cream title text with a
+ * subtle strawberry glow — echoing the cinematic dark design.
  */
 export function Gate({ onDone }) {
   const [open, setOpen] = useState(false);
@@ -32,25 +29,26 @@ export function Gate({ onDone }) {
 
   if (gone) return null;
 
-  const floats = Array.from({ length: 18 }, (_, i) => ({
-    id: i, left: Math.random() * 100, size: 18 + Math.random() * 26,
-    dur: 8 + Math.random() * 8, delay: Math.random() * 8,
-    kind: ["berry", "croix", "star", "donut", "bean"][i % 5],
+  const gateStars = Array.from({ length: 60 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    size: Math.random() * 2.2 + 0.6,
+    delay: Math.random() * 4,
   }));
 
   return (
     <div className={`gate ${open ? "lift" : ""}`}>
-      {floats.map((f) => (
+      {gateStars.map((s) => (
         <span
-          key={f.id}
-          className="gfloat"
+          key={s.id}
+          className="gate-star"
           style={{
-            left: `${f.left}%`, bottom: -50, width: f.size, height: f.size,
-            animationDuration: `${f.dur}s`, animationDelay: `${f.delay}s`,
+            left: `${s.left}%`, top: `${s.top}%`,
+            width: s.size, height: s.size,
+            animationDelay: `${s.delay}s`,
           }}
-        >
-          {TI[f.kind]()}
-        </span>
+        />
       ))}
 
       <div className="gate-in">
@@ -63,7 +61,7 @@ export function Gate({ onDone }) {
 
         <button className={`cover ${open ? "open" : ""}`} onClick={openBook} aria-label="Open the book and go into Snackville">
           <div style={{
-            display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,.8)",
+            display: "flex", justifyContent: "space-between", color: "rgba(255,200,60,.65)",
             fontFamily: "var(--u)", fontWeight: 600, fontSize: 11, letterSpacing: ".16em", textTransform: "uppercase",
           }}>
             <span>Wallace-Siedlarz</span><span>No. 1</span>
@@ -76,11 +74,19 @@ export function Gate({ onDone }) {
             {!open && <span className="tap">Tap to open ✦</span>}
           </div>
 
-          <div style={{ color: "#fff" }}>
-            <div className="d" style={{ fontSize: "clamp(44px,10vw,68px)", lineHeight: 0.84 }}>Piper</div>
+          <div style={{ color: "var(--cream)" }}>
+            <div
+              className="d"
+              style={{
+                fontSize: "clamp(44px,10vw,68px)", lineHeight: 0.84,
+                textShadow: "0 0 80px rgba(255,59,92,.35), 0 4px 0 rgba(0,0,0,.6)",
+              }}
+            >
+              Piper
+            </div>
             <div style={{
               fontFamily: "var(--d)", fontWeight: 600, fontSize: "clamp(14px,3vw,18px)",
-              marginTop: 6, color: "rgba(255,255,255,.9)",
+              marginTop: 6, color: "rgba(255,200,60,.80)",
             }}>
               the Strawberry Food Kitten
             </div>

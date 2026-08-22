@@ -37,7 +37,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
         </p>
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 9, marginTop: 16,
-          background: "var(--cream)", borderRadius: 100, padding: "8px 18px", boxShadow: "0 4px 0 rgba(42,26,46,.12)",
+          background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: 100, padding: "8px 18px",
         }}>
           <span style={{ width: 20, height: 20 }}>{I.mapic()}</span>
           <span className="u" style={{ fontSize: 14.5 }}>{seenCount} of {PLACES.length} places explored</span>
@@ -76,7 +76,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             <div className="plist" style={{ marginTop: 16 }}>
               {PLACES.map((p) => (
                 <button key={p.id} className={`prow ${selected.id === p.id ? "on" : ""}`} onClick={() => pick(p)}>
-                  <span className="pdot" style={{ background: visitedPlaceIds.has(p.id) ? p.ink : "rgba(42,26,46,.2)" }}>{p.n}</span>
+                  <span className="pdot" style={{ background: visitedPlaceIds.has(p.id) ? p.ink : "var(--surface2)", border: visitedPlaceIds.has(p.id) ? "none" : "1px solid var(--border)" }}>{p.n}</span>
                   <span className="u" style={{ fontSize: 15 }}>{p.name}</span>
                 </button>
               ))}

@@ -36,7 +36,7 @@ export function Inside() {
             <div className="sp-i"><Img src={drive(s.img, 700)} alt={s.t} fb={`p.${i + 1}`} /></div>
             <figcaption style={{
               marginTop: 12, fontSize: 15.5, lineHeight: 1.5, fontStyle: "italic",
-              color: "var(--plum)", background: "rgba(255,246,233,.86)", padding: "10px 15px", borderRadius: 14,
+              color: "var(--ink60)", background: "rgba(6,9,15,.80)", border: "1px solid rgba(255,246,233,0.08)", padding: "10px 15px", borderRadius: 14,
             }}>
               {s.t}
             </figcaption>

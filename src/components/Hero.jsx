@@ -4,9 +4,11 @@ import { Img } from "./Img.jsx";
 import { Treasure } from "./Treasure.jsx";
 
 /**
- * The first screen after the gate opens. Contains treasure #1
- * ("berry"), the tappable "Piper" headline (fires the `onNameTap`
- * callback for a small confetti moment), and the two primary CTAs.
+ * Cinematic hero section. The illustration occupies the right column as
+ * a dark-framed portrait; the left column leads with a gold eyebrow rule,
+ * the oversized display title with strawberry text-shadow halo, and a
+ * subtitle in warm gold. The primary CTA is Amazon; the secondary is the
+ * quiz scroll-link.
  */
 export function Hero({ found, onFind, onNameTap, chime }) {
   return (
@@ -15,11 +17,11 @@ export function Hero({ found, onFind, onNameTap, chime }) {
 
       <div className="hero-g">
         <Reveal kind="rv-l">
-          <div style={{
-            display: "inline-block", background: "var(--cream)", borderRadius: 100,
-            padding: "7px 18px", marginBottom: 18, boxShadow: "0 4px 0 rgba(42,26,46,.12)",
-          }}>
-            <span className="eyebrow" style={{ color: "var(--ink60)" }}>A picture book series · Ages 3–7</span>
+          {/* Gold eyebrow rule */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+            <div style={{ height: 1, width: 32, background: "rgba(255,200,60,0.5)", flexShrink: 0 }} />
+            <span className="eyebrow" style={{ color: "rgba(255,200,60,0.7)" }}>A picture book series · Ages 3–7</span>
+            <div style={{ height: 1, width: 32, background: "rgba(255,200,60,0.5)", flexShrink: 0 }} />
           </div>
 
           <h1
@@ -31,16 +33,16 @@ export function Hero({ found, onFind, onNameTap, chime }) {
           </h1>
           <p className="hero-s">the Strawberry Food Kitten</p>
 
-          <div className="panel" style={{ marginTop: 24, padding: "clamp(20px,3vw,30px)" }}>
+          <div className="panel" style={{ marginTop: 28, padding: "clamp(20px,3vw,30px)" }}>
             <p className="lead" style={{ margin: 0 }}>
               In a town where the roofs are biscuits and the trees grow donuts, four small kittens keep
               deciding that somebody ought to do something — and that somebody is them.
             </p>
             <div style={{ display: "flex", gap: 11, flexWrap: "wrap", marginTop: 22 }}>
-              <button className="btn b-grape btn-lg" onClick={() => document.getElementById("join")?.scrollIntoView({ behavior: "smooth" })}>
-                Which kitten are you? →
+              <a className="btn b-straw btn-lg" href={AMAZON_URL} target="_blank" rel="noreferrer">Buy book one →</a>
+              <button className="btn b-ghost btn-lg" onClick={() => document.getElementById("join")?.scrollIntoView({ behavior: "smooth" })}>
+                Which kitten are you?
               </button>
-              <a className="btn b-ghost btn-lg" href={AMAZON_URL} target="_blank" rel="noreferrer">Buy book one</a>
             </div>
             <p style={{ fontSize: 14.5, color: "var(--ink40)", marginTop: 14 }}>
               Free colouring pages and a printable map when you join.

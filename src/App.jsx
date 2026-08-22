@@ -237,7 +237,7 @@ export default function App() {
         <div ref={skyRefs.dusk} className="sky-l sky-dusk" style={{ opacity: 0 }} />
         <div ref={skyRefs.night} className="sky-l sky-night" style={{ opacity: 0 }} />
       </div>
-      <div ref={skyRefs.stars} className="stars" style={{ opacity: 0 }} aria-hidden="true">
+      <div ref={skyRefs.stars} className="stars" style={{ opacity: 0.65 }} aria-hidden="true">
         {stars.map((s) => (
           <i key={s.id} style={{ left: `${s.l}%`, top: `${s.t}%`, width: s.s, height: s.s, animationDelay: `${s.d}s` }} />
         ))}
@@ -246,7 +246,7 @@ export default function App() {
         ref={sunmoonRef}
         className="sunmoon"
         aria-hidden="true"
-        style={{ top: "12vh", background: "radial-gradient(circle at 38% 34%, #FFF3B0, #FFD447)", boxShadow: "0 0 80px rgba(255,200,60,.65)" }}
+        style={{ top: "12vh", background: "radial-gradient(circle at 38% 34%, #FFF6E9, #E8D9B8)", boxShadow: "0 0 60px rgba(255,246,233,.5)" }}
       />
 
       {/* ═══ LANDSCAPE ═══ */}
@@ -267,20 +267,16 @@ export default function App() {
       <div className="page">
         <Hero found={doneKeys} onFind={onFindTreasure} onNameTap={() => burst(16)} chime={chime} />
 
-        <Divider shape="cloud" fill="var(--plum)" />
         <Marquee />
-        <Divider shape="wave" fill="var(--plum)" flip />
 
         <Story found={doneKeys} onFind={onFindTreasure} />
         <Cast found={doneKeys} onFind={onFindTreasure} onOpenCharacter={setCastIndex} chime={chime} />
 
-        <Divider shape="hill" fill="rgba(232,222,255,.93)" />
-        <section className="sec" id="join" style={{ background: "rgba(232,222,255,.93)" }}>
+        <section className="sec" id="join">
           <div className="wrap">
             <Join chime={chime} burst={burst} mark={mark} />
           </div>
         </section>
-        <Divider shape="hill" fill="rgba(232,222,255,.93)" flip />
 
         <section className="sec wrap" id="map">
           <Treasure id="scale" found={doneKeys.has("scale")} onFind={onFindTreasure} style={{ bottom: 12, right: "calc(var(--pad) + 6px)" }} />
@@ -299,11 +295,9 @@ export default function App() {
           <Inside />
         </section>
 
-        <Divider shape="wave" fill="rgba(214,248,231,.95)" />
-        <section className="sec" id="free" style={{ background: "rgba(214,248,231,.95)" }}>
+        <section className="sec" id="free">
           <div className="wrap"><Free /></div>
         </section>
-        <Divider shape="drip" fill="rgba(214,248,231,.95)" flip />
 
         <section className="sec wrap">
           <div className="panel"><GrownUps /></div>

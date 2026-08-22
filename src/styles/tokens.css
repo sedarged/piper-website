@@ -1,15 +1,4 @@
-/**
- * Design tokens, reset, base typography, buttons, the living sky, and
- * the parallax landscape layers. Everything in this file is either a
- * CSS custom property or a rule shared across every section.
- *
- * Component-specific styles (nav, hero, cast cards, the map, the join
- * flow, etc.) live in components.css — this split exists so a future
- * design-system extraction (see the top-tier plan, item 13) only has
- * to touch this file.
- */
-
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root{
   --straw:#FF3B5C;--strawD:#D62244;
@@ -20,7 +9,22 @@
   --ember:#FF7A3C;--emberD:#DB5418;
   --cocoa:#7B4A2A;--cocoaD:#4E2B14;
   --cream:#FFF6E9;--plum:#2A1A2E;
-  --ink60:rgba(42,26,46,.66);--ink40:rgba(42,26,46,.44);--ink14:rgba(42,26,46,.14);
+
+  /* ── Dark surface system ── */
+  --bg:#06090F;
+  --bg2:#0C101C;
+  --surface:rgba(255,246,233,.05);
+  --surface2:rgba(255,246,233,.08);
+  --border:rgba(255,246,233,.10);
+  --border2:rgba(255,246,233,.18);
+
+  /* ── Ink on dark ── */
+  --ink:var(--cream);
+  --ink80:rgba(255,246,233,.85);
+  --ink60:rgba(255,246,233,.62);
+  --ink40:rgba(255,246,233,.40);
+  --ink14:rgba(255,246,233,.10);
+
   --d:'Baloo 2',system-ui,cursive;
   --b:'Newsreader',Georgia,serif;
   --u:'Outfit',system-ui,sans-serif;
@@ -30,26 +34,26 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden;max-width:100%}
-body{font-family:var(--b);font-weight:300;font-size:17px;line-height:1.62;color:var(--plum);
-  background:#8FD9F5;overflow-x:hidden;max-width:100%;-webkit-font-smoothing:antialiased}
+body{font-family:var(--b);font-weight:300;font-size:17px;line-height:1.62;color:var(--cream);
+  background:var(--bg);overflow-x:hidden;max-width:100%;-webkit-font-smoothing:antialiased}
 img{display:block;max-width:100%}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 a{color:inherit}
 input{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--plum);outline-offset:3px;border-radius:8px;
-  box-shadow:0 0 0 7px rgba(255,246,233,.92)}
+:focus-visible{outline:3px solid var(--straw);outline-offset:3px;border-radius:8px;
+  box-shadow:0 0 0 7px rgba(255,59,92,.18)}
 
-/* ─── sky ─── */
+/* ─── sky — all dark atmospheric variants ─── */
 .sky{position:fixed;inset:0;z-index:0;pointer-events:none}
-.sky-l{position:absolute;inset:0;transition:opacity .35s linear}
-.sky-dawn{background:linear-gradient(180deg,#FFC98F 0%,#FFB0B8 45%,#FFD9C0 100%)}
-.sky-day{background:linear-gradient(180deg,#5BC8F5 0%,#93DFF8 55%,#DDF4FB 100%)}
-.sky-dusk{background:linear-gradient(180deg,#8B5FC9 0%,#FF8A6B 55%,#FFC08A 100%)}
-.sky-night{background:linear-gradient(180deg,#0C1533 0%,#22306B 55%,#3C4A8C 100%)}
-.stars{position:fixed;inset:0;z-index:1;pointer-events:none;transition:opacity .35s linear}
-.stars i{position:absolute;background:#FFF;border-radius:50%;animation:tw 3.6s ease-in-out infinite}
-@keyframes tw{0%,100%{opacity:.12;transform:scale(.5)}50%{opacity:1;transform:scale(1)}}
-.sunmoon{position:fixed;right:8vw;z-index:1;width:clamp(60px,9vw,110px);height:clamp(60px,9vw,110px);
+.sky-l{position:absolute;inset:0;transition:opacity .5s linear}
+.sky-dawn{background:linear-gradient(180deg,#0D1A3A 0%,#180D38 50%,#0A1530 100%)}
+.sky-day{background:linear-gradient(180deg,#060A16 0%,#0B1028 55%,#0F1E38 100%)}
+.sky-dusk{background:linear-gradient(180deg,#1A0830 0%,#0D0820 55%,#0C1528 100%)}
+.sky-night{background:linear-gradient(180deg,#030508 0%,#060A14 55%,#0A1020 100%)}
+.stars{position:fixed;inset:0;z-index:1;pointer-events:none}
+.stars i{position:absolute;background:#fff;border-radius:50%;animation:tw 3.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.14;transform:scale(.5)}50%{opacity:.88;transform:scale(1)}}
+.sunmoon{position:fixed;right:8vw;z-index:1;width:clamp(42px,6vw,78px);height:clamp(42px,6vw,78px);
   border-radius:50%;pointer-events:none;transition:background .6s,box-shadow .6s,top .1s linear}
 
 /* ─── parallax landscape ─── */
@@ -66,8 +70,9 @@ input{font:inherit;color:inherit}
 .page{position:relative;z-index:5}
 .wrap{max-width:var(--max);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad);position:relative}
 .sec{padding:clamp(64px,8vw,120px) 0;position:relative}
-.panel{background:var(--cream);border-radius:clamp(22px,3vw,38px);
-  box-shadow:0 18px 0 rgba(42,26,46,.07),0 30px 70px rgba(42,26,46,.18);
+.panel{background:var(--surface2);border:1px solid var(--border);
+  border-radius:clamp(18px,2.5vw,30px);
+  box-shadow:0 18px 0 rgba(0,0,0,.28),0 30px 70px rgba(0,0,0,.38);
   padding:clamp(26px,4.5vw,60px);position:relative}
 .band{position:relative}
 
@@ -76,31 +81,34 @@ input{font:inherit;color:inherit}
 .u{font-family:var(--u);font-weight:600}
 .eyebrow{font-family:var(--u);font-weight:700;font-size:12px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--ink40)}
-.lead{font-size:clamp(18px,1.85vw,22px);line-height:1.58;color:var(--ink60);max-width:54ch}
-.h2{font-family:var(--d);font-weight:800;font-size:clamp(34px,5.6vw,68px);line-height:.98;letter-spacing:-.02em}
-.h3{font-family:var(--d);font-weight:800;font-size:clamp(24px,3.2vw,38px);line-height:1.02}
-/* text that sits directly on the sky must flip with the time of day */
-.on-sky{color:var(--plum);text-shadow:0 3px 0 rgba(255,246,233,.8),0 0 22px rgba(255,246,233,.7);
-  transition:color .6s,text-shadow .6s}
-.on-sky-s{color:var(--plum);transition:color .6s}
-[data-night="1"] .on-sky{color:var(--cream);text-shadow:0 4px 0 rgba(42,26,46,.55),0 0 26px rgba(12,21,51,.8)}
-[data-night="1"] .on-sky-s{color:var(--cream)}
+.lead{font-size:clamp(17px,1.75vw,20px);line-height:1.62;color:var(--ink60);max-width:54ch}
+.h2{font-family:var(--d);font-weight:800;font-size:clamp(32px,5.2vw,64px);line-height:.98;letter-spacing:-.02em}
+.h3{font-family:var(--d);font-weight:800;font-size:clamp(22px,3vw,36px);line-height:1.02}
+
+/* on-sky: always cream on dark design */
+.on-sky{color:var(--cream)}
+.on-sky-s{color:var(--cream)}
+[data-night="1"] .on-sky,[data-night="1"] .on-sky-s{color:var(--cream)}
 
 /* ─── buttons ─── */
 .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--u);font-weight:700;
   font-size:16px;padding:15px 28px;border-radius:100px;white-space:nowrap;
-  transition:transform .18s cubic-bezier(.3,1.7,.5,1),box-shadow .18s,background .18s;
-  box-shadow:0 5px 0 var(--btn-d,rgba(0,0,0,.2))}
-.btn:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--btn-d,rgba(0,0,0,.2))}
-.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--btn-d,rgba(0,0,0,.2))}
+  transition:transform .18s cubic-bezier(.3,1.7,.5,1),box-shadow .18s,background .18s,opacity .18s;
+  box-shadow:0 5px 0 var(--btn-d,rgba(0,0,0,.3))}
+.btn:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--btn-d,rgba(0,0,0,.3))}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--btn-d,rgba(0,0,0,.3))}
 .b-straw{background:var(--straw);color:#fff;--btn-d:var(--strawD)}
 .b-mint{background:var(--mint);color:#0A3D26;--btn-d:var(--mintD)}
-.b-butter{background:var(--butter);color:#4A3400;--btn-d:var(--butterD)}
+.b-butter{background:var(--butter);color:#3A2600;--btn-d:var(--butterD)}
 .b-grape{background:var(--grape);color:#fff;--btn-d:var(--grapeD)}
-.b-plum{background:var(--plum);color:var(--cream);--btn-d:#000}
-.b-ghost{background:rgba(255,246,233,.9);color:var(--plum);--btn-d:rgba(42,26,46,.22)}
+.b-plum{background:var(--surface2);color:var(--cream);border:1px solid var(--border2);
+  box-shadow:none;--btn-d:rgba(0,0,0,.4)}
+.b-plum:hover{box-shadow:none;background:var(--surface)}
+.b-ghost{background:rgba(255,246,233,.09);color:var(--cream);border:1px solid var(--border2);
+  box-shadow:none;--btn-d:rgba(0,0,0,.2)}
+.b-ghost:hover{background:rgba(255,246,233,.14);box-shadow:none}
 .btn-lg{font-size:18px;padding:18px 34px}
-.btn-sm{font-size:14px;padding:11px 20px;box-shadow:0 4px 0 var(--btn-d,rgba(0,0,0,.2))}
+.btn-sm{font-size:14px;padding:11px 20px;box-shadow:0 4px 0 var(--btn-d,rgba(0,0,0,.3))}
 
 /* ─── reveal ─── */
 .rv{opacity:0;transform:translateY(30px) scale(.985)}

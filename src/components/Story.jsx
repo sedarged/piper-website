@@ -38,7 +38,7 @@ export function Story({ found, onFind }) {
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 22 }}>
               {FACTS.map(([k, v]) => (
-                <div key={k} style={{ background: "rgba(42,26,46,.06)", borderRadius: 18, padding: "14px 20px", flex: "1 1 120px" }}>
+                <div key={k} style={{ background: "var(--surface2)", border: "1px solid var(--border)", borderRadius: 18, padding: "14px 20px", flex: "1 1 120px" }}>
                   <div className="d" style={{ fontSize: 32, color: "var(--straw)" }}>{k}</div>
                   <div className="eyebrow" style={{ marginTop: 2 }}>{v}</div>
                 </div>
