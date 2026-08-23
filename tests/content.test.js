@@ -34,3 +34,15 @@ test("map coordinates stay inside the illustration", () => {
     assert.ok(place.y >= 0 && place.y <= 100, `${place.id} y coordinate`);
   }
 });
+
+test("official Snackville map exposes all twenty described locations", () => {
+  assert.equal(PLACES.length, 20);
+  assert.deepEqual(PLACES.map((place) => place.n).sort((a, b) => a - b),
+    Array.from({ length: 20 }, (_, index) => index + 1));
+  for (const place of PLACES) {
+    assert.ok(place.name.length > 3, `location ${place.n} has a name`);
+    assert.ok(place.intro.length > 20, `${place.name} has an introduction`);
+    assert.ok(place.d.length > 80, `${place.name} has a full description`);
+    assert.ok(place.note.length > 20, `${place.name} has an explorer note`);
+  }
+});

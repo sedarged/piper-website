@@ -1,7 +1,7 @@
 {
   "name": "piper-snackville",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "Piper the Strawberry Food Kitten — website for the Wallace-Siedlarz Books picture book series.",
   "type": "module",
   "scripts": {

@@ -2,6 +2,19 @@
 
 All notable changes to the Piper website are documented here.
 
+## [1.4.0] — 2026-08-23
+
+### Added
+
+- Replaced the previous eight-stop illustration with the official twenty-location Snackville map supplied for the Piper series.
+- Added a keyboard- and touch-accessible hotspot for every numbered location, plus a complete alternate location index.
+- Added individual storybook introductions, full location descriptions and Piper Explorer notes for all twenty places.
+- Added an accessible field-note dialog with Escape, focus trapping, focus return and mobile bottom-sheet behaviour.
+
+### Preserved
+
+- Kept Explorer progress tracking and retained the Chocolate Dragon sneeze interaction at Chocolate Volcano and Dragon Cave.
+
 ## [1.3.0] — 2026-08-22
 
 ### Polished
