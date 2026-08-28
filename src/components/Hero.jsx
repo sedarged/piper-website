@@ -1,8 +1,6 @@
 import { ASSET, AMAZON_URL } from "../config.js";
-import { CHARACTER_ART } from "../generated-assets/artwork.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
-import { SpriteArt } from "./SpriteArt.jsx";
 import { Treasure } from "./Treasure.jsx";
 
 const WORLDS = [
@@ -18,7 +16,7 @@ const WORLDS = [
     kicker: "Four very special kittens",
     title: "Meet the Snack Squad",
     copy: "Get to know Piper, Croissant Kitty, Toast Kitty and Sandwich Kitty.",
-    art: CHARACTER_ART.squad,
+    image: "/images/inside/custard-page-31.webp",
   },
   {
     id: "books",
@@ -36,6 +34,11 @@ const WORLDS = [
   },
 ];
 
+/**
+ * The first screen after the magical reveal. It establishes the series,
+ * presents the first book as the hero product and opens four clear routes
+ * into the wider story world.
+ */
 export function Hero({ found, onFind }) {
   const goTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
@@ -109,12 +112,8 @@ export function Hero({ found, onFind }) {
                 onClick={() => goTo(world.id)}
                 aria-label={`${world.title}: ${world.copy}`}
               >
-                <span className="world-image" style={{ overflow: "hidden" }}>
-                  {world.art ? (
-                    <SpriteArt art={world.art} alt="" style={{ height: "100%", minHeight: 230 }} />
-                  ) : (
-                    <Img src={world.image} alt="" fb={world.title} />
-                  )}
+                <span className="world-image">
+                  <Img src={world.image} alt="" fb={world.title} />
                 </span>
                 <span className="world-number" aria-hidden="true">0{index + 1}</span>
                 <span className="world-copy">

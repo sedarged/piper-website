@@ -1,13 +1,18 @@
-import { CHARACTER_ART } from "../generated-assets/artwork.js";
-import { SpriteArt } from "./SpriteArt.jsx";
+import { drive, ASSET } from "../config.js";
+import { Img } from "./Img.jsx";
 
-/** Piper's floating guide avatar using the corrected Piper artwork. */
+/**
+ * Piper's floating guide avatar, bottom-right. Tapping her replays the
+ * current section's tip (see data/guide.js); the small ✕ dismisses her
+ * for the rest of the session. `message` is owned by App.jsx, which
+ * updates it automatically as the visitor scrolls between sections.
+ */
 export function PiperGuide({ message, onTap, onDismiss }) {
   return (
     <div className="guide">
       <div style={{ position: "relative" }}>
-        <button className="guide-av" onClick={onTap} aria-label="Piper says something" style={{ overflow: "hidden" }}>
-          <SpriteArt art={CHARACTER_ART.piper} alt="Piper" style={{ height: "100%", borderRadius: "50%" }} />
+        <button className="guide-av" onClick={onTap} aria-label="Piper says something">
+          <Img src={drive(ASSET.piper, 300)} alt="Piper" fb="P" />
         </button>
         <button className="guide-x" onClick={onDismiss} aria-label="Hide Piper">✕</button>
       </div>

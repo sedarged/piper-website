@@ -1,13 +1,14 @@
+import { drive } from "../config.js";
 import { CAST } from "../data/cast.js";
-import { CHARACTER_ART } from "../generated-assets/artwork.js";
 import { Reveal } from "./Reveal.jsx";
-import { SpriteArt } from "./SpriteArt.jsx";
+import { Img } from "./Img.jsx";
 import { Treasure } from "./Treasure.jsx";
 
 /**
  * The "cast" section — a four-up grid of character cards. Tapping one
- * opens the CastDrawer. Character artwork is sourced from the corrected
- * August 2026 website asset batch so the Snack Squad stays on-model.
+ * opens the CastDrawer (rendered by App.jsx, kept as a sibling rather
+ * than nested here so it can slide in above everything). Contains
+ * treasure #3 ("star").
  */
 export function Cast({ found, onFind, onOpenCharacter, chime }) {
   return (
@@ -26,13 +27,7 @@ export function Cast({ found, onFind, onOpenCharacter, chime }) {
         {CAST.map((c, i) => (
           <Reveal key={c.key} delay={i * 80}>
             <button className="cc" onClick={() => { onOpenCharacter(i); chime(680, 0.12); }}>
-              <div className="cc-f" style={{ overflow: "hidden" }}>
-                <SpriteArt
-                  art={CHARACTER_ART[c.key]}
-                  alt={c.name}
-                  style={{ height: "100%", minHeight: 290, backgroundColor: "rgba(255,246,233,.5)" }}
-                />
-              </div>
+              <div className="cc-f"><Img src={drive(c.img, 600)} alt={c.name} fb={c.name} /></div>
               <h3 className="cc-n">{c.name}</h3>
               <p className="cc-r">{c.role}</p>
               <p className="cc-line">{c.line}</p>

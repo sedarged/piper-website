@@ -1,10 +1,18 @@
 import { useEffect, useRef } from "react";
-import { AMAZON_URL } from "../config.js";
+import { drive, AMAZON_URL } from "../config.js";
 import { CAST } from "../data/cast.js";
-import { CHARACTER_ART } from "../generated-assets/artwork.js";
-import { SpriteArt } from "./SpriteArt.jsx";
+import { Img } from "./Img.jsx";
 
-/** Slide-in character profile using the corrected Snack Squad artwork. */
+/**
+ * The slide-in panel showing a character's full bio, power, and secret.
+ * `index` is the CAST array index of the open character, or `null`
+ * when closed — App.jsx owns this piece of state since both the Cast
+ * grid and this drawer need to read/write it.
+ *
+ * Closes on Escape and locks body scroll while open (a modal that lets
+ * the page scroll behind it is a common source of "why is my page
+ * jumping" bug reports).
+ */
 export function CastDrawer({ index, onClose, onNavigate }) {
   const open = index !== null;
   const character = open ? CAST[index] : null;
@@ -12,7 +20,7 @@ export function CastDrawer({ index, onClose, onNavigate }) {
   const lastTriggerRef = useRef(null);
 
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open) return;
     lastTriggerRef.current = document.activeElement;
     const previousOverflow = document.body.style.overflow;
     const drawer = drawerRef.current;
@@ -43,8 +51,8 @@ export function CastDrawer({ index, onClose, onNavigate }) {
       <aside ref={drawerRef} className={`drawer ${open ? "in" : ""}`} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-label={open ? `${character.name} character profile` : undefined} aria-hidden={!open}>
         {character && (
           <>
-            <div className="dr-art" style={{ background: character.ink, overflow: "hidden" }}>
-              <SpriteArt art={CHARACTER_ART[character.key]} alt={character.name} style={{ height: "100%", minHeight: 360 }} />
+            <div className="dr-art" style={{ background: character.ink }}>
+              <Img src={drive(character.img, 800)} alt={character.name} fb={character.name} />
               <button className="dr-x" onClick={onClose} aria-label="Close">✕</button>
             </div>
 

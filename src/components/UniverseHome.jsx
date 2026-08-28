@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { BOOKS } from "../data/books.js";
-import { CHARACTER_ART, WORLD_ART } from "../generated-assets/artwork.js";
-import { SpriteArt } from "./SpriteArt.jsx";
 
 const NAV_ITEMS = [
   { id: "worlds", label: "Worlds" },
@@ -10,7 +8,15 @@ const NAV_ITEMS = [
   { id: "grownups-home", label: "Grown-Ups" },
 ];
 
-function WorldCard({ type, title, description, status, onClick, art }) {
+function ReferenceCrop({ crop, className = "", alt = "" }) {
+  return (
+    <span className={`universe-crop ${className}`} style={{ "--crop-x": crop.x, "--crop-y": crop.y, "--crop-w": crop.w, "--crop-h": crop.h }}>
+      <img src="/images/worlds-homepage-reference.webp" alt={alt} />
+    </span>
+  );
+}
+
+function WorldCard({ type, title, description, status, onClick, crop }) {
   const active = type === "available";
   return (
     <article className={`world-card world-card--${type}`}>
@@ -20,11 +26,7 @@ function WorldCard({ type, title, description, status, onClick, art }) {
         aria-label={active ? `Enter ${title}` : `${title} — coming soon`}
         disabled={!active}
       >
-        <SpriteArt
-          art={art}
-          alt={`${title}. ${description} ${status}.`}
-          style={{ height: "auto", minHeight: 390, backgroundColor: "#0b1a2a" }}
-        />
+        <ReferenceCrop crop={crop} alt={`${title}. ${description} ${status}.`} />
       </button>
     </article>
   );
@@ -113,12 +115,7 @@ export function UniverseHome({ onEnterSnackville }) {
 
           <button className="universe-portal" onClick={onEnterSnackville} aria-label="Enter the world of Snackville">
             <span className="universe-portal__halo" aria-hidden="true" />
-            <SpriteArt
-              art={CHARACTER_ART.squad}
-              className="universe-portal__art"
-              alt="Piper, Croissant Kitty, Toast Kitty and Sandwich Kitty together in Snackville"
-              style={{ width: "76%", height: "86%", left: "15%", top: "6%", borderRadius: "48%", backgroundColor: "#f4e6c8" }}
-            />
+            <ReferenceCrop crop={{ x: 278, y: 88, w: 648, h: 612 }} className="universe-portal__art" alt="Piper and the Snack Squad entering Snackville" />
             <span className="universe-portal__ring" aria-hidden="true" />
           </button>
         </section>
@@ -133,34 +130,22 @@ export function UniverseHome({ onEnterSnackville }) {
               description="A berry-sweet town where courage is as tasty as friendship."
               status="Available now"
               onClick={onEnterSnackville}
-              art={WORLD_ART.island}
+              crop={{ x: 16, y: 783, w: 332, h: 412 }}
             />
             <WorldCard
               type="locked"
               title="Pie-Rats Underground Village"
               description="The hidden Pie-Rat world beneath Snackville."
               status="World two"
-              art={WORLD_ART.pieRats}
+              crop={{ x: 352, y: 783, w: 269, h: 412 }}
             />
             <WorldCard
               type="locked"
               title="The Enchanted Sandwich Kingdom"
               description="A golden road through the clouds leads to a layered realm of royal magic."
               status="World three"
-              art={WORLD_ART.sandwichKingdom}
+              crop={{ x: 625, y: 783, w: 301, h: 412 }}
             />
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14, marginTop: 18 }} aria-label="More storyworld previews">
-            {[
-              [WORLD_ART.snackville, "Snackville at golden hour"],
-              [WORLD_ART.sandwichAdventure, "The Snack Squad approaching the Sandwich Kingdom"],
-              [WORLD_ART.iceCreamRobots, "The Ice Cream Robot world"],
-            ].map(([art, alt]) => (
-              <div key={alt} style={{ overflow: "hidden", border: "1px solid rgba(231,183,88,.42)", borderRadius: 10, background: "#071426", minHeight: 190 }}>
-                <SpriteArt art={art} alt={alt} style={{ height: "auto", minHeight: 190 }} />
-              </div>
-            ))}
           </div>
           <div className="world-pagination" aria-hidden="true"><i className="on" /><i /><i /></div>
         </section>
@@ -193,9 +178,7 @@ export function UniverseHome({ onEnterSnackville }) {
               {signupState === "ready" && <p className="form-message">The list opens soon — your address has not been sent anywhere yet.</p>}
               <small>No spam. Ever. Unsubscribe anytime.</small>
             </div>
-            <div className="story-list__character" style={{ minHeight: 260, overflow: "hidden", borderRadius: 12 }}>
-              <SpriteArt art={CHARACTER_ART.toastReading} alt="Toast Kitty reading a book" style={{ height: 260 }} />
-            </div>
+            <ReferenceCrop crop={{ x: 724, y: 1380, w: 186, h: 218 }} className="story-list__character" alt="Toast Kitty reading a book" />
           </div>
 
           <div className="universe-library" aria-labelledby="universe-library-title">
