@@ -88,7 +88,7 @@ silently reintroduce the jank this hook exists to eliminate.
 
 ## The Explorer progress system
 
-Six hidden treasures, twenty map locations, two explored books, completing
+Six hidden treasures, twenty map locations, six explored books, completing
 the quiz, and reaching nightfall — 30 actions total (see
 `data/treasures.js`, `TOTAL_ACTIONS`). Every interactive component
 calls `mark(uniqueKey)` (passed down from `App.jsx`) when its action

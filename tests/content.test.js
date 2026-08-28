@@ -50,7 +50,7 @@ test("official Snackville map exposes all twenty described locations", () => {
 });
 
 test("the publishing showcase uses local optimised artwork", () => {
-  assert.equal(BOOKS.length, 2);
+  assert.equal(BOOKS.length, 6);
   for (const book of BOOKS) {
     assert.match(book.img, /^\/images\/books\/.+\.webp$/);
     assert.ok(existsSync(new URL(`../public${book.img}`, import.meta.url)), `${book.title} cover exists`);
