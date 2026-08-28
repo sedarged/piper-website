@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { BOOKS } from "../data/books.js";
 
 const NAV_ITEMS = [
   { id: "worlds", label: "Worlds" },
@@ -140,8 +141,8 @@ export function UniverseHome({ onEnterSnackville }) {
             />
             <WorldCard
               type="locked"
-              title="Sandwich Castle"
-              description="A royal kingdom of towering sandwiches awaits."
+              title="The Enchanted Sandwich Kingdom"
+              description="A golden road through the clouds leads to a layered realm of royal magic."
               status="World three"
               crop={{ x: 625, y: 783, w: 301, h: 412 }}
             />
@@ -178,6 +179,23 @@ export function UniverseHome({ onEnterSnackville }) {
               <small>No spam. Ever. Unsubscribe anytime.</small>
             </div>
             <ReferenceCrop crop={{ x: 724, y: 1380, w: 186, h: 218 }} className="story-list__character" alt="Toast Kitty reading a book" />
+          </div>
+
+          <div className="universe-library" aria-labelledby="universe-library-title">
+            <div className="universe-library__heading">
+              <p className="universe-kicker">The complete Piper collection</p>
+              <h2 id="universe-library-title">Six books. Six doors into the storyworld.</h2>
+              <p>Discover every adventure released or currently being created by Wallace-Siedlarz Productions.</p>
+            </div>
+            <div className="universe-library__shelf">
+              {BOOKS.map((book) => (
+                <button key={book.id} className="universe-library__book" onClick={onEnterSnackville} aria-label={`Explore ${book.title}`}>
+                  <img src={book.img} alt={`${book.title} cover`} />
+                  <span>{book.num}</span>
+                  <strong>{book.title.replace("Piper and the ", "")}</strong>
+                </button>
+              ))}
+            </div>
           </div>
         </section>
       </main>
