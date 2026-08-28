@@ -10,7 +10,7 @@ const NAV_ITEMS = [
 function ReferenceCrop({ crop, className = "", alt = "" }) {
   return (
     <span className={`universe-crop ${className}`} style={{ "--crop-x": crop.x, "--crop-y": crop.y, "--crop-w": crop.w, "--crop-h": crop.h }}>
-      <img src="/images/worlds-homepage-reference.png" alt={alt} />
+      <img src="/images/worlds-homepage-reference.webp" alt={alt} />
     </span>
   );
 }
