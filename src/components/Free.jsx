@@ -12,8 +12,8 @@ export function Free() {
   return (
     <>
       <Reveal style={{ textAlign: "center", marginBottom: 36 }}>
-        <div className="eyebrow" style={{ marginBottom: 12 }}>Free stuff</div>
-        <h2 className="h2">Things to print on a rainy afternoon</h2>
+        <div className="eyebrow" style={{ marginBottom: 12 }}>The Snackville studio</div>
+        <h2 className="h2">Bring a little Snackville home</h2>
         <p className="lead" style={{ margin: "14px auto 0" }}>
           All free, all printable at home. Everything here comes in the welcome pack when you join.
         </p>
@@ -24,7 +24,7 @@ export function Free() {
           <Reveal key={p.id} delay={i * 60}>
             {p.url ? (
               <a className="fc" href={p.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
-                <span style={{ width: 40, height: 40 }} aria-hidden="true">{FI[p.id]()}</span>
+                <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
                 <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
                 <span className="eyebrow">{p.n}</span>
                 <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>
@@ -32,7 +32,7 @@ export function Free() {
               </a>
             ) : (
               <button className="fc" onClick={() => document.getElementById("join")?.scrollIntoView({ behavior: "smooth" })}>
-                <span style={{ width: 40, height: 40 }} aria-hidden="true">{FI[p.id]()}</span>
+                <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
                 <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
                 <span className="eyebrow">{p.n}</span>
                 <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>

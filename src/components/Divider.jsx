@@ -13,7 +13,7 @@ export function Divider({ shape = "wave", fill, flip }) {
     drip: "M0 0h1200v34c-40 0-40 44-80 44s-40-44-80-44-40 62-80 62-40-62-80-62-40 40-80 40-40-40-80-40-40 56-80 56-40-56-80-56-40 38-80 38-40-38-80-38-40 48-80 48-40-48-80-48z",
   };
   return (
-    <div style={{ lineHeight: 0, position: "relative", zIndex: 3, transform: flip ? "scaleY(-1)" : "none" }} aria-hidden="true">
+    <div className="divider" style={{ lineHeight: 0, position: "relative", zIndex: 3, transform: flip ? "scaleY(-1)" : "none" }} aria-hidden="true">
       <svg viewBox="0 0 1200 120" preserveAspectRatio="none" style={{ width: "100%", height: "clamp(46px,6vw,110px)", display: "block" }}>
         <path d={paths[shape]} fill={fill} />
       </svg>

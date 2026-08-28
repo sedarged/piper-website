@@ -6,7 +6,7 @@ import { useState } from "react";
  * Google Drive asset ID is still a placeholder or the file's sharing
  * permission hasn't been set to "anyone with the link" yet.
  */
-export function Img({ src, alt, fb, style, ...rest }) {
+export function Img({ src, alt, fb, style, loading = "lazy", decoding = "async", ...rest }) {
   const [failed, setFailed] = useState(false);
 
   if (failed || !src) {
@@ -25,5 +25,15 @@ export function Img({ src, alt, fb, style, ...rest }) {
     );
   }
 
-  return <img src={src} alt={alt} onError={() => setFailed(true)} style={style} {...rest} />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={loading}
+      decoding={decoding}
+      onError={() => setFailed(true)}
+      style={style}
+      {...rest}
+    />
+  );
 }

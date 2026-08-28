@@ -1,89 +1,190 @@
-import { useState } from "react";
-import { drive, ASSET } from "../config.js";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PLACES } from "../data/places.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
 
+const MAP_SRC = "/images/snackville-interactive-map.jpeg";
+
 /**
- * The interactive Snackville map — the hub of the whole site (see the
- * design plan, item 8: the map is the spine everything else hangs off).
- * Clicking a numbered pin, or its matching row in the sidebar list,
- * selects it and marks it visited via `mark(place-<id>)`, which feeds
- * the Explorer progress ring in App.jsx.
+ * The official twenty-stop Snackville map.
  *
- * Pin #8 (Chocolate Mountain) is special-cased: instead of the normal
- * chime, clicking it triggers `onSneeze`, which shakes the whole page
- * and drops chocolate drips from the top of the screen.
+ * Every printed number on the illustration has a matching native button.
+ * Selecting a location updates the field-note panel, marks Explorer progress,
+ * and opens an accessible storybook introduction. Volcano and Dragon Cave
+ * keep the original Chocolate Dragon sneeze interaction as an explicit action.
  */
 export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
   const [selected, setSelected] = useState(PLACES[0]);
-  const seenCount = PLACES.filter((p) => visitedPlaceIds.has(p.id)).length;
+  const [openPlace, setOpenPlace] = useState(null);
+  const dialogRef = useRef(null);
+  const lastTriggerRef = useRef(null);
+  const seenCount = PLACES.filter((place) => visitedPlaceIds.has(place.id)).length;
 
-  const pick = (place) => {
+  const closePlace = useCallback(() => {
+    setOpenPlace(null);
+    window.setTimeout(() => lastTriggerRef.current?.focus(), 0);
+  }, []);
+
+  const pick = (place, trigger) => {
+    lastTriggerRef.current = trigger ?? document.activeElement;
     setSelected(place);
+    setOpenPlace(place);
     mark(`place-${place.id}`);
-    if (place.sneeze) onSneeze();
-    else chime(640, 0.12);
+    chime(640, 0.12);
   };
+
+  useEffect(() => {
+    if (!openPlace) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const dialog = dialogRef.current;
+    const focusable = dialog?.querySelectorAll("button:not([disabled]), a[href]") ?? [];
+    focusable[0]?.focus();
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closePlace();
+        return;
+      }
+      if (event.key !== "Tab" || focusable.length < 2) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [closePlace, openPlace]);
 
   return (
     <>
-      <Reveal style={{ textAlign: "center", marginBottom: 34 }}>
-        <div className="eyebrow on-sky-s" style={{ marginBottom: 12, opacity: 0.72 }}>The map</div>
-        <h2 className="h2 on-sky">All of Snackville</h2>
-        <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>
-          Tap a number to see what happens there. Number eight is best poked with caution.
-        </p>
-        <div style={{
-          display: "inline-flex", alignItems: "center", gap: 9, marginTop: 16,
-          background: "var(--cream)", borderRadius: 100, padding: "8px 18px", boxShadow: "0 4px 0 rgba(42,26,46,.12)",
-        }}>
-          <span style={{ width: 20, height: 20 }}>{I.mapic()}</span>
-          <span className="u" style={{ fontSize: 14.5 }}>{seenCount} of {PLACES.length} places explored</span>
+      <Reveal className="map-heading">
+        <div>
+          <div className="eyebrow on-sky-s">The official illustrated map</div>
+          <h2 className="h2 on-sky">Choose your next Snackville stop</h2>
+          <p className="lead on-sky-s">
+            Every numbered place holds a piece of Piper's world. Select a location to meet it,
+            discover its story and add it to your Explorer trail.
+          </p>
+        </div>
+        <div className="explore-counter" aria-live="polite">
+          <span className="map-counter-icon">{I.mapic()}</span>
+          <span className="u">{seenCount} of {PLACES.length} places explored</span>
         </div>
       </Reveal>
 
-      <Reveal className="panel" style={{ padding: "clamp(16px,2.4vw,26px)" }}>
-        <div
-          className="map-layout"
-          style={{ display: "grid", gridTemplateColumns: "1.45fr .55fr", gap: "clamp(16px,2.4vw,28px)", alignItems: "start" }}
-        >
+      <Reveal className="map-atlas panel">
+        <div className="map-scroll" aria-label="Scrollable illustrated map">
           <div className="map-f">
-            <Img src={drive(ASSET.map, 1400)} alt="Illustrated map of Snackville" fb="Snackville map" />
-            {PLACES.map((p) => (
+            <Img
+              src={MAP_SRC}
+              alt="Illustrated map of Snackville with twenty numbered locations"
+              fb="Snackville map"
+              width="1536"
+              height="864"
+            />
+            {PLACES.map((place) => (
               <button
-                key={p.id}
-                className={`pin ${selected.id === p.id ? "on" : ""} ${visitedPlaceIds.has(p.id) ? "seen" : ""} ${p.sneeze ? "dragon" : ""}`}
-                style={{ left: `${p.x}%`, top: `${p.y}%`, background: p.ink }}
-                onClick={() => pick(p)}
-                aria-label={p.name}
-                aria-pressed={selected.id === p.id}
+                key={place.id}
+                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.sneeze ? "dragon" : ""}`}
+                style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
+                onClick={(event) => pick(place, event.currentTarget)}
+                aria-label={`Location ${place.n}: ${place.name}`}
+                aria-haspopup="dialog"
               >
-                {p.n}
+                <span className="sr-only">Open {place.name}</span>
               </button>
             ))}
           </div>
+        </div>
 
+        <p className="map-pan-hint u">On a small screen, swipe the map sideways to see every shore.</p>
+
+        <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
+          <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>
           <div>
-            <div style={{ background: `${selected.ink}1E`, border: `3px solid ${selected.ink}55`, borderRadius: 22, padding: 22, minHeight: 180 }}>
-              <span className="pdot" style={{ background: selected.ink, marginBottom: 10 }}>{selected.n}</span>
-              <h3 className="d" style={{ fontSize: 23, lineHeight: 1.05, marginTop: 8 }}>{selected.name}</h3>
-              <div className="eyebrow" style={{ marginTop: 5 }}>{selected.who}</div>
-              <p style={{ color: "var(--ink60)", marginTop: 11, fontSize: 16.5 }}>{selected.d}</p>
-            </div>
-
-            <div className="plist" style={{ marginTop: 16 }}>
-              {PLACES.map((p) => (
-                <button key={p.id} className={`prow ${selected.id === p.id ? "on" : ""}`} onClick={() => pick(p)}>
-                  <span className="pdot" style={{ background: visitedPlaceIds.has(p.id) ? p.ink : "rgba(42,26,46,.2)" }}>{p.n}</span>
-                  <span className="u" style={{ fontSize: 15 }}>{p.name}</span>
-                </button>
-              ))}
-            </div>
+            <div className="eyebrow">Now visiting · {selected.kind}</div>
+            <h3 className="d">{selected.name}</h3>
+            <p>{selected.intro}</p>
           </div>
+          <button className="btn btn-sm b-straw" onClick={(event) => pick(selected, event.currentTarget)}>
+            Read the field note
+          </button>
+        </div>
+
+        <div className="map-index" aria-label="All Snackville locations">
+          {PLACES.map((place) => (
+            <button
+              key={place.id}
+              className={`map-index-item ${selected.id === place.id ? "on" : ""}`}
+              onClick={(event) => pick(place, event.currentTarget)}
+              aria-haspopup="dialog"
+            >
+              <span className="map-index-number" style={{ "--place-accent": place.ink }}>
+                {String(place.n).padStart(2, "0")}
+              </span>
+              <span>{place.name}</span>
+              {visitedPlaceIds.has(place.id) && <span className="sr-only"> — explored</span>}
+            </button>
+          ))}
         </div>
       </Reveal>
+
+      {openPlace && (
+        <div
+          className="place-dialog-scrim"
+          onMouseDown={(event) => { if (event.target === event.currentTarget) closePlace(); }}
+        >
+          <article
+            ref={dialogRef}
+            className="place-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="place-dialog-title"
+            style={{ "--place-accent": openPlace.ink }}
+          >
+            <div className="place-dialog-topline">
+              <span className="eyebrow">Snackville field note · {String(openPlace.n).padStart(2, "0")}/{PLACES.length}</span>
+              <button className="place-dialog-close u" onClick={closePlace}>Close</button>
+            </div>
+
+            <div className="place-dialog-number d" aria-hidden="true">{String(openPlace.n).padStart(2, "0")}</div>
+            <div className="eyebrow place-dialog-kind">{openPlace.kind} · {openPlace.who}</div>
+            <h3 id="place-dialog-title" className="d">{openPlace.name}</h3>
+            <p className="place-dialog-intro">{openPlace.intro}</p>
+            <p className="place-dialog-copy">{openPlace.d}</p>
+
+            <aside className="place-dialog-note">
+              <span className="eyebrow">Piper's explorer note</span>
+              <p>{openPlace.note}</p>
+            </aside>
+
+            <div className="place-dialog-actions">
+              {openPlace.sneeze && (
+                <button
+                  className="btn b-straw"
+                  onClick={onSneeze}
+                >
+                  {openPlace.actionLabel}
+                </button>
+              )}
+              <button className="btn b-plum" onClick={closePlace}>Back to the map</button>
+            </div>
+          </article>
+        </div>
+      )}
     </>
   );
 }

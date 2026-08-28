@@ -8,12 +8,12 @@
  * reference a CSS variable.
  */
 export const C = {
-  strawberry: "#FF3B5C", strawberryD: "#D62244",
-  butter: "#FFC93C", butterD: "#E0A310",
-  mint: "#3DD98B", mintD: "#1FA866",
-  sky: "#5BC8F5", skyD: "#2A9FD0",
-  grape: "#9B6BFF", grapeD: "#7442E0",
-  ember: "#FF7A3C", emberD: "#DB5418",
-  cocoa: "#7B4A2A", cocoaD: "#4E2B14",
-  cream: "#FFF6E9", plum: "#2A1A2E",
+  strawberry: "#A72446", strawberryD: "#71142B",
+  butter: "#D8AA58", butterD: "#9F7433",
+  mint: "#6F9C7E", mintD: "#406B52",
+  sky: "#6F8EAD", skyD: "#405E80",
+  grape: "#74577F", grapeD: "#4D3559",
+  ember: "#B66B43", emberD: "#7B3E25",
+  cocoa: "#76503C", cocoaD: "#43291F",
+  cream: "#F7ECD7", plum: "#071126",
 };

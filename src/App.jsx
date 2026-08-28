@@ -10,7 +10,6 @@ import { GUIDE_MESSAGES } from "./data/guide.js";
 import { useChime } from "./hooks/useChime.js";
 import { useScrollEngine } from "./hooks/useScrollEngine.js";
 
-import { Gate } from "./components/Gate.jsx";
 import { Nav } from "./components/Nav.jsx";
 import { Hero } from "./components/Hero.jsx";
 import { Marquee } from "./components/Marquee.jsx";
@@ -33,10 +32,10 @@ import { ExplorerRing } from "./components/ExplorerRing.jsx";
 import { PiperGuide } from "./components/PiperGuide.jsx";
 import { Toast } from "./components/Toast.jsx";
 import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
+import { UniverseHome } from "./components/UniverseHome.jsx";
 
 /**
  * The root component. Owns every piece of cross-section state:
- *   - `entered`      whether the gate (book cover) has been opened
  *   - `active`       which section is currently in view (drives the nav)
  *   - `doneKeys`     every treasure/place/book/quiz/nightfall action
  *                    completed so far (drives the Explorer ring + badges)
@@ -48,11 +47,17 @@ import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
  * live here as state — see hooks/useScrollEngine.js for why, and for
  * the measured performance difference that decision makes.
  */
-export default function App() {
-  const [entered, setEntered] = useState(false);
+function SnackvilleExperience({ onBackHome }) {
   const [active, setActive] = useState("story");
   const [castIndex, setCastIndex] = useState(null);
-  const [doneKeys, setDoneKeys] = useState(() => new Set());
+  const [doneKeys, setDoneKeys] = useState(() => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem("piper:v1:explorer") || "[]");
+      return new Set(Array.isArray(saved) ? saved : []);
+    } catch (_error) {
+      return new Set();
+    }
+  });
   const [sparks, setSparks] = useState([]);
   const [drips, setDrips] = useState([]);
   const [confetti, setConfetti] = useState([]);
@@ -78,6 +83,15 @@ export default function App() {
     reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }, []);
 
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("piper:v1:explorer", JSON.stringify([...doneKeys]));
+    } catch (_error) {
+      // Explorer progress is an optional enhancement; the site still works
+      // when private browsing or browser policy blocks local storage.
+    }
+  }, [doneKeys]);
+
   useScrollEngine({
     landRefs,
     skyRefs,
@@ -89,7 +103,6 @@ export default function App() {
 
   // scroll-spy: which section is currently in view, for the nav highlight
   useEffect(() => {
-    if (!entered) return;
     const observer = new IntersectionObserver(
       (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); }),
       { threshold: 0.15, rootMargin: "-18% 0px -55% 0px" }
@@ -99,16 +112,13 @@ export default function App() {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, [entered]);
+  }, []);
 
-  // lock page scroll while the gate is still showing
-  useEffect(() => {
-    document.body.style.overflow = entered ? "" : "hidden";
-  }, [entered]);
+  const closeDrawer = useCallback(() => setCastIndex(null), []);
 
   // cursor sparkle trail — desktop + reduced-motion-aware only
   useEffect(() => {
-    if (!entered || reduceMotion.current) return;
+    if (reduceMotion.current) return;
     if (window.matchMedia("(hover: none)").matches) return;
     let lastFired = 0;
     const onMove = (e) => {
@@ -124,7 +134,7 @@ export default function App() {
     };
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
-  }, [entered]);
+  }, []);
 
   const showToast = useCallback((title, body) => {
     setToast({ title, body, id: Date.now() });
@@ -162,7 +172,6 @@ export default function App() {
 
   // Easter egg: typing P-I-P-E-R anywhere triggers a strawberry rain
   useEffect(() => {
-    if (!entered) return;
     const onKey = (e) => {
       if (!/^[a-zA-Z]$/.test(e.key)) return;
       keyBuffer.current = (keyBuffer.current + e.key.toUpperCase()).slice(-5);
@@ -175,7 +184,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [entered, chime, burst, showToast]);
+  }, [chime, burst, showToast]);
 
   const onSneeze = useCallback(() => {
     chime(170, 0.36);
@@ -209,11 +218,11 @@ export default function App() {
   // Piper's guide bubble auto-updates its message as the visitor scrolls
   // between sections, and fades out after ~6.5s.
   useEffect(() => {
-    if (!entered || !guideVisible) return;
+    if (!guideVisible) return;
     setGuideMessage(GUIDE_MESSAGES[active] || null);
     const t = setTimeout(() => setGuideMessage(null), 6500);
     return () => clearTimeout(t);
-  }, [active, entered, guideVisible]);
+  }, [active, guideVisible]);
 
   const doneCount = doneKeys.size;
   const tier = BADGES.filter((b) => doneCount >= b.at).slice(-1)[0];
@@ -228,6 +237,7 @@ export default function App() {
 
   return (
     <div ref={rootRef} className={shaking ? "shaker" : ""} data-night="0">
+      <a className="skip-link" href="#story">Skip to the story</a>
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
           See hooks/useScrollEngine.js. ═══ */}
@@ -261,11 +271,11 @@ export default function App() {
         </div>
       ))}
 
-      {!entered && <Gate onDone={() => setEntered(true)} />}
-      <Nav active={active} />
+      <div className="site-shell">
+      <Nav active={active} onNavigate={setActive} onHome={onBackHome} />
 
       <div className="page">
-        <Hero found={doneKeys} onFind={onFindTreasure} onNameTap={() => burst(16)} chime={chime} />
+        <Hero found={doneKeys} onFind={onFindTreasure} />
 
         <Divider shape="cloud" fill="var(--plum)" />
         <Marquee />
@@ -314,22 +324,22 @@ export default function App() {
 
       <Footer />
 
-      <CastDrawer index={castIndex} onClose={() => setCastIndex(null)} onNavigate={setCastIndex} />
+      <CastDrawer index={castIndex} onClose={closeDrawer} onNavigate={setCastIndex} />
 
       <FxLayers sparks={sparks} drips={drips} confetti={confetti} />
 
-      {entered && !celebration && (
+      {!celebration && (
         <ExplorerRing
           count={doneCount}
           tier={tier}
           onExplain={() => showToast(
             tier ? `${tier.name} — ${doneCount}/${TOTAL_ACTIONS}` : `Explorer — ${doneCount}/${TOTAL_ACTIONS}`,
-            "Find hidden things, visit every place on the map, spin the books, and stay until nightfall."
+            "Find hidden things, visit every place on the map, explore the books, and stay until nightfall."
           )}
         />
       )}
 
-      {entered && guideVisible && (
+      {guideVisible && (
         <PiperGuide
           message={guideMessage}
           onTap={() => { setGuideMessage(GUIDE_MESSAGES[active] || "Have a look round. Take your time."); chime(720, 0.12); }}
@@ -347,6 +357,36 @@ export default function App() {
           setTimeout(() => document.getElementById("join")?.scrollIntoView({ behavior: "smooth" }), 150);
         }}
       />
+      </div>
     </div>
   );
+}
+
+export default function App() {
+  const [view, setView] = useState(() => (
+    window.location.hash === "#snackville" ? "snackville" : "home"
+  ));
+
+  useEffect(() => {
+    const syncView = () => setView(window.location.hash === "#snackville" ? "snackville" : "home");
+    window.addEventListener("hashchange", syncView);
+    return () => window.removeEventListener("hashchange", syncView);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [view]);
+
+  const openSnackville = useCallback(() => {
+    window.location.hash = "snackville";
+  }, []);
+
+  const openHome = useCallback(() => {
+    window.history.pushState(null, "", `${window.location.pathname}${window.location.search}`);
+    setView("home");
+  }, []);
+
+  return view === "snackville"
+    ? <SnackvilleExperience onBackHome={openHome} />
+    : <UniverseHome onEnterSnackville={openSnackville} />;
 }

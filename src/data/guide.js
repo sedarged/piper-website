@@ -9,6 +9,6 @@ export const GUIDE_MESSAGES = {
   cast: "That's my Squad. Tap one — they've all got a secret.",
   join: "Four questions and you get your own member card. With your actual name on it.",
   map: "Try number eight. But be quick about it.",
-  books: "Tap a book. It spins. I don't know why, it just does.",
+  books: "Choose a cover to explore the next Snackville adventure.",
   free: "All of these are free. Print as many as you like.",
 };

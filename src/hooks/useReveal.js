@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
  * once. Disconnects its own observer after the first reveal — a section
  * that has already animated in never needs to be watched again.
  */
-export function useReveal(threshold = 0.14) {
+export function useReveal(threshold = 0.04) {
   const ref = useRef(null);
   const [seen, setSeen] = useState(false);
 

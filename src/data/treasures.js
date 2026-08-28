@@ -12,15 +12,15 @@ export const TREASURES = [
 ];
 
 /**
- * The Explorer progress ring counts: 6 hidden treasures + 8 map places
- * + 2 book spins + 2 "special" actions (completing the quiz, reaching
+ * The Explorer progress ring counts: 6 hidden treasures + 20 map places
+ * + 2 explored books + 2 "special" actions (completing the quiz, reaching
  * nightfall). If you add a new interactive thing that should count
  * toward the ring, bump this number and call `mark()` with a unique key.
  */
-export const TOTAL_ACTIONS = TREASURES.length + PLACES.length + BOOKS.length + 2; // 6+8+2+2 = 18
+export const TOTAL_ACTIONS = TREASURES.length + PLACES.length + BOOKS.length + 2; // 6+20+2+2 = 30
 
 export const BADGES = [
   { at: 6, name: "Snackville Visitor", ink: C.mint },
-  { at: 12, name: "Snackville Explorer", ink: C.butter },
-  { at: 18, name: "Keeper of Snackville", ink: C.strawberry },
+  { at: 18, name: "Snackville Explorer", ink: C.butter },
+  { at: 30, name: "Keeper of Snackville", ink: C.strawberry },
 ];

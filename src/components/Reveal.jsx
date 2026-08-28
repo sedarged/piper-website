@@ -3,7 +3,7 @@ import { useReveal } from "../hooks/useReveal.js";
 /**
  * Wraps any content in a scroll-triggered reveal animation. `kind`
  * selects the animation direction via CSS class: "rv" (fade + rise,
- * the default), "rv-up" (rise further, used for book rows), or "rv-l"
+ * the default), "rv-up" (rise further, used for editorial cards), or "rv-l"
  * (slide in from the left, used in the hero).
  */
 export function Reveal({ children, delay = 0, kind = "rv", as: Tag = "div", className = "", style, ...rest }) {

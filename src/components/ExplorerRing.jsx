@@ -3,7 +3,7 @@ import { TOTAL_ACTIONS } from "../data/treasures.js";
 
 /**
  * The fixed-position progress ring, bottom-left. Shows how many of the
- * TOTAL_ACTIONS things (treasures + map places + book spins + quiz +
+ * TOTAL_ACTIONS things (treasures + map places + explored books + quiz +
  * nightfall) have been done, and which badge tier that currently earns
  * (see data/treasures.js BADGES). Tapping it re-explains the mechanic
  * via the toast, for anyone who missed the initial "?" hint.

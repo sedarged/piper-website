@@ -1,10 +1,10 @@
 # Piper the Strawberry Food Kitten
 
-The website for the Piper picture book series, published by Wallace-Siedlarz
-Books. A picture-book-for-a-website: a closed book cover opens on click,
-scrolling down the page is walking through Snackville from dawn to
-nightfall, and a "Join the Snack Squad" quiz turns into a printable member
-card before ever asking a parent for an email address.
+The Wallace-Siedlarz Productions website and home of the Piper picture-book
+storyworlds. Visitors begin on the multi-world homepage, enter Snackville,
+meet the Snack Squad, browse the books and turn through real story pages. A
+"Join the Snack Squad" quiz becomes a printable member card before ever asking
+a parent for an email address.
 
 ## Quick start
 
@@ -31,8 +31,9 @@ without it, but won't actually deliver anywhere until you paste in a
 Formspree (or ConvertKit/Mailchimp) form endpoint. See the comment in
 `src/config.js` for details.
 
-Everything else — book links, character art, the map — is already wired
-to real Google Drive assets and the live Amazon listing.
+Everything else — book links, local cover and interior art, character art and
+the official interactive map — is already wired to production assets and the
+live Amazon listing.
 
 ## Project structure
 
@@ -41,13 +42,13 @@ src/
   App.jsx              Root component. Owns cross-section state (which
                         treasures are found, which character's drawer is
                         open, the Explorer progress) and the scroll engine.
-  main.jsx              Entry point — mounts App, imports the two CSS files.
-  config.js             Amazon URL, mailing endpoint, Google Drive asset IDs.
+  main.jsx              Entry point — mounts App and imports the CSS layers.
+  config.js             Amazon URL, mailing endpoint and local/remote assets.
 
-  components/           One file per visual piece: Gate, Nav, Hero, Cast,
+  components/           One file per visual piece: Nav, Hero, Cast,
                          CastDrawer, Join, MapHub, Books, Inside, Free,
                          GrownUps, Footer, plus small shared pieces
-                         (Reveal, Img, Treasure, Divider, Icons, Landscape)
+                         (ErrorBoundary, Reveal, Img, Treasure, Divider, Icons, Landscape)
                          and the FX overlay (FxLayers, ExplorerRing,
                          PiperGuide, Toast, BadgeCelebration).
 
@@ -87,12 +88,13 @@ silently reintroduce the jank this hook exists to eliminate.
 
 ## The Explorer progress system
 
-Six hidden treasures, eight map locations, two book spins, completing
-the quiz, and reaching nightfall — 18 actions total (see
+Six hidden treasures, twenty map locations, two explored books, completing
+the quiz, and reaching nightfall — 30 actions total (see
 `data/treasures.js`, `TOTAL_ACTIONS`). Every interactive component
 calls `mark(uniqueKey)` (passed down from `App.jsx`) when its action
 completes; `mark` is idempotent, so calling it twice for the same key
-is harmless. Crossing 6, 12, or 18 fires a badge celebration.
+is harmless. Progress is saved locally in the visitor's browser. Crossing
+6, 18, or 30 fires a badge celebration.
 
 If you add a new interactive thing that should count toward the ring,
 bump `TOTAL_ACTIONS` in `data/treasures.js` and call `mark()` with a
@@ -113,16 +115,20 @@ new, unique key from wherever that interaction lives.
 
 ## Testing
 
-There's no automated test suite in this repo yet — everything so far
-has been verified manually with ad-hoc Playwright scripts during
-development, not committed as a lasting test suite. Adding one
-(Vitest for the quiz-scoring and member-number logic, Playwright for
-the full gate → quiz → card → email flow) is on the roadmap; see
-`docs/top-tier-plan.md`, item 7.
+Run `npm test` for the content and interaction-contract suite, or
+`npm run check` for lint, tests and the production build. Browser QA is also
+required for the homepage, navigation, map dialog, book controls and responsive
+layouts before a release is signed off.
 
 ## Deploying
 
-Any static host that can serve a Vite build works: Vercel, Netlify, or
-GitHub Pages are all zero-config for this project — connect the repo
-and the build command (`npm run build`) and output directory (`dist`)
-are auto-detected by the first two.
+The production target is Cloudflare Pages under the project name
+`wallace-siedlarz`. Connect this repository and configure:
+
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Root directory: repository root
+
+Until a custom domain is connected, the intended public address is
+`https://wallace-siedlarz.pages.dev` (subject to Cloudflare project-name
+availability).

@@ -64,16 +64,16 @@ export function Join({ chime, burst, mark }) {
     setError("");
     if (!/^\S+@\S+\.\S+$/.test(email)) { setError("That email doesn't look quite right."); return; }
     if (!consent) { setError("Please tick the box so we know it's okay to email you."); return; }
+    if (!MAILING_ENDPOINT) { setError("The welcome pack is not set up for delivery yet. Please ask a grown-up to try again later."); return; }
 
     setSending(true);
     try {
-      if (MAILING_ENDPOINT) {
-        await fetch(MAILING_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({ email, childName: name, kitten: result?.name, source: "snackville" }),
-        });
-      }
+      const response = await fetch(MAILING_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email, childName: name, kitten: result?.name, source: "snackville" }),
+      });
+      if (!response.ok) throw new Error(`Mailing endpoint returned ${response.status}`);
       setStep(QUIZ.length + 2);
       chime(1046, 0.35);
       burst(36);
@@ -95,7 +95,7 @@ export function Join({ chime, burst, mark }) {
     <>
       <Reveal style={{ textAlign: "center", marginBottom: 34 }}>
         <div className="eyebrow" style={{ marginBottom: 12 }}>Join the Snack Squad</div>
-        <h2 className="h2" style={{ color: "var(--grapeD)" }}>Which kitten are you?</h2>
+        <h2 className="h2 join-title">Which kitten are you?</h2>
         <p className="lead on-sky-s" style={{ margin: "14px auto 0", fontWeight: 400 }}>
           Four questions, then you get your own member card with your name on it.
         </p>
@@ -142,7 +142,7 @@ export function Join({ chime, burst, mark }) {
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") makeCard(); }}
             />
-            {error && <p style={{ color: "var(--straw)", fontSize: 15, marginTop: 10, fontWeight: 600 }}>{error}</p>}
+            {error && <p role="alert" style={{ color: "var(--straw)", fontSize: 15, marginTop: 10, fontWeight: 600 }}>{error}</p>}
 
             <div style={{ marginTop: 22, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
               <button className="btn b-straw btn-lg" onClick={makeCard}>Make my card →</button>
@@ -207,13 +207,8 @@ export function Join({ chime, burst, mark }) {
                   news about new Piper books. Unsubscribe any time, one click.
                 </span>
               </label>
-              {error && <p style={{ color: "var(--straw)", fontSize: 15, marginTop: 12, fontWeight: 600 }}>{error}</p>}
-              {!MAILING_ENDPOINT && (
-                <p style={{ fontSize: 12.5, color: "var(--ink40)", marginTop: 12, fontStyle: "italic" }}>
-                  Setup note: paste your Formspree or ConvertKit endpoint into MAILING_ENDPOINT in
-                  src/config.js and this form starts delivering.
-                </p>
-              )}
+              {error && <p role="alert" style={{ color: "var(--straw)", fontSize: 15, marginTop: 12, fontWeight: 600 }}>{error}</p>}
+              {!MAILING_ENDPOINT && <p style={{ fontSize: 12.5, color: "var(--ink40)", marginTop: 12, fontStyle: "italic" }}>The welcome pack delivery is being prepared and cannot send email yet.</p>}
             </div>
           </div>
         )}
