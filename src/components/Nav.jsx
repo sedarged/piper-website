@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AMAZON_URL } from "../config.js";
 import { SECTIONS } from "../data/sections.js";
 import { I } from "./Icons.jsx";
@@ -9,8 +9,10 @@ import { I } from "./Icons.jsx";
  * that pill hides and a burger button opens a bottom sheet instead,
  * since six links don't comfortably fit a phone-width bar.
  */
-export function Nav({ active, onNavigate }) {
+export function Nav({ active, onNavigate, onHome }) {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const menuButtonRef = useRef(null);
+  const sheetRef = useRef(null);
 
   const go = (id) => {
     onNavigate?.(id);
@@ -18,15 +20,41 @@ export function Nav({ active, onNavigate }) {
     setSheetOpen(false);
   };
 
+  useEffect(() => {
+    if (!sheetOpen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    const sheet = sheetRef.current;
+    const focusable = () => sheet?.querySelectorAll("button:not([disabled]), a[href]") ?? [];
+    const first = focusable()[0];
+    document.body.style.overflow = "hidden";
+    first?.focus();
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") { event.preventDefault(); setSheetOpen(false); return; }
+      if (event.key !== "Tab") return;
+      const items = focusable();
+      if (items.length < 2) return;
+      const start = items[0];
+      const end = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === start) { event.preventDefault(); end.focus(); }
+      if (!event.shiftKey && document.activeElement === end) { event.preventDefault(); start.focus(); }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+      menuButtonRef.current?.focus();
+    };
+  }, [sheetOpen]);
+
   return (
     <>
       <nav className="nav" style={{ paddingTop: 14, paddingBottom: 14 }}>
         <div className="nav-in">
-          <button className="logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Piper — top">
+          <button className="logo" onClick={onHome || (() => window.scrollTo({ top: 0, behavior: "smooth" }))} aria-label={onHome ? "Back to Piper's worlds" : "Piper — top"}>
             <span className="brand-monogram" aria-hidden="true">WS</span>
             <span className="brand-lockup">
-              <strong>Wallace–Siedlarz</strong>
-              <small>Books · Story worlds</small>
+              <strong>Piper's Snackville</strong>
+              <small>Wallace–Siedlarz Books</small>
             </span>
           </button>
 
@@ -38,7 +66,7 @@ export function Nav({ active, onNavigate }) {
             ))}
           </div>
 
-          <button className="nav-burger" onClick={() => setSheetOpen(true)} aria-label="Open menu">
+          <button ref={menuButtonRef} className="nav-burger" onClick={() => setSheetOpen(true)} aria-label="Open menu" aria-expanded={sheetOpen} aria-controls="mobile-navigation">
             <span /><span /><span />
           </button>
 
@@ -48,7 +76,7 @@ export function Nav({ active, onNavigate }) {
 
       {sheetOpen && (
         <div className="scrim" onClick={() => setSheetOpen(false)} style={{ zIndex: 620 }}>
-          <div className="msheet" onClick={(e) => e.stopPropagation()}>
+          <div ref={sheetRef} id="mobile-navigation" className="msheet" role="dialog" aria-modal="true" aria-label="Snackville navigation" onClick={(e) => e.stopPropagation()}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
               <span className="d" style={{ fontSize: 21 }}>Explore Snackville</span>
               <button className="dr-x" onClick={() => setSheetOpen(false)} aria-label="Close menu">✕</button>

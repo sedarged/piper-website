@@ -4,7 +4,7 @@ import { Treasure } from "./Treasure.jsx";
 const FACTS = [
   ["3–7", "Ages"],
   ["11", "Minutes to read"],
-  ["8", "Places to explore"],
+  ["20", "Places to explore"],
 ];
 
 /**

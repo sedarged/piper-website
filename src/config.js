@@ -19,8 +19,11 @@ export const MAILING_ENDPOINT = "";
 export const AMAZON_URL = "https://www.amazon.co.uk/dp/B0H45N194K";
 
 /** Builds a direct-view URL for a public Google Drive file ID. */
-export const drive = (id, size = 900) =>
-  `https://lh3.googleusercontent.com/d/${id}=s${size}`;
+export const drive = (id, size = 900) => {
+  if (!id) return "";
+  if (id.startsWith("/") || id.startsWith("http://") || id.startsWith("https://")) return id;
+  return `https://lh3.googleusercontent.com/d/${id}=s${size}`;
+};
 
 /**
  * Drive file IDs for every illustration currently in use.
@@ -32,14 +35,19 @@ export const ASSET = {
   croissant: "16vM2DV0dNeCtjZljK3OjUbCXCn9kKThC",
   toast: "10H-IMQzxxBKtBCrOZvrYzGdIHL9mG90I",
   sandwich: "1TYbPcPmMyH-isyzRKBCFn0vdcKDDwXon",
-  squad: "1CZZQti9BPGUXKCP6GlnyqVxa7KtO8v5R",
+  squad: "/images/inside/custard-page-31.webp",
   map: "1D3b_j8XpcwmPWaXaaXXBd-3vhMhk759Z",
-  book1: "1qI_IVDTYisjUnVgXiFdpjDFlM4zbWdW_",
-  book2: "1xW7m-NcHSYE-ENz5oCBxkv0LZz-RxrNB",
-  p2: "1U9LrSwMpa36ZiYxDlcCcE5jJmCiKJRek",
-  p3: "1E6SVx6xFp8Vl61Z0mZVmoDJJsdYvlyL_",
-  p5: "1kWJla2HTjQ_OSrDiVGuh3dUULE4TIv2M",
-  p15: "1rlIAxXBeq6Zv8jeTdoavVIYmuR0GX0kN",
-  p26: "1ynsh519uv7Xhjrjm0ymfgYXfLeifiv1a",
-  p34: "1Wec-Wt2PMrMMfglXM8em9kU2NRNrN5KK",
+  book1: "/images/books/custard-alien-invasion.webp",
+  book2: "/images/books/chocolate-volcano.webp",
+  p3: "/images/inside/custard-page-03.webp",
+  p10: "/images/inside/custard-page-10.webp",
+  p13: "/images/inside/custard-page-13.webp",
+  p16: "/images/inside/custard-page-16.webp",
+  p17: "/images/inside/custard-page-17.webp",
+  p20: "/images/inside/custard-page-20.webp",
+  p25: "/images/inside/custard-page-25.webp",
+  p26: "/images/inside/custard-page-26.webp",
+  p28: "/images/inside/custard-page-28.webp",
+  p29: "/images/inside/custard-page-29.webp",
+  p31: "/images/inside/custard-page-31.webp",
 };

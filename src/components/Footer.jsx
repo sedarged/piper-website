@@ -13,7 +13,7 @@ export function Footer() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
               <span className="footer-monogram" aria-hidden="true">WS</span>
-              <span className="footer-brand">Wallace–Siedlarz Books</span>
+              <span className="footer-brand">Piper's Snackville</span>
             </div>
             <p style={{ opacity: 0.62, fontSize: 15.5, maxWidth: "34ch" }}>
               A picture book series set in Snackville, published by Wallace-Siedlarz Books from
@@ -24,7 +24,7 @@ export function Footer() {
           <div>
             <h4>The books</h4>
             <a href={AMAZON_URL} target="_blank" rel="noreferrer">Book one — Amazon UK</a>
-            <a href="#books">Book two — coming soon</a>
+            <a href="#books">Explore the collection</a>
             <a href="#inside">Look inside</a>
           </div>
 

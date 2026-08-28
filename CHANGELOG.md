@@ -2,6 +2,26 @@
 
 All notable changes to the Piper website are documented here.
 
+## [1.5.0] — 2026-08-24
+
+### Fixed and improved
+
+- Reframed the hero around the real first book cover instead of using a text-heavy interior page as decoration.
+- Replaced the spinning-book demo interaction with a quieter editorial collection and explicit Explore / Look Inside actions.
+- Changed the primary brand lockup to Piper's Snackville, with Wallace-Siedlarz Books presented as the imprint.
+- Added durable local Explorer progress, safe focus isolation behind the intro, eager loading for the reveal and hero, lazy loading below the fold, and a child-friendly top-level recovery screen.
+- Replaced the former gate/intro concept with a direct multi-world homepage so every visit begins immediately in the Wallace-Siedlarz storyworld.
+- Added a dedicated "Explore more of Piper's world" chooser linking to Snackville, the Snack Squad, the book collection and real inside pages.
+- Kept the full Snack Squad visible in the hero at desktop and mobile sizes instead of cropping the characters.
+- Replaced remote book placeholders with the supplied covers and eleven optimised interior pages from *The Custard Alien Invasion*.
+- Corrected Explorer completion to count all 20 map locations: 30 actions in total, with the final Keeper badge awarded only at full completion.
+- Completed fresh browser QA at desktop and a true 390 px mobile viewport, including the homepage, world chooser, map, location dialog, books and Look Inside rail.
+- Completed the mobile-first interaction pass: 44px-or-larger tap targets for map markers, a scroll-contained mobile menu and character drawer, a full-width mobile character panel, collision-safe toasts and deliberately swipeable wide map artwork.
+- Removed the cinematic intro so every visit opens directly on the main Piper homepage.
+- Added proper focus handling, Escape support, focus return and modal semantics to the mobile navigation and character drawer.
+- Replaced the simulated book-button control with a native button, so Enter and Space both work without custom keyboard code.
+- Corrected the parent/guardian email flow so it never reports success until a configured mailing endpoint accepts the request; validation and delivery errors are announced to assistive technology.
+
 ## [1.4.0] — 2026-08-23
 
 ### Added

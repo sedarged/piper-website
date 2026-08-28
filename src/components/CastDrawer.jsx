@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { drive, AMAZON_URL } from "../config.js";
 import { CAST } from "../data/cast.js";
 import { Img } from "./Img.jsx";
@@ -16,15 +16,30 @@ import { Img } from "./Img.jsx";
 export function CastDrawer({ index, onClose, onNavigate }) {
   const open = index !== null;
   const character = open ? CAST[index] : null;
+  const drawerRef = useRef(null);
+  const lastTriggerRef = useRef(null);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    lastTriggerRef.current = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    const drawer = drawerRef.current;
+    const getFocusable = () => drawer?.querySelectorAll("button:not([disabled]), a[href]") ?? [];
+    const onKey = (e) => {
+      if (e.key === "Escape") { e.preventDefault(); onClose(); return; }
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length < 2) return;
+      if (e.shiftKey && document.activeElement === focusable[0]) { e.preventDefault(); focusable[focusable.length - 1].focus(); }
+      if (!e.shiftKey && document.activeElement === focusable[focusable.length - 1]) { e.preventDefault(); focusable[0].focus(); }
+    };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+    getFocusable()[0]?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      window.setTimeout(() => lastTriggerRef.current?.focus(), 0);
     };
   }, [open, onClose]);
 
@@ -33,7 +48,7 @@ export function CastDrawer({ index, onClose, onNavigate }) {
   return (
     <>
       {open && <div className="scrim" onClick={onClose} />}
-      <aside className={`drawer ${open ? "in" : ""}`} aria-hidden={!open}>
+      <aside ref={drawerRef} className={`drawer ${open ? "in" : ""}`} role={open ? "dialog" : undefined} aria-modal={open || undefined} aria-label={open ? `${character.name} character profile` : undefined} aria-hidden={!open}>
         {character && (
           <>
             <div className="dr-art" style={{ background: character.ink }}>
