@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PLACES } from "../data/places.js";
+import { LOCATION_ART_ORDER } from "../generated-assets/artwork.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
+import { SpriteArt } from "./SpriteArt.jsx";
 
 const MAP_SRC = "/images/snackville-interactive-map.jpeg";
+const artForPlace = (place) => LOCATION_ART_ORDER[(place.n - 1) % LOCATION_ART_ORDER.length];
 
 /**
- * The official twenty-stop Snackville map.
- *
- * Every printed number on the illustration has a matching native button.
- * Selecting a location updates the field-note panel, marks Explorer progress,
- * and opens an accessible storybook introduction. Volcano and Dragon Cave
- * keep the original Chocolate Dragon sneeze interaction as an explicit action.
+ * The official twenty-stop Snackville map. The numbered map remains the
+ * navigation source of truth while the August 2026 generated location artwork
+ * now appears inside each field note.
  */
 export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
   const [selected, setSelected] = useState(PLACES[0]);
@@ -160,6 +160,10 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
               <button className="place-dialog-close u" onClick={closePlace}>Close</button>
             </div>
 
+            <div style={{ width: "100%", height: 250, margin: "14px 0 22px", overflow: "hidden", borderRadius: 18, boxShadow: "0 14px 34px rgba(42,26,46,.16)" }}>
+              <SpriteArt art={artForPlace(openPlace)} alt={`Illustrated view inspired by ${openPlace.name}`} style={{ height: 250 }} />
+            </div>
+
             <div className="place-dialog-number d" aria-hidden="true">{String(openPlace.n).padStart(2, "0")}</div>
             <div className="eyebrow place-dialog-kind">{openPlace.kind} · {openPlace.who}</div>
             <h3 id="place-dialog-title" className="d">{openPlace.name}</h3>
@@ -173,10 +177,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
 
             <div className="place-dialog-actions">
               {openPlace.sneeze && (
-                <button
-                  className="btn b-straw"
-                  onClick={onSneeze}
-                >
+                <button className="btn b-straw" onClick={onSneeze}>
                   {openPlace.actionLabel}
                 </button>
               )}
