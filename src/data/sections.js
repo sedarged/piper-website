@@ -10,4 +10,5 @@ export const SECTIONS = [
   { id: "books", label: "Books" },
   { id: "free", label: "Activities" },
   { id: "join", label: "Join the Squad" },
+  { id: "parents", label: "For Parents" },
 ];

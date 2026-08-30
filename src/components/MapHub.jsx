@@ -11,10 +11,11 @@ const MAP_SRC = "/images/snackville-interactive-map.jpeg";
  *
  * Every printed number on the illustration has a matching native button.
  * Selecting a location updates the field-note panel, marks Explorer progress,
- * and opens an accessible storybook introduction. Volcano and Dragon Cave
- * keep the original Chocolate Dragon sneeze interaction as an explicit action.
+ * and opens an accessible storybook introduction. Seven locations also carry
+ * a `wow` key (see data/places.js) and get an extra action button that plays
+ * a signature screen-shake-and-particles effect — see WOW_FX in App.jsx.
  */
-export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
+export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
   const [selected, setSelected] = useState(PLACES[0]);
   const [openPlace, setOpenPlace] = useState(null);
   const dialogRef = useRef(null);
@@ -98,7 +99,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             {PLACES.map((place) => (
               <button
                 key={place.id}
-                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.sneeze ? "dragon" : ""}`}
+                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
                 style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
                 onClick={(event) => pick(place, event.currentTarget)}
                 aria-label={`Location ${place.n}: ${place.name}`}
@@ -172,10 +173,10 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             </aside>
 
             <div className="place-dialog-actions">
-              {openPlace.sneeze && (
+              {openPlace.wow && (
                 <button
                   className="btn b-straw"
-                  onClick={onSneeze}
+                  onClick={() => onWow(openPlace)}
                 >
                   {openPlace.actionLabel}
                 </button>

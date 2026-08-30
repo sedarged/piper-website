@@ -4,10 +4,12 @@ import { SECTIONS } from "../data/sections.js";
 import { I } from "./Icons.jsx";
 
 /**
- * Sticky top navigation. On desktop it's a floating pill with all six
- * section links inline; below 1000px (see .nav-desk in components.css)
+ * Sticky top navigation. On desktop it's a floating pill with every
+ * section link inline (the last, "For Parents", styled quieter — see
+ * .nlink-quiet — so it reads as a separate, calmer door rather than
+ * another playful stop); below 1000px (see .nav-desk in components.css)
  * that pill hides and a burger button opens a bottom sheet instead,
- * since six links don't comfortably fit a phone-width bar.
+ * since the full set of links doesn't comfortably fit a phone-width bar.
  */
 export function Nav({ active, onNavigate, onHome }) {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -60,7 +62,11 @@ export function Nav({ active, onNavigate, onHome }) {
 
           <div className="nav-desk nav-pill">
             {SECTIONS.map((s) => (
-              <button key={s.id} className={`nlink ${active === s.id ? "on" : ""}`} onClick={() => go(s.id)}>
+              <button
+                key={s.id}
+                className={`nlink ${s.id === "parents" ? "nlink-quiet" : ""} ${active === s.id ? "on" : ""}`}
+                onClick={() => go(s.id)}
+              >
                 {s.label}
               </button>
             ))}
@@ -82,9 +88,19 @@ export function Nav({ active, onNavigate, onHome }) {
               <button className="dr-x" onClick={() => setSheetOpen(false)} aria-label="Close menu">✕</button>
             </div>
             {SECTIONS.map((s) => (
-              <button key={s.id} className={`msheet-link ${active === s.id ? "on" : ""}`} onClick={() => go(s.id)}>
-                {s.label}
-              </button>
+              <span key={s.id} style={{ display: "block" }}>
+                {s.id === "parents" && (
+                  <div className="msheet-divider">
+                    <span className="eyebrow">For grown-ups</span>
+                  </div>
+                )}
+                <button
+                  className={`msheet-link ${s.id === "parents" ? "msheet-link-quiet" : ""} ${active === s.id ? "on" : ""}`}
+                  onClick={() => go(s.id)}
+                >
+                  {s.label}
+                </button>
+              </span>
             ))}
             <a className="btn b-straw btn-lg" href={AMAZON_URL} target="_blank" rel="noreferrer" style={{ marginTop: 8, justifyContent: "center" }}>
               Buy book one →

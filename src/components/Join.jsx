@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { drive, MAILING_ENDPOINT, AMAZON_URL } from "../config.js";
+import { drive, AMAZON_URL } from "../config.js";
 import { CAST } from "../data/cast.js";
 import { QUIZ } from "../data/quiz.js";
 import { C } from "../styles/tokens.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
+import { ParentEmailForm } from "./ParentEmailForm.jsx";
 
 /**
  * The full "Join the Snack Squad" flow: a four-question quiz that
@@ -33,9 +34,6 @@ export function Join({ chime, burst, mark }) {
   const [tally, setTally] = useState({});
   const [name, setName] = useState("");
   const [result, setResult] = useState(null);
-  const [email, setEmail] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
 
   const answer = (key) => {
@@ -60,33 +58,8 @@ export function Join({ chime, burst, mark }) {
     setStep(QUIZ.length + 1);
   };
 
-  const submit = async () => {
-    setError("");
-    if (!/^\S+@\S+\.\S+$/.test(email)) { setError("That email doesn't look quite right."); return; }
-    if (!consent) { setError("Please tick the box so we know it's okay to email you."); return; }
-    if (!MAILING_ENDPOINT) { setError("The welcome pack is not set up for delivery yet. Please ask a grown-up to try again later."); return; }
-
-    setSending(true);
-    try {
-      const response = await fetch(MAILING_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email, childName: name, kitten: result?.name, source: "snackville" }),
-      });
-      if (!response.ok) throw new Error(`Mailing endpoint returned ${response.status}`);
-      setStep(QUIZ.length + 2);
-      chime(1046, 0.35);
-      burst(36);
-    } catch (_e) {
-      setError("Something went wrong. Try again in a moment.");
-    } finally {
-      setSending(false);
-    }
-  };
-
   const reset = () => {
-    setStep(0); setTally({}); setName(""); setResult(null);
-    setEmail(""); setConsent(false); setError("");
+    setStep(0); setTally({}); setName(""); setResult(null); setError("");
   };
 
   const memberNumber = `SV-${String((name.length * 137 + (result?.name.length || 3) * 29) % 900 + 100)}`;
@@ -187,28 +160,15 @@ export function Join({ chime, burst, mark }) {
               <span className="gu-tag">Grown-ups only</span>
               <h4 className="h3" style={{ marginBottom: 8 }}>Send the free welcome pack</h4>
               <p style={{ fontSize: 16.5, color: "var(--ink60)" }}>
-                Six colouring pages, the Snackville map as an A3 poster, a cut-out badge, a maze, and
+                Six colouring pages, the Snackville map as an A3 poster, a cut-out badge, and
                 read-aloud notes. Free, and yours to print as often as you like.
               </p>
-              <div className="m-row">
-                <input
-                  className="m-in" type="email" inputMode="email" placeholder="Parent or guardian email"
-                  value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Parent or guardian email"
-                  onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
-                />
-                <button className="btn b-mint" onClick={submit} disabled={sending}>
-                  {sending ? "Sending…" : "Send the pack"}
-                </button>
-              </div>
-              <label className="cons">
-                <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-                <span>
-                  I'm the parent or guardian and I'm happy to receive the welcome pack and occasional
-                  news about new Piper books. Unsubscribe any time, one click.
-                </span>
-              </label>
-              {error && <p role="alert" style={{ color: "var(--straw)", fontSize: 15, marginTop: 12, fontWeight: 600 }}>{error}</p>}
-              {!MAILING_ENDPOINT && <p style={{ fontSize: 12.5, color: "var(--ink40)", marginTop: 12, fontStyle: "italic" }}>The welcome pack delivery is being prepared and cannot send email yet.</p>}
+              <ParentEmailForm
+                chime={chime}
+                burst={burst}
+                payloadExtra={{ childName: name, kitten: result?.name }}
+                onSuccess={() => setStep(QUIZ.length + 2)}
+              />
             </div>
           </div>
         )}

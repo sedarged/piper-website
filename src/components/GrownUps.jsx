@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { AMAZON_URL } from "../config.js";
+import { ParentEmailForm } from "./ParentEmailForm.jsx";
 
 const FACT_TABLE = [
   ["Ages", "3–7"],
@@ -11,18 +13,23 @@ const FACT_TABLE = [
 ];
 
 /**
- * The calm, editorial "For grown-ups" panel — deliberately quieter
- * than the rest of the bright, playful site (see the design plan's
- * "two-door split": the world is for the child, this panel is the
- * clearly-marked door for the parent). Plain facts, no games, and an
- * explicit one-line privacy statement.
+ * Parents' Corner — the site's one consolidated, clearly-marked door for
+ * grown-ups (see the design plan's "two-door split": the rest of the
+ * page is the child's world; this section is deliberately quieter, with
+ * plain facts, no games, an always-available welcome-pack signup, and an
+ * explicit privacy statement). Everything a parent needs — safety notes,
+ * book specs, the read-aloud tip sheet, and the mailing signup — lives
+ * here, so nothing kid-facing (like Activities) has to double as a
+ * parent funnel.
  */
-export function GrownUps() {
+export function GrownUps({ chime, burst }) {
+  const [sent, setSent] = useState(false);
+
   return (
     <div className="gu" style={{ background: "transparent", border: "none", padding: 0 }}>
       <div className="gu-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,4vw,52px)", alignItems: "start" }}>
         <div>
-          <span className="gu-tag">For grown-ups</span>
+          <span className="gu-tag">For parents &amp; guardians</span>
           <h2 className="h3" style={{ marginBottom: 14 }}>The details, plainly</h2>
           <p style={{ color: "var(--ink60)", fontSize: 17 }}>
             <strong>Piper and the Custard Alien Invasion</strong> is a 32-page paperback picture book for
@@ -52,6 +59,27 @@ export function GrownUps() {
             the browser and is never transmitted. Email signup is for parents and guardians only.
           </p>
         </div>
+      </div>
+
+      <div className="gu-signup" style={{ marginTop: 32, paddingTop: 28, borderTop: "2px solid rgba(42,26,46,.12)" }}>
+        <span className="eyebrow" style={{ display: "block", marginBottom: 10 }}>Free welcome pack</span>
+        <h3 className="h3" style={{ marginBottom: 8 }}>Get the printables and read-aloud notes</h3>
+        <p style={{ color: "var(--ink60)", fontSize: 16.5, marginBottom: 4 }}>
+          Colouring pages, the Snackville map as an A3 poster, a cut-out badge, and read-aloud notes —
+          questions to ask, voices to try, where to pause. Free, sent straight to your inbox.
+        </p>
+        {sent ? (
+          <p style={{ color: "var(--mint)", fontWeight: 600, marginTop: 14 }}>
+            Thanks — check your inbox (and the spam folder) for the welcome pack.
+          </p>
+        ) : (
+          <ParentEmailForm
+            chime={chime}
+            burst={burst}
+            payloadExtra={{ source: "parents-corner" }}
+            onSuccess={() => setSent(true)}
+          />
+        )}
       </div>
     </div>
   );

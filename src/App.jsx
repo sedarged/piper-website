@@ -35,13 +35,56 @@ import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
 
 /**
+ * One entry per map location `wow` key (see data/places.js): the pitch
+ * and duration of its chime, whether it shakes the screen ("hard" like
+ * the volcano, "soft" like a gentler wobble, or none), what particles
+ * fall/rise, and the toast + guide-bubble copy that goes with it. Every
+ * location shares the exact same trigger mechanics as the original
+ * Chocolate Dragon sneeze — only the numbers and particle `kind` differ
+ * — so the map stays varied without any per-effect bespoke code.
+ */
+const WOW_FX = {
+  chocolate: {
+    shake: "hard", pitch: 170, dur: 0.36, particles: { kind: "chocolate", count: 12 },
+    toastTitle: "Bless you!", toastBody: "The Chocolate Dragon sneezed. That happens a lot.",
+    guide: "He does that. He's not cross — he's just dusty.",
+  },
+  berry: {
+    shake: "soft", pitch: 520, dur: 0.22, particles: { kind: "berry", count: 14 },
+    toastTitle: "Berry shower!", toastBody: "The berry bush let go of everything it was holding.",
+    guide: "Piper says that happens when you tickle the roots.",
+  },
+  donut: {
+    shake: "soft", pitch: 300, dur: 0.24, particles: { kind: "donut", count: 10 },
+    toastTitle: "Donut rain!", toastBody: "The whole tree let go at once. Breakfast, sorted.",
+    guide: "Croissant Kitty is already down there catching them.",
+  },
+  jellybean: {
+    shake: "soft", pitch: 460, dur: 0.2, particles: { kind: "jellybean", count: 16 },
+    toastTitle: "Jellybeans everywhere!", toastBody: "The barrel rolled a little too far downhill.",
+    guide: "Blue ones bounce highest, according to Piper.",
+  },
+  frost: {
+    shake: null, pitch: 900, dur: 0.3, particles: { kind: "frost", count: 14 },
+    toastTitle: "The caves echo back!", toastBody: "Something sparkly answered from deep inside.",
+    guide: "Toast Kitty thinks it's the door he's been looking for.",
+  },
+  candy: {
+    shake: null, pitch: 640, dur: 0.3, confettiBurst: 40,
+    toastTitle: "Piñata!", toastBody: "Candy Path Square just got a lot more colourful.",
+    guide: "Somebody's going to be sweeping confetti for a week.",
+  },
+};
+
+/**
  * The root component. Owns every piece of cross-section state:
  *   - `active`       which section is currently in view (drives the nav)
- *   - `doneKeys`     every treasure/place/book/quiz/nightfall action
- *                    completed so far (drives the Explorer ring + badges)
+ *   - `doneKeys`     every treasure/place/book/quiz/nightfall/activity
+ *                    action completed so far (drives the Explorer ring
+ *                    + badges)
  *   - `castIndex`    which character's drawer is open, if any
- *   - the FX state arrays (sparks, drips, confetti) and the toast/
- *     celebration/guide-message singletons
+ *   - the FX state arrays (sparks, wowFx, confetti, flash) and the
+ *     toast/celebration/guide-message singletons
  *
  * Scroll-driven visuals (parallax, sky, sun/moon, day/night) do NOT
  * live here as state — see hooks/useScrollEngine.js for why, and for
@@ -59,10 +102,11 @@ function SnackvilleExperience({ onBackHome }) {
     }
   });
   const [sparks, setSparks] = useState([]);
-  const [drips, setDrips] = useState([]);
+  const [wowFx, setWowFx] = useState([]);
   const [confetti, setConfetti] = useState([]);
   const [toast, setToast] = useState(null);
-  const [shaking, setShaking] = useState(false);
+  const [shakeKind, setShakeKind] = useState(null);
+  const [flash, setFlash] = useState(false);
   const [celebration, setCelebration] = useState(null);
   const [guideVisible, setGuideVisible] = useState(true);
   const [guideMessage, setGuideMessage] = useState(null);
@@ -186,20 +230,33 @@ function SnackvilleExperience({ onBackHome }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [chime, burst, showToast]);
 
-  const onSneeze = useCallback(() => {
-    chime(170, 0.36);
-    setShaking(true);
-    setTimeout(() => setShaking(false), 660);
-    if (!reduceMotion.current) {
-      const drops = Array.from({ length: 12 }, (_, i) => ({
-        id: `d${Date.now()}-${i}`, left: Math.random() * 100, h: 70 + Math.random() * 200, delay: Math.random() * 0.3,
-      }));
-      setDrips(drops);
-      setTimeout(() => setDrips([]), 2400);
+  const onWow = useCallback((place) => {
+    const fx = WOW_FX[place.wow];
+    if (!fx) return;
+
+    chime(fx.pitch, fx.dur);
+    if (fx.shake) {
+      setShakeKind(fx.shake);
+      setTimeout(() => setShakeKind(null), 660);
     }
-    showToast("Bless you!", "The Chocolate Dragon sneezed. That happens a lot.");
-    setGuideMessage("He does that. He's not cross — he's just dusty.");
-  }, [chime, showToast]);
+    if (!reduceMotion.current) {
+      if (fx.particles) {
+        const items = Array.from({ length: fx.particles.count }, (_, i) => ({
+          id: `w${Date.now()}-${i}`, kind: fx.particles.kind,
+          left: Math.random() * 100, dist: 70 + Math.random() * 200, delay: Math.random() * 0.3,
+        }));
+        setWowFx(items);
+        setTimeout(() => setWowFx([]), 2400);
+      }
+      if (fx.confettiBurst) {
+        setFlash(true);
+        setTimeout(() => setFlash(false), 320);
+        burst(fx.confettiBurst);
+      }
+    }
+    showToast(fx.toastTitle, fx.toastBody);
+    setGuideMessage(fx.guide);
+  }, [chime, showToast, burst]);
 
   const onFindTreasure = useCallback((id, x, y) => {
     if (doneKeys.has(id)) return;
@@ -236,7 +293,7 @@ function SnackvilleExperience({ onBackHome }) {
   })), []);
 
   return (
-    <div ref={rootRef} className={shaking ? "shaker" : ""} data-night="0">
+    <div ref={rootRef} className={shakeKind === "hard" ? "shaker" : shakeKind === "soft" ? "wobble" : ""} data-night="0">
       <a className="skip-link" href="#story">Skip to the story</a>
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
@@ -294,7 +351,7 @@ function SnackvilleExperience({ onBackHome }) {
 
         <section className="sec wrap" id="map">
           <Treasure id="scale" found={doneKeys.has("scale")} onFind={onFindTreasure} style={{ bottom: 12, right: "calc(var(--pad) + 6px)" }} />
-          <MapHub visitedPlaceIds={visitedPlaceIds} mark={mark} onSneeze={onSneeze} chime={chime} />
+          <MapHub visitedPlaceIds={visitedPlaceIds} mark={mark} onWow={onWow} chime={chime} />
         </section>
 
         <section className="sec wrap" id="books">
@@ -311,12 +368,12 @@ function SnackvilleExperience({ onBackHome }) {
 
         <Divider shape="wave" fill="rgba(214,248,231,.95)" />
         <section className="sec" id="free" style={{ background: "rgba(214,248,231,.95)" }}>
-          <div className="wrap"><Free /></div>
+          <div className="wrap"><Free mark={mark} burst={burst} chime={chime} showToast={showToast} /></div>
         </section>
         <Divider shape="drip" fill="rgba(214,248,231,.95)" flip />
 
-        <section className="sec wrap">
-          <div className="panel"><GrownUps /></div>
+        <section className="sec wrap" id="parents">
+          <div className="panel"><GrownUps chime={chime} burst={burst} /></div>
         </section>
 
         <Quote />
@@ -326,7 +383,7 @@ function SnackvilleExperience({ onBackHome }) {
 
       <CastDrawer index={castIndex} onClose={closeDrawer} onNavigate={setCastIndex} />
 
-      <FxLayers sparks={sparks} drips={drips} confetti={confetti} />
+      <FxLayers sparks={sparks} wowFx={wowFx} confetti={confetti} flash={flash} />
 
       {!celebration && (
         <ExplorerRing

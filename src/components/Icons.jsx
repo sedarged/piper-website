@@ -70,28 +70,10 @@ export const I = {
       <path d="M8 15l-1.6 6.6L12 18.4l5.6 3.2L16 15" fill={C.strawberry} />
     </svg>
   ),
-  mazeic: () => (
-    <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke={C.cocoa} strokeWidth="2.4" />
-      <path d="M7.5 3v9.5h5V7.5h4M7.5 21v-4.5h9.5" fill="none" stroke={C.cocoa} strokeWidth="2.4" strokeLinecap="round" />
-    </svg>
-  ),
-  spotic: () => (
-    <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
-      <circle cx="10" cy="10" r="6.6" fill="none" stroke={C.grape} strokeWidth="2.6" />
-      <path d="M15 15l6 6" stroke={C.grape} strokeWidth="2.8" strokeLinecap="round" />
-    </svg>
-  ),
-  readic: () => (
-    <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
-      <path d="M3 5.5c3-1.2 6-1.2 9 .9v14c-3-2.1-6-2.1-9-1z" fill={C.sky} />
-      <path d="M21 5.5c-3-1.2-6-1.2-9 .9v14c3-2.1 6-2.1 9-1z" fill={C.skyD} />
-    </svg>
-  ),
 };
 
 /** Treasure-hunt icon lookup, keyed by treasure id (see data/treasures.js). */
 export const TI = { berry: I.berry, croix: I.croix, star: I.star, bean: I.bean, donut: I.donut, scale: I.scale };
 
 /** Free-printables icon lookup, keyed by printable id (see data/printables.js). */
-export const FI = { colour: I.crayon, map: I.mapic, badge: I.badgeic, maze: I.mazeic, spot: I.spotic, read: I.readic };
+export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, map: I.mapic, badge: I.badgeic };
