@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { TI } from "../Icons.jsx";
-import { C } from "../../styles/tokens.js";
 
+// Each icon's default colour (see Icons.jsx) is already the right one
+// for this game, so TI[key]() is called with no colour override below.
 const ICON_KEYS = ["berry", "croix", "star", "bean", "donut", "scale"];
-const ICON_COLORS = { berry: C.strawberry, croix: C.butter, star: C.butter, bean: C.mint, donut: C.strawberry, scale: C.cocoa };
 
 function shuffledDeck() {
   const pairs = ICON_KEYS.flatMap((key) => [{ key, uid: `${key}-a` }, { key, uid: `${key}-b` }]);
@@ -63,7 +63,7 @@ export function MemoryMatch({ onComplete, chime }) {
               key={card.uid} className={`memory-card ${isUp ? "up" : ""}`} onClick={() => flip(i)}
               disabled={isUp} aria-label={isUp ? card.key : "Hidden card"}
             >
-              {isUp && <span className="memory-card-face">{TI[card.key](ICON_COLORS[card.key])}</span>}
+              {isUp && <span className="memory-card-face">{TI[card.key]()}</span>}
             </button>
           );
         })}

@@ -1,49 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useDialogTrap } from "../../hooks/useDialogTrap.js";
 
 /**
  * Shared dialog shell for the Snackville studio mini-games. Reuses the
- * same accessible dialog pattern as the map's place-dialog (focus trap,
- * Escape-to-close, scroll lock) and its `.place-dialog` visuals, so a
- * game feels like part of the same storybook rather than a bolted-on
- * widget.
+ * same accessible dialog behaviour as the map's place-dialog (see
+ * useDialogTrap) and its `.place-dialog` visuals, so a game feels like
+ * part of the same storybook rather than a bolted-on widget.
  */
 export function GameModal({ title, eyebrow, onClose, children }) {
   const dialogRef = useRef(null);
-  const lastTriggerRef = useRef(null);
-
-  useEffect(() => {
-    lastTriggerRef.current = document.activeElement;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const dialog = dialogRef.current;
-    const focusable = dialog?.querySelectorAll("button:not([disabled]), a[href], input:not([disabled])") ?? [];
-    focusable[0]?.focus();
-
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-      if (event.key !== "Tab" || focusable.length < 2) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-      lastTriggerRef.current?.focus?.();
-    };
-  }, [onClose]);
+  useDialogTrap(dialogRef, onClose, true);
 
   return (
     <div className="place-dialog-scrim" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
