@@ -240,7 +240,7 @@
 .wow-donut{width:22px;height:22px;border-radius:50%;
   background:radial-gradient(circle,#F7ECD7 34%,#D9A05B 38%,#A72446 100%);
   animation:donutFall 2.1s ease-in forwards}
-.wow-jellybean{width:13px;height:18px;border-radius:50%;animation:beanBounce 1.9s cubic-bezier(.3,1.6,.4,1) forwards}
+.wow-jellybean{width:13px;height:18px;border-radius:50%;animation:beanBounce 1.9s cubic-bezier(.3,.1,.4,1) forwards}
 .wow-jellybean:nth-child(3n){background:#6F9C7E}
 .wow-jellybean:nth-child(3n+1){background:#A72446}
 .wow-jellybean:nth-child(3n+2){background:#D8AA58}
@@ -250,7 +250,7 @@
 @keyframes berryFall{0%{transform:translate(0,0);opacity:1}100%{transform:translate(14px,var(--dist));opacity:0}}
 @keyframes donutFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(var(--dist)) rotate(340deg);opacity:0}}
 @keyframes beanBounce{0%{transform:translateY(0);opacity:1}30%{transform:translateY(var(--dist))}
-  45%{transform:translateY(calc(var(--dist)*.7))}60%{transform:translateY(var(--dist))}
+  45%{transform:translateY(calc(var(--dist)*.7))}60%{transform:translateY(var(--dist));opacity:1}
   75%{transform:translateY(calc(var(--dist)*.85))}100%{transform:translateY(var(--dist));opacity:0}}
 @keyframes frostRise{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(calc(var(--dist) * -1));opacity:0}}
 .wow-flash{position:fixed;inset:0;z-index:410;pointer-events:none;
