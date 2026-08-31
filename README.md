@@ -121,13 +121,26 @@ layouts before a release is signed off.
 
 ## Deploying
 
-The production target is Cloudflare Pages under the project name
-`wallace-siedlarz`. Connect this repository and configure:
+The production target is a Cloudflare Worker (not Pages) named
+`wallace-siedlarz`, configured in `wrangler.jsonc`: it serves the built
+`dist/` directory as static assets, with SPA fallback enabled so
+client-side routing (the `#snackville` hash route) works on a hard
+refresh or direct link.
 
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Root directory: repository root
+There is no auto-deploy step in CI — `.github/workflows/build.yml` only
+builds on every push/PR to catch breakage early. To ship a release:
 
-Until a custom domain is connected, the intended public address is
-`https://wallace-siedlarz.pages.dev` (subject to Cloudflare project-name
-availability).
+```
+npm run build
+npx wrangler deploy
+```
+
+This requires being authenticated with Cloudflare first (`npx wrangler
+login`, or a `CLOUDFLARE_API_TOKEN` in the environment). If the Worker
+is instead connected to Cloudflare's Git integration (Workers Builds),
+pushing to `main` may trigger a deploy automatically — check the
+Worker's dashboard settings to confirm which applies.
+
+Until a custom domain is connected, the public address is a
+`*.workers.dev` subdomain under whichever Cloudflare account owns this
+Worker.
