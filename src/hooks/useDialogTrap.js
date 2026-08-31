@@ -25,8 +25,14 @@ export function useDialogTrap(dialogRef, onClose, openKey) {
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    const getFocusable = () =>
-      dialogRef.current?.querySelectorAll("button:not([disabled]), a[href], input:not([disabled])") ?? [];
+    // `offsetParent === null` excludes elements hidden via `display:none`
+    // (or detached/`position:fixed` inside a display:none ancestor) —
+    // matching on DOM attributes alone would otherwise let focus land on
+    // a control nothing can see, if some future dialog conditionally
+    // hides rather than `disabled`s part of its content.
+    const getFocusable = () => Array.from(
+      dialogRef.current?.querySelectorAll("button:not([disabled]), a[href], input:not([disabled])") ?? []
+    ).filter((el) => el.offsetParent !== null);
 
     getFocusable()[0]?.focus();
 

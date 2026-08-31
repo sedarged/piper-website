@@ -181,8 +181,12 @@ function SnackvilleExperience({ onBackHome }) {
   }, []);
 
   const showToast = useCallback((title, body) => {
-    setToast({ title, body, id: Date.now() });
-    setTimeout(() => setToast(null), 4200);
+    const id = Date.now();
+    setToast({ title, body, id });
+    // Only clear the toast if it's still the one we scheduled this timer
+    // for — otherwise a second showToast() within 4.2s of the first would
+    // have its toast prematurely killed by the first call's timer.
+    setTimeout(() => setToast((current) => (current?.id === id ? null : current)), 4200);
   }, []);
 
   const burst = useCallback((count = 32) => {
@@ -194,25 +198,26 @@ function SnackvilleExperience({ onBackHome }) {
       size: 16 + Math.random() * 20, kind: kinds[Math.floor(Math.random() * kinds.length)],
     }));
     setConfetti((prev) => [...prev, ...bits]);
-    setTimeout(() => setConfetti([]), 5400);
+    // Remove only this batch's pieces, not the whole array — otherwise an
+    // overlapping second burst() (e.g. a badge celebration landing while
+    // the "PIPER" easter egg's confetti is still falling) would have its
+    // still-animating pieces wiped out early by the first burst's timer.
+    const ids = new Set(bits.map((b) => b.id));
+    setTimeout(() => setConfetti((prev) => prev.filter((b) => !ids.has(b.id))), 5400);
   }, []);
 
   /** Marks one action complete (a treasure id, "place-<id>", "book-<id>",
    *  "quiz", or "night"). Idempotent — marking the same key twice is a
-   *  no-op — and fires the badge celebration automatically when a tier
-   *  threshold is crossed. */
+   *  no-op. Badge celebrations are handled by the effect below, not here
+   *  — see its comment for why. */
   const mark = useCallback((key) => {
     setDoneKeys((prev) => {
       if (prev.has(key)) return prev;
       const next = new Set(prev);
       next.add(key);
-      const badge = BADGES.find((b) => b.at === next.size);
-      if (badge) {
-        setTimeout(() => { setCelebration(badge); chime(1046, 0.4); burst(44); }, 450);
-      }
       return next;
     });
-  }, [chime, burst]);
+  }, []);
 
   // Easter egg: typing P-I-P-E-R anywhere triggers a strawberry rain
   useEffect(() => {
@@ -242,11 +247,16 @@ function SnackvilleExperience({ onBackHome }) {
     if (!reduceMotion.current) {
       if (fx.particles) {
         const items = Array.from({ length: fx.particles.count }, (_, i) => ({
-          id: `w${Date.now()}-${i}`, kind: fx.particles.kind,
+          id: `w${Date.now()}-${i}-${Math.random()}`, kind: fx.particles.kind,
           left: Math.random() * 100, dist: 70 + Math.random() * 200, delay: Math.random() * 0.3,
         }));
-        setWowFx(items);
-        setTimeout(() => setWowFx([]), 2400);
+        // Append + remove-by-id, same reasoning as burst() above: triggering
+        // a second wow effect (or the same one twice) before the first
+        // batch finishes its ~2.4s animation should let both play out,
+        // not have one wipe the other's still-falling particles.
+        setWowFx((prev) => [...prev, ...items]);
+        const ids = new Set(items.map((it) => it.id));
+        setTimeout(() => setWowFx((prev) => prev.filter((it) => !ids.has(it.id))), 2400);
       }
       if (fx.confettiBurst) {
         setFlash(true);
@@ -255,7 +265,12 @@ function SnackvilleExperience({ onBackHome }) {
       }
     }
     showToast(fx.toastTitle, fx.toastBody);
+    // The guide bubble normally auto-fades via the scroll/section effect
+    // below, but that effect only re-runs when `active`/`guideVisible`
+    // change — it won't clear a message set from here while the visitor
+    // stays in the same section, so this needs its own fade-out timer.
     setGuideMessage(fx.guide);
+    setTimeout(() => setGuideMessage((current) => (current === fx.guide ? null : current)), 6500);
   }, [chime, showToast, burst]);
 
   const onFindTreasure = useCallback((id, x, y) => {
@@ -282,6 +297,24 @@ function SnackvilleExperience({ onBackHome }) {
   }, [active, guideVisible]);
 
   const doneCount = doneKeys.size;
+
+  /** Fires the badge celebration exactly once per threshold crossing.
+   *  This used to live inside mark()'s setDoneKeys updater, but React
+   *  (especially under StrictMode, which main.jsx enables) can invoke a
+   *  functional state updater more than once per commit to check for
+   *  purity — scheduling a real setTimeout/chime/burst from inside one
+   *  is an impure side effect, so crossing a threshold in dev could
+   *  double-fire the celebration, chime and confetti. `lastCelebratedRef`
+   *  guards this effect against that same double-invoke. */
+  const lastCelebratedAtRef = useRef(0);
+  useEffect(() => {
+    const badge = BADGES.find((b) => b.at === doneCount);
+    if (!badge || lastCelebratedAtRef.current === doneCount) return undefined;
+    lastCelebratedAtRef.current = doneCount;
+    const t = setTimeout(() => { setCelebration(badge); chime(1046, 0.4); burst(44); }, 450);
+    return () => clearTimeout(t);
+  }, [doneCount, chime, burst]);
+
   const tier = BADGES.filter((b) => doneCount >= b.at).slice(-1)[0];
   const visitedPlaceIds = useMemo(
     () => new Set(PLACES.filter((p) => doneKeys.has(`place-${p.id}`)).map((p) => p.id)),

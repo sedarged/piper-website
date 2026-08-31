@@ -3,9 +3,10 @@ import { I } from "./Icons.jsx";
 
 /**
  * The full-screen celebration shown when a badge tier is reached (see
- * data/treasures.js BADGES — at 6, 12, and 18 actions). The final tier
- * (18/18, "found everything") gets a special line revealing the story's
- * unspoken theme; the earlier tiers get plain encouragement.
+ * data/treasures.js BADGES — currently at 6, 18, and TOTAL_ACTIONS
+ * actions). The final tier ("found everything") gets a special line
+ * revealing the story's unspoken theme; the earlier tiers get plain
+ * encouragement.
  */
 export function BadgeCelebration({ badge, onClose, onJoin }) {
   if (!badge) return null;
@@ -17,7 +18,7 @@ export function BadgeCelebration({ badge, onClose, onJoin }) {
         <div className="eyebrow" style={{ marginBottom: 10 }}>Badge unlocked</div>
         <h2 className="h2" style={{ color: badge.ink, marginBottom: 16 }}>{badge.name}</h2>
         <p className="lead" style={{ margin: "0 auto 20px" }}>
-          {badge.at === 18
+          {badge.at === TOTAL_ACTIONS
             ? "You found every single thing in Snackville. Piper wants you to know something the books don't say out loud: every time they thought they'd found a monster, they'd actually just found somebody nobody had talked to yet."
             : `${badge.at} of ${TOTAL_ACTIONS} discovered. Keep going — there's more hidden than you'd think.`}
         </p>

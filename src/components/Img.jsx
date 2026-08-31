@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * A plain <img> that degrades to a typographic placeholder instead of a
@@ -8,6 +8,13 @@ import { useState } from "react";
  */
 export function Img({ src, alt, fb, style, loading = "lazy", decoding = "async", ...rest }) {
   const [failed, setFailed] = useState(false);
+
+  // Without this, a component that swaps `src` while staying mounted at
+  // the same JSX position (e.g. CastDrawer's "Next" button cycling
+  // through characters without unmounting) would keep showing the
+  // fallback for every later image forever, once any single image had
+  // ever failed to load.
+  useEffect(() => setFailed(false), [src]);
 
   if (failed || !src) {
     return (
