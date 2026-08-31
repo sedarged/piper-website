@@ -232,11 +232,18 @@
   30%,50%,70%{transform:translate3d(-9px,0,0)}40%,60%{transform:translate3d(9px,0,0)}}
 .wobble{animation:wbl .6s ease-in-out}
 @keyframes wbl{0%,100%{transform:rotate(0)}25%{transform:rotate(-1.1deg)}50%{transform:rotate(0)}75%{transform:rotate(1.1deg)}}
+.bump{animation:bnc .5s ease-in-out}
+@keyframes bnc{0%,100%{transform:scale(1)}30%{transform:scale(1.035)}55%{transform:scale(.985)}80%{transform:scale(1.01)}}
+.thud{animation:thd .4s ease-out}
+@keyframes thd{0%{transform:translateY(0)}25%{transform:translateY(7px)}55%{transform:translateY(-2px)}100%{transform:translateY(0)}}
 
 /* map "wow" particles — one shared base, one animation per `kind` (see
    WOW_FX in App.jsx and FxLayers.jsx) so every location's effect feels
-   different without needing its own state/render logic. */
+   different without needing its own state/render logic, while every
+   *location* still gets its own combination of kind + colour + motion. */
 .wow-fx{position:fixed;top:0;z-index:420;width:18px;pointer-events:none}
+
+/* falling */
 .wow-chocolate{border-radius:0 0 12px 12px;background:linear-gradient(180deg,#4E2B14,#8B4A28);
   animation:dropFall 1.9s cubic-bezier(.3,.1,.4,1) forwards}
 .wow-berry{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#E8657F,#A72446);
@@ -244,23 +251,86 @@
 .wow-donut{width:22px;height:22px;border-radius:50%;
   background:radial-gradient(circle,#F7ECD7 34%,#D9A05B 38%,#A72446 100%);
   animation:donutFall 2.1s ease-in forwards}
+.wow-brick{width:16px;height:11px;border-radius:2px;background:linear-gradient(180deg,#D9A05B,#B66B43);
+  animation:dropFall 1.5s ease-in forwards}
+@keyframes dropFall{0%{height:0;opacity:1}70%{opacity:1}100%{height:var(--dist);opacity:0}}
+@keyframes berryFall{0%{transform:translate(0,0);opacity:1}100%{transform:translate(14px,var(--dist));opacity:0}}
+@keyframes donutFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(var(--dist)) rotate(340deg);opacity:0}}
+
+/* bouncing */
 .wow-jellybean{width:13px;height:18px;border-radius:50%;animation:beanBounce 1.9s cubic-bezier(.3,.1,.4,1) forwards}
 .wow-jellybean:nth-child(3n){background:#6F9C7E}
 .wow-jellybean:nth-child(3n+1){background:#A72446}
 .wow-jellybean:nth-child(3n+2){background:#D8AA58}
-.wow-frost{top:auto;bottom:0;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#fff,#9fd0e6);
-  box-shadow:0 0 8px rgba(160,220,240,.8);animation:frostRise 2.1s ease-out forwards}
-@keyframes dropFall{0%{height:0;opacity:1}70%{opacity:1}100%{height:var(--dist);opacity:0}}
-@keyframes berryFall{0%{transform:translate(0,0);opacity:1}100%{transform:translate(14px,var(--dist));opacity:0}}
-@keyframes donutFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(var(--dist)) rotate(340deg);opacity:0}}
 @keyframes beanBounce{0%{transform:translateY(0);opacity:1}30%{transform:translateY(var(--dist))}
   45%{transform:translateY(calc(var(--dist)*.7))}60%{transform:translateY(var(--dist));opacity:1}
   75%{transform:translateY(calc(var(--dist)*.85))}100%{transform:translateY(var(--dist));opacity:0}}
+
+/* rising */
+.wow-frost{top:auto;bottom:0;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#fff,#9fd0e6);
+  box-shadow:0 0 8px rgba(160,220,240,.8);animation:frostRise 2.1s ease-out forwards}
+.wow-fountain{top:auto;bottom:0;width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle,#F7ECD7,#8B4A28);animation:frostRise 1.7s ease-out forwards}
+.wow-heart{top:auto;bottom:0;width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#FFD1DC,#A72446);box-shadow:0 0 8px rgba(167,36,70,.4);
+  animation:frostRise 2s ease-out forwards}
+.wow-cloud{top:auto;bottom:0;width:26px;height:18px;border-radius:50%;
+  background:radial-gradient(circle,#fff,#E8DFFA);box-shadow:0 0 10px rgba(255,255,255,.8);
+  animation:frostRise 2.1s ease-out forwards}
 @keyframes frostRise{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(calc(var(--dist) * -1));opacity:0}}
-.wow-flash{position:fixed;inset:0;z-index:410;pointer-events:none;
-  background:radial-gradient(circle,rgba(255,247,232,.9),rgba(216,170,88,.35));
-  animation:wowFlash .32s ease-out forwards}
+
+/* drifting sideways, mid-screen */
+.wow-aroma{top:38%;width:20px;height:12px;border-radius:50% 50% 50% 0;
+  background:linear-gradient(135deg,#D9A05B,#B66B43);opacity:.85;animation:driftX 2.3s ease-in-out forwards}
+.wow-boat{top:55%;width:22px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#F0E2CD);box-shadow:0 3px 0 rgba(118,80,60,.25);
+  animation:driftX 2.9s linear forwards}
+@keyframes driftX{0%{transform:translateX(-60px);opacity:0}15%{opacity:1}85%{opacity:1}
+  100%{transform:translateX(var(--dist));opacity:0}}
+
+/* a staggered ground trail, left to right along the bottom */
+.wow-trailstar{top:auto;bottom:6%;width:12px;height:12px;background:var(--butter,#D8AA58);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation:trailFade 1.6s ease-out forwards}
+.wow-footprint{top:auto;bottom:5%;width:10px;height:14px;border-radius:50%;background:#D8AA58;opacity:.85;
+  animation:trailFade 1.8s ease-out forwards}
+@keyframes trailFade{0%{opacity:0;transform:translateY(6px) scale(.6)}30%{opacity:1;transform:translateY(0) scale(1)}
+  75%{opacity:1}100%{opacity:0}}
+
+/* a radial spark shower from a central point */
+.wow-spark{top:42%;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#FFF3B0,#D8AA58);
+  box-shadow:0 0 6px rgba(255,220,120,.8);animation:sparkOut .7s ease-out forwards}
+@keyframes sparkOut{0%{transform:translate(0,0) scale(1);opacity:1}
+  100%{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+
+/* an expanding, fading smoke puff */
+.wow-smoke{top:20%;width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle,rgba(180,160,150,.85),rgba(90,70,60,.15));animation:smokePuff 2s ease-out forwards}
+@keyframes smokePuff{0%{transform:translateY(0) scale(.35);opacity:.85}100%{transform:translateY(-70px) scale(2);opacity:0}}
+
+/* scattered flicker, used with the "dark" flash vignette */
+.wow-glint{width:7px;height:7px;border-radius:50%;background:#FFF3B0;box-shadow:0 0 8px rgba(255,243,176,.9);
+  animation:glintFlicker 1.1s ease-in-out forwards}
+@keyframes glintFlicker{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.1)}
+  65%{opacity:.35}100%{opacity:0;transform:scale(.7)}}
+
+/* an alarm-style expanding ring, centred on screen */
+.wow-ring{position:fixed;left:50%;top:45%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
+  border:4px solid var(--ring-color,#6F9C7E);pointer-events:none;z-index:415;animation:ringExpand 1.1s ease-out forwards}
+@keyframes ringExpand{0%{transform:scale(0);opacity:.9}100%{transform:scale(46);opacity:0}}
+
+/* a fast motion-blur streak crossing the screen */
+.wow-streak{position:fixed;left:-30%;width:160%;height:5px;pointer-events:none;z-index:415;
+  background:linear-gradient(90deg,transparent,var(--streak-color,#fff),transparent);animation:streakAcross .55s ease-in forwards}
+@keyframes streakAcross{0%{transform:translateX(-40%);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateX(40%);opacity:0}}
+
+.wow-flash{position:fixed;inset:0;z-index:410;pointer-events:none;animation:wowFlash .32s ease-out forwards}
+.wow-flash-gold{background:radial-gradient(circle,rgba(255,247,232,.9),rgba(216,170,88,.35))}
+.wow-flash-green{background:radial-gradient(circle,rgba(230,255,240,.85),rgba(111,156,126,.4))}
+.wow-flash-dark{background:radial-gradient(circle,transparent 15%,rgba(3,9,23,.82) 100%);
+  animation:wowFlashDark .9s ease-in-out forwards}
 @keyframes wowFlash{0%{opacity:1}100%{opacity:0}}
+@keyframes wowFlashDark{0%{opacity:0}30%{opacity:1}70%{opacity:1}100%{opacity:0}}
 .spark{position:fixed;pointer-events:none;z-index:430;animation:spO .85s ease-out forwards}
 @keyframes spO{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.2) rotate(140deg) translateY(18px)}}
 .conf{position:fixed;top:-26px;z-index:820;pointer-events:none;animation:fall linear forwards}

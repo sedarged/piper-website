@@ -1,12 +1,20 @@
 import { useCallback, useRef, useState } from "react";
 import { BOOKS } from "../data/books.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
+import { ParentEmailForm } from "./ParentEmailForm.jsx";
 
 const NAV_ITEMS = [
   { id: "worlds", label: "Worlds" },
   { id: "books-home", label: "Books" },
   { id: "studio", label: "Studio" },
-  { id: "grownups-home", label: "Grown-Ups" },
+  { id: "parents-home", label: "For Parents" },
+];
+
+const PARENT_FACTS = [
+  ["Ages", "3–7"],
+  ["Format", "Illustrated picture books"],
+  ["Series", "The Piper Storyworld — a growing collection"],
+  ["Publisher", "Wallace-Siedlarz Productions"],
 ];
 
 function ReferenceCrop({ crop, className = "", alt = "" }) {
@@ -35,8 +43,7 @@ function WorldCard({ type, title, description, status, onClick, crop }) {
 
 export function UniverseHome({ onEnterSnackville }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [signupState, setSignupState] = useState("idle");
-  const emailRef = useRef(null);
+  const [parentSignupSent, setParentSignupSent] = useState(false);
   const menuRef = useRef(null);
 
   // Stable identity: useDialogTrap's effect depends on this callback, and
@@ -49,17 +56,6 @@ export function UniverseHome({ onEnterSnackville }) {
   const go = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setMenuOpen(false);
-  };
-
-  const submit = (event) => {
-    event.preventDefault();
-    const value = emailRef.current?.value.trim() || "";
-    if (!/^\S+@\S+\.\S+$/.test(value)) {
-      setSignupState("error");
-      emailRef.current?.focus();
-      return;
-    }
-    setSignupState("ready");
   };
 
   return (
@@ -146,19 +142,30 @@ export function UniverseHome({ onEnterSnackville }) {
             </div>
           </div>
 
-          <div className="story-list" id="grownups-home">
+          <div className="story-list universe-parents" id="parents-home">
             <div>
-              <p className="universe-kicker">For families and collectors</p>
+              <span className="universe-parents__tag">For parents &amp; guardians</span>
               <h2>Stories for the young and the young at heart.</h2>
-              <p>Behind-the-scenes notes, early peeks and studio updates — sent with care, never clutter.</p>
-              <form onSubmit={submit} noValidate>
-                <label className="sr-only" htmlFor="universe-email">Email address</label>
-                <input ref={emailRef} id="universe-email" type="email" placeholder="Enter your email address" aria-invalid={signupState === "error"} />
-                <button type="submit">Join the list</button>
-              </form>
-              {signupState === "error" && <p className="form-message form-message--error">Please enter a valid email address.</p>}
-              {signupState === "ready" && <p className="form-message">The list opens soon — your address has not been sent anywhere yet.</p>}
-              <small>No spam. Ever. Unsubscribe anytime.</small>
+              <p>Every Piper book is written to be read aloud, re-read and handed down. Here's what families ask us most, in one place — not scattered across a checkout page.</p>
+
+              <div className="universe-parents__facts">
+                {PARENT_FACTS.map(([k, v]) => (
+                  <div key={k}><span>{k}</span><strong>{v}</strong></div>
+                ))}
+              </div>
+
+              <p className="universe-parents__privacy">
+                This site collects no information from children. The signup below is for parents and guardians only — every list is opt-in, with a one-click unsubscribe.
+              </p>
+
+              <div className="universe-parents__signup">
+                <p className="universe-kicker">Behind-the-scenes notes, early peeks and studio updates</p>
+                {parentSignupSent ? (
+                  <p className="form-message">Thanks — the list opens soon, and we'll be in touch.</p>
+                ) : (
+                  <ParentEmailForm payloadExtra={{ source: "universe-home" }} ctaLabel="Join the list" onSuccess={() => setParentSignupSent(true)} />
+                )}
+              </div>
             </div>
             <ReferenceCrop crop={{ x: 724, y: 1380, w: 186, h: 218 }} className="story-list__character" alt="Toast Kitty reading a book" />
           </div>
@@ -188,7 +195,7 @@ export function UniverseHome({ onEnterSnackville }) {
           <button onClick={() => go("books-home")}>Books</button>
           <button onClick={() => go("worlds")}>Worlds</button>
           <button onClick={() => go("studio")}>Studio</button>
-          <button onClick={() => go("grownups-home")}>Grown-Ups</button>
+          <button onClick={() => go("parents-home")}>For Parents</button>
         </nav>
         <p>© {new Date().getFullYear()} Wallace-Siedlarz Productions</p>
       </footer>
