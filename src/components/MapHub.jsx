@@ -12,9 +12,9 @@ const MAP_SRC = "/images/snackville-interactive-map.jpeg";
  *
  * Every printed number on the illustration has a matching native button.
  * Selecting a location updates the field-note panel, marks Explorer progress,
- * and opens an accessible storybook introduction. Seven locations also carry
- * a `wow` key (see data/places.js) and get an extra action button that plays
- * a signature screen-shake-and-particles effect — see WOW_FX in App.jsx.
+ * and opens an accessible storybook introduction. Every location also carries
+ * a `wow` key (see data/places.js) and gets an extra action button that plays
+ * its own signature screen-reaction-and-particles effect — see WOW_FX in App.jsx.
  */
 export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
   const [selected, setSelected] = useState(PLACES[0]);
