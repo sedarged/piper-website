@@ -4,6 +4,10 @@ import { C } from "../styles/tokens.js";
  * Every numbered story stop on the official Snackville map.
  * Coordinates are percentages measured against the 1536 × 864 map artwork,
  * so the accessible hit targets remain aligned at every rendered size.
+ *
+ * A place with a `wow` key gets an extra action button that plays a
+ * signature "wow" effect (screen shake, falling/rising particles, sound
+ * and a toast) — see the WOW_FX table in App.jsx for what each key does.
  */
 export const PLACES = [
   {
@@ -19,6 +23,7 @@ export const PLACES = [
     intro: "Snackville's sweetest patch of growing courage.",
     d: "Rows of strawberries, raspberries and tiny moon-berries curl around the western shore. Piper knows every path between the leaves and shares the ripest fruit with anyone who needs cheering up.",
     note: "The best berries hide beneath leaves shaped like little hearts.",
+    wow: "berry", actionLabel: "Shake the berry bush",
   },
   {
     id: "hq", n: 3, x: 50.1, y: 9.6, ink: C.mint,
@@ -33,6 +38,7 @@ export const PLACES = [
     intro: "Every road, rumour and celebration meets here.",
     d: "Candy-cane paths spiral around the tall chocolate fountain in Snackville's bustling centre. Neighbours trade treats, musicians rehearse, and the Snack Squad can usually be found racing through on urgent business.",
     note: "Stand on the centre stone and every path points toward a friend.",
+    wow: "candy", actionLabel: "Swing at the candy piñata",
   },
   {
     id: "fountain", n: 5, x: 55.9, y: 40.4, ink: C.strawberry,
@@ -82,6 +88,7 @@ export const PLACES = [
     intro: "A shady park where breakfast grows on branches.",
     d: "Pink and chocolate donut trees ring a soft grassy clearing. Snackville families picnic here, while the Squad practises quiet landings beneath branches heavy with morning treats.",
     note: "Arrive at dawn if you hope to find the sprinkled ones.",
+    wow: "donut", actionLabel: "Shake the donut tree",
   },
   {
     id: "jellybean-hill", n: 12, x: 36.8, y: 77.1, ink: C.grape,
@@ -89,6 +96,7 @@ export const PLACES = [
     intro: "The Squad's favourite place to watch the stars.",
     d: "A sparkling hill of smooth jellybeans rises above the southern shore. After every adventure, the four friends curl up here together and remember that even the biggest problem feels smaller beneath the night sky.",
     note: "Blue jellybeans make the best seats, according to Piper.",
+    wow: "jellybean", actionLabel: "Roll the jellybean barrel",
   },
   {
     id: "croissant-bridge", n: 13, x: 59.7, y: 75.1, ink: C.ember,
@@ -110,7 +118,7 @@ export const PLACES = [
     intro: "Warm, rumbly and not nearly as cross as it looks.",
     d: "Rivers of melted chocolate glow along the mountain's dark ridges. Deep inside, the Chocolate Dragon guards old tunnels and tries very hard not to sneeze cocoa dust across the whole island.",
     note: "A rumble means the dragon is stirring. Two rumbles mean cover your treats.",
-    sneeze: true, actionLabel: "Wake the Chocolate Dragon",
+    wow: "chocolate", actionLabel: "Wake the Chocolate Dragon",
   },
   {
     id: "hidden-cave", n: 16, x: 64.9, y: 22.5, ink: C.cocoa,
@@ -125,7 +133,7 @@ export const PLACES = [
     intro: "A cosy cavern for one enormous, sneezy neighbour.",
     d: "The cave walls shine like dark chocolate and the floor is warm beneath your paws. The Chocolate Dragon keeps a nest of wrappers, shiny pebbles and thank-you notes from everyone he has accidentally helped.",
     note: "Speak softly. The dragon's naps are legendary; so are his sneezes.",
-    sneeze: true, actionLabel: "Say hello to the dragon",
+    wow: "chocolate", actionLabel: "Say hello to the dragon",
   },
   {
     id: "chocolate-river", n: 18, x: 77.7, y: 45.0, ink: C.cocoa,
@@ -147,5 +155,6 @@ export const PLACES = [
     intro: "A blue-glowing maze beyond the Chocolate Volcano.",
     d: "Pastel towers surround caverns of cool light, frozen waterfalls and echoing tunnels. Toast Kitty believes the deepest chamber hides a door to an adventure nobody has discovered yet.",
     note: "The walls change flavour with the weather — but explorers only look.",
+    wow: "frost", actionLabel: "Wake the cave echo",
   },
 ];

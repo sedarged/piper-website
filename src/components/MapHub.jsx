@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { PLACES } from "../data/places.js";
+import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
@@ -11,62 +12,26 @@ const MAP_SRC = "/images/snackville-interactive-map.jpeg";
  *
  * Every printed number on the illustration has a matching native button.
  * Selecting a location updates the field-note panel, marks Explorer progress,
- * and opens an accessible storybook introduction. Volcano and Dragon Cave
- * keep the original Chocolate Dragon sneeze interaction as an explicit action.
+ * and opens an accessible storybook introduction. Seven locations also carry
+ * a `wow` key (see data/places.js) and get an extra action button that plays
+ * a signature screen-shake-and-particles effect — see WOW_FX in App.jsx.
  */
-export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
+export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
   const [selected, setSelected] = useState(PLACES[0]);
   const [openPlace, setOpenPlace] = useState(null);
   const dialogRef = useRef(null);
-  const lastTriggerRef = useRef(null);
   const seenCount = PLACES.filter((place) => visitedPlaceIds.has(place.id)).length;
 
-  const closePlace = useCallback(() => {
-    setOpenPlace(null);
-    window.setTimeout(() => lastTriggerRef.current?.focus(), 0);
-  }, []);
+  const closePlace = useCallback(() => setOpenPlace(null), []);
 
-  const pick = (place, trigger) => {
-    lastTriggerRef.current = trigger ?? document.activeElement;
+  const pick = (place) => {
     setSelected(place);
     setOpenPlace(place);
     mark(`place-${place.id}`);
     chime(640, 0.12);
   };
 
-  useEffect(() => {
-    if (!openPlace) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const dialog = dialogRef.current;
-    const focusable = dialog?.querySelectorAll("button:not([disabled]), a[href]") ?? [];
-    focusable[0]?.focus();
-
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        closePlace();
-        return;
-      }
-      if (event.key !== "Tab" || focusable.length < 2) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [closePlace, openPlace]);
+  useDialogTrap(dialogRef, closePlace, openPlace);
 
   return (
     <>
@@ -98,9 +63,9 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             {PLACES.map((place) => (
               <button
                 key={place.id}
-                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.sneeze ? "dragon" : ""}`}
+                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
                 style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
-                onClick={(event) => pick(place, event.currentTarget)}
+                onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
               >
@@ -119,7 +84,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             <h3 className="d">{selected.name}</h3>
             <p>{selected.intro}</p>
           </div>
-          <button className="btn btn-sm b-straw" onClick={(event) => pick(selected, event.currentTarget)}>
+          <button className="btn btn-sm b-straw" onClick={() => pick(selected)}>
             Read the field note
           </button>
         </div>
@@ -129,7 +94,7 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             <button
               key={place.id}
               className={`map-index-item ${selected.id === place.id ? "on" : ""}`}
-              onClick={(event) => pick(place, event.currentTarget)}
+              onClick={() => pick(place)}
               aria-haspopup="dialog"
             >
               <span className="map-index-number" style={{ "--place-accent": place.ink }}>
@@ -172,10 +137,10 @@ export function MapHub({ visitedPlaceIds, mark, onSneeze, chime }) {
             </aside>
 
             <div className="place-dialog-actions">
-              {openPlace.sneeze && (
+              {openPlace.wow && (
                 <button
                   className="btn b-straw"
-                  onClick={onSneeze}
+                  onClick={() => onWow(openPlace)}
                 >
                   {openPlace.actionLabel}
                 </button>

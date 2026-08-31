@@ -35,13 +35,56 @@ import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
 
 /**
+ * One entry per map location `wow` key (see data/places.js): the pitch
+ * and duration of its chime, whether it shakes the screen ("hard" like
+ * the volcano, "soft" like a gentler wobble, or none), what particles
+ * fall/rise, and the toast + guide-bubble copy that goes with it. Every
+ * location shares the exact same trigger mechanics as the original
+ * Chocolate Dragon sneeze — only the numbers and particle `kind` differ
+ * — so the map stays varied without any per-effect bespoke code.
+ */
+const WOW_FX = {
+  chocolate: {
+    shake: "hard", pitch: 170, dur: 0.36, particles: { kind: "chocolate", count: 12 },
+    toastTitle: "Bless you!", toastBody: "The Chocolate Dragon sneezed. That happens a lot.",
+    guide: "He does that. He's not cross — he's just dusty.",
+  },
+  berry: {
+    shake: "soft", pitch: 520, dur: 0.22, particles: { kind: "berry", count: 14 },
+    toastTitle: "Berry shower!", toastBody: "The berry bush let go of everything it was holding.",
+    guide: "Piper says that happens when you tickle the roots.",
+  },
+  donut: {
+    shake: "soft", pitch: 300, dur: 0.24, particles: { kind: "donut", count: 10 },
+    toastTitle: "Donut rain!", toastBody: "The whole tree let go at once. Breakfast, sorted.",
+    guide: "Croissant Kitty is already down there catching them.",
+  },
+  jellybean: {
+    shake: "soft", pitch: 460, dur: 0.2, particles: { kind: "jellybean", count: 16 },
+    toastTitle: "Jellybeans everywhere!", toastBody: "The barrel rolled a little too far downhill.",
+    guide: "Blue ones bounce highest, according to Piper.",
+  },
+  frost: {
+    shake: null, pitch: 900, dur: 0.3, particles: { kind: "frost", count: 14 },
+    toastTitle: "The caves echo back!", toastBody: "Something sparkly answered from deep inside.",
+    guide: "Toast Kitty thinks it's the door he's been looking for.",
+  },
+  candy: {
+    shake: null, pitch: 640, dur: 0.3, confettiBurst: 40,
+    toastTitle: "Piñata!", toastBody: "Candy Path Square just got a lot more colourful.",
+    guide: "Somebody's going to be sweeping confetti for a week.",
+  },
+};
+
+/**
  * The root component. Owns every piece of cross-section state:
  *   - `active`       which section is currently in view (drives the nav)
- *   - `doneKeys`     every treasure/place/book/quiz/nightfall action
- *                    completed so far (drives the Explorer ring + badges)
+ *   - `doneKeys`     every treasure/place/book/quiz/nightfall/activity
+ *                    action completed so far (drives the Explorer ring
+ *                    + badges)
  *   - `castIndex`    which character's drawer is open, if any
- *   - the FX state arrays (sparks, drips, confetti) and the toast/
- *     celebration/guide-message singletons
+ *   - the FX state arrays (sparks, wowFx, confetti, flash) and the
+ *     toast/celebration/guide-message singletons
  *
  * Scroll-driven visuals (parallax, sky, sun/moon, day/night) do NOT
  * live here as state — see hooks/useScrollEngine.js for why, and for
@@ -59,10 +102,11 @@ function SnackvilleExperience({ onBackHome }) {
     }
   });
   const [sparks, setSparks] = useState([]);
-  const [drips, setDrips] = useState([]);
+  const [wowFx, setWowFx] = useState([]);
   const [confetti, setConfetti] = useState([]);
   const [toast, setToast] = useState(null);
-  const [shaking, setShaking] = useState(false);
+  const [shakeKind, setShakeKind] = useState(null);
+  const [flash, setFlash] = useState(false);
   const [celebration, setCelebration] = useState(null);
   const [guideVisible, setGuideVisible] = useState(true);
   const [guideMessage, setGuideMessage] = useState(null);
@@ -137,8 +181,12 @@ function SnackvilleExperience({ onBackHome }) {
   }, []);
 
   const showToast = useCallback((title, body) => {
-    setToast({ title, body, id: Date.now() });
-    setTimeout(() => setToast(null), 4200);
+    const id = Date.now();
+    setToast({ title, body, id });
+    // Only clear the toast if it's still the one we scheduled this timer
+    // for — otherwise a second showToast() within 4.2s of the first would
+    // have its toast prematurely killed by the first call's timer.
+    setTimeout(() => setToast((current) => (current?.id === id ? null : current)), 4200);
   }, []);
 
   const burst = useCallback((count = 32) => {
@@ -150,25 +198,26 @@ function SnackvilleExperience({ onBackHome }) {
       size: 16 + Math.random() * 20, kind: kinds[Math.floor(Math.random() * kinds.length)],
     }));
     setConfetti((prev) => [...prev, ...bits]);
-    setTimeout(() => setConfetti([]), 5400);
+    // Remove only this batch's pieces, not the whole array — otherwise an
+    // overlapping second burst() (e.g. a badge celebration landing while
+    // the "PIPER" easter egg's confetti is still falling) would have its
+    // still-animating pieces wiped out early by the first burst's timer.
+    const ids = new Set(bits.map((b) => b.id));
+    setTimeout(() => setConfetti((prev) => prev.filter((b) => !ids.has(b.id))), 5400);
   }, []);
 
   /** Marks one action complete (a treasure id, "place-<id>", "book-<id>",
    *  "quiz", or "night"). Idempotent — marking the same key twice is a
-   *  no-op — and fires the badge celebration automatically when a tier
-   *  threshold is crossed. */
+   *  no-op. Badge celebrations are handled by the effect below, not here
+   *  — see its comment for why. */
   const mark = useCallback((key) => {
     setDoneKeys((prev) => {
       if (prev.has(key)) return prev;
       const next = new Set(prev);
       next.add(key);
-      const badge = BADGES.find((b) => b.at === next.size);
-      if (badge) {
-        setTimeout(() => { setCelebration(badge); chime(1046, 0.4); burst(44); }, 450);
-      }
       return next;
     });
-  }, [chime, burst]);
+  }, []);
 
   // Easter egg: typing P-I-P-E-R anywhere triggers a strawberry rain
   useEffect(() => {
@@ -186,20 +235,43 @@ function SnackvilleExperience({ onBackHome }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [chime, burst, showToast]);
 
-  const onSneeze = useCallback(() => {
-    chime(170, 0.36);
-    setShaking(true);
-    setTimeout(() => setShaking(false), 660);
-    if (!reduceMotion.current) {
-      const drops = Array.from({ length: 12 }, (_, i) => ({
-        id: `d${Date.now()}-${i}`, left: Math.random() * 100, h: 70 + Math.random() * 200, delay: Math.random() * 0.3,
-      }));
-      setDrips(drops);
-      setTimeout(() => setDrips([]), 2400);
+  const onWow = useCallback((place) => {
+    const fx = WOW_FX[place.wow];
+    if (!fx) return;
+
+    chime(fx.pitch, fx.dur);
+    if (fx.shake) {
+      setShakeKind(fx.shake);
+      setTimeout(() => setShakeKind(null), 660);
     }
-    showToast("Bless you!", "The Chocolate Dragon sneezed. That happens a lot.");
-    setGuideMessage("He does that. He's not cross — he's just dusty.");
-  }, [chime, showToast]);
+    if (!reduceMotion.current) {
+      if (fx.particles) {
+        const items = Array.from({ length: fx.particles.count }, (_, i) => ({
+          id: `w${Date.now()}-${i}-${Math.random()}`, kind: fx.particles.kind,
+          left: Math.random() * 100, dist: 70 + Math.random() * 200, delay: Math.random() * 0.3,
+        }));
+        // Append + remove-by-id, same reasoning as burst() above: triggering
+        // a second wow effect (or the same one twice) before the first
+        // batch finishes its ~2.4s animation should let both play out,
+        // not have one wipe the other's still-falling particles.
+        setWowFx((prev) => [...prev, ...items]);
+        const ids = new Set(items.map((it) => it.id));
+        setTimeout(() => setWowFx((prev) => prev.filter((it) => !ids.has(it.id))), 2400);
+      }
+      if (fx.confettiBurst) {
+        setFlash(true);
+        setTimeout(() => setFlash(false), 320);
+        burst(fx.confettiBurst);
+      }
+    }
+    showToast(fx.toastTitle, fx.toastBody);
+    // The guide bubble normally auto-fades via the scroll/section effect
+    // below, but that effect only re-runs when `active`/`guideVisible`
+    // change — it won't clear a message set from here while the visitor
+    // stays in the same section, so this needs its own fade-out timer.
+    setGuideMessage(fx.guide);
+    setTimeout(() => setGuideMessage((current) => (current === fx.guide ? null : current)), 6500);
+  }, [chime, showToast, burst]);
 
   const onFindTreasure = useCallback((id, x, y) => {
     if (doneKeys.has(id)) return;
@@ -216,15 +288,48 @@ function SnackvilleExperience({ onBackHome }) {
   }, [doneKeys, chime, showToast, mark]);
 
   // Piper's guide bubble auto-updates its message as the visitor scrolls
-  // between sections, and fades out after ~6.5s.
+  // between sections, and fades out after ~6.5s. Only clears the message
+  // this effect itself set — a wow effect (see onWow) can set a newer
+  // message from a different call path while this timer is still
+  // pending, and an unconditional clear here would wipe that out early.
   useEffect(() => {
     if (!guideVisible) return;
-    setGuideMessage(GUIDE_MESSAGES[active] || null);
-    const t = setTimeout(() => setGuideMessage(null), 6500);
+    const message = GUIDE_MESSAGES[active] || null;
+    setGuideMessage(message);
+    const t = setTimeout(() => setGuideMessage((current) => (current === message ? null : current)), 6500);
     return () => clearTimeout(t);
   }, [active, guideVisible]);
 
   const doneCount = doneKeys.size;
+
+  /** Fires the badge celebration exactly once per threshold crossing.
+   *  This used to live inside mark()'s setDoneKeys updater, but React
+   *  (especially under StrictMode, which main.jsx enables) can invoke a
+   *  functional state updater more than once per commit to check for
+   *  purity — scheduling a real setTimeout/chime/burst from inside one
+   *  is an impure side effect, so crossing a threshold in dev could
+   *  double-fire the celebration, chime and confetti. `lastCelebratedAtRef`
+   *  guards this effect against that same double-invoke.
+   *
+   *  It also guards against replaying the celebration on mount: a
+   *  returning visitor's *persisted* progress can already sit exactly on
+   *  a threshold (loaded synchronously into `doneKeys`'s initial state),
+   *  and this effect's first run should record that as "already
+   *  accounted for" rather than treat it as a fresh crossing — only a
+   *  live increase in doneCount during this session should celebrate. */
+  const lastCelebratedAtRef = useRef(null);
+  useEffect(() => {
+    if (lastCelebratedAtRef.current === null) {
+      lastCelebratedAtRef.current = doneCount;
+      return undefined;
+    }
+    const badge = BADGES.find((b) => b.at === doneCount);
+    if (!badge || lastCelebratedAtRef.current === doneCount) return undefined;
+    lastCelebratedAtRef.current = doneCount;
+    const t = setTimeout(() => { setCelebration(badge); chime(1046, 0.4); burst(44); }, 450);
+    return () => clearTimeout(t);
+  }, [doneCount, chime, burst]);
+
   const tier = BADGES.filter((b) => doneCount >= b.at).slice(-1)[0];
   const visitedPlaceIds = useMemo(
     () => new Set(PLACES.filter((p) => doneKeys.has(`place-${p.id}`)).map((p) => p.id)),
@@ -236,7 +341,7 @@ function SnackvilleExperience({ onBackHome }) {
   })), []);
 
   return (
-    <div ref={rootRef} className={shaking ? "shaker" : ""} data-night="0">
+    <div ref={rootRef} className={shakeKind === "hard" ? "shaker" : shakeKind === "soft" ? "wobble" : ""} data-night="0">
       <a className="skip-link" href="#story">Skip to the story</a>
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
@@ -294,7 +399,7 @@ function SnackvilleExperience({ onBackHome }) {
 
         <section className="sec wrap" id="map">
           <Treasure id="scale" found={doneKeys.has("scale")} onFind={onFindTreasure} style={{ bottom: 12, right: "calc(var(--pad) + 6px)" }} />
-          <MapHub visitedPlaceIds={visitedPlaceIds} mark={mark} onSneeze={onSneeze} chime={chime} />
+          <MapHub visitedPlaceIds={visitedPlaceIds} mark={mark} onWow={onWow} chime={chime} />
         </section>
 
         <section className="sec wrap" id="books">
@@ -311,12 +416,12 @@ function SnackvilleExperience({ onBackHome }) {
 
         <Divider shape="wave" fill="rgba(214,248,231,.95)" />
         <section className="sec" id="free" style={{ background: "rgba(214,248,231,.95)" }}>
-          <div className="wrap"><Free /></div>
+          <div className="wrap"><Free mark={mark} burst={burst} chime={chime} showToast={showToast} /></div>
         </section>
         <Divider shape="drip" fill="rgba(214,248,231,.95)" flip />
 
-        <section className="sec wrap">
-          <div className="panel"><GrownUps /></div>
+        <section className="sec wrap" id="parents">
+          <div className="panel"><GrownUps chime={chime} burst={burst} /></div>
         </section>
 
         <Quote />
@@ -326,7 +431,7 @@ function SnackvilleExperience({ onBackHome }) {
 
       <CastDrawer index={castIndex} onClose={closeDrawer} onNavigate={setCastIndex} />
 
-      <FxLayers sparks={sparks} drips={drips} confetti={confetti} />
+      <FxLayers sparks={sparks} wowFx={wowFx} confetti={confetti} flash={flash} />
 
       {!celebration && (
         <ExplorerRing

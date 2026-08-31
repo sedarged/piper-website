@@ -1,19 +1,22 @@
 import { I, TI } from "./Icons.jsx";
 
 /**
- * The three transient FX overlays layered above everything else:
+ * The transient FX overlays layered above everything else:
  *   - sparks: the cursor trail + the burst that plays when a treasure
  *     or a badge is found, positioned at an exact screen coordinate
- *   - drips: chocolate droplets falling from the top of the screen,
- *     triggered by poking the Chocolate Mountain map pin
+ *   - wowFx: the falling/rising particles for each map location's
+ *     signature "wow" effect (chocolate drips, berries, donuts,
+ *     jellybeans, frost sparkles) — see WOW_FX in App.jsx
  *   - confetti: falling celebratory shapes, used for the magic word,
- *     completing the quiz, and unlocking a badge
+ *     completing the quiz, unlocking a badge, and the Candy Path
+ *     Square piñata wow effect
+ *   - flash: a brief full-screen light flash, used for the piñata "pop"
  *
- * All three are pure render — App.jsx owns the state arrays and the
+ * All of these are pure render — App.jsx owns the state arrays and the
  * setTimeout cleanup that removes each entry once its CSS animation
- * finishes (see .spark, .drip, .conf in components.css).
+ * finishes (see .spark, .wow-fx, .conf, .wow-flash in components.css).
  */
-export function FxLayers({ sparks, drips, confetti }) {
+export function FxLayers({ sparks, wowFx, confetti, flash }) {
   return (
     <>
       {sparks.map((p) => (
@@ -21,8 +24,12 @@ export function FxLayers({ sparks, drips, confetti }) {
           {I.star(p.c)}
         </span>
       ))}
-      {drips.map((d) => (
-        <span key={d.id} className="drip" style={{ left: `${d.left}%`, "--h": `${d.h}px`, animationDelay: `${d.delay}s` }} />
+      {wowFx.map((d) => (
+        <span
+          key={d.id}
+          className={`wow-fx wow-${d.kind}`}
+          style={{ left: `${d.left}%`, "--dist": `${d.dist}px`, animationDelay: `${d.delay}s` }}
+        />
       ))}
       {confetti.map((b) => (
         <span
@@ -33,6 +40,7 @@ export function FxLayers({ sparks, drips, confetti }) {
           {TI[b.kind]()}
         </span>
       ))}
+      {flash && <span className="wow-flash" aria-hidden="true" />}
     </>
   );
 }

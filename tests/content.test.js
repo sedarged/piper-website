@@ -26,7 +26,8 @@ test("quiz answers only target existing characters", () => {
 });
 
 test("explorer total matches every tracked action", () => {
-  assert.equal(TOTAL_ACTIONS, TREASURES.length + PLACES.length + BOOKS.length + 2);
+  // +2 for the quiz and nightfall, +3 for the Snackville studio games.
+  assert.equal(TOTAL_ACTIONS, TREASURES.length + PLACES.length + BOOKS.length + 2 + 3);
   assert.equal(BADGES.at(-1).at, TOTAL_ACTIONS);
 });
 

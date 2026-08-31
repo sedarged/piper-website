@@ -105,13 +105,12 @@ new, unique key from wherever that interaction lives.
 - **The five parallax landscape layers** (`components/Landscape.jsx`)
   are flat vector illustrations, not painted artwork. See
   `docs/asset-list.md`, Part 1, for generation prompts to replace them.
-- **The six free printables** (`data/printables.js`) all have an empty
-  `url` until the actual PDFs exist. Cards route to the Join section
-  instead of a dead link in the meantime. See `docs/asset-list.md`,
-  Part 4.
-- **`public/og-image.jpg`, `public/favicon.png`,
-  `public/apple-touch-icon.png`** are referenced in `index.html` but
-  don't exist yet. See `docs/asset-list.md`, Part 3.
+- **Two of the five Activities cards** (`data/printables.js`, the
+  Snackville map poster and the Snack Squad badge) still have an empty
+  `url` until the actual PDFs exist, and show a "coming soon" state
+  instead of a dead link. The other three cards are real playable
+  mini-games (see `components/games/`), not print-and-wait
+  placeholders. See `docs/asset-list.md`, Part 4.
 
 ## Testing
 

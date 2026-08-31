@@ -18,6 +18,7 @@
   color:var(--ink60);transition:background .2s,color .2s}
 .nlink:hover{background:rgba(42,26,46,.07);color:var(--plum)}
 .nlink.on{background:var(--plum);color:var(--cream)}
+.nlink-quiet{opacity:.68;font-size:12.5px}
 .logo{display:flex;align-items:center;gap:9px;margin-right:auto;background:rgba(255,246,233,.88);
   backdrop-filter:blur(16px);border-radius:100px;padding:8px 18px 8px 10px;box-shadow:0 6px 24px rgba(42,26,46,.16)}
 .nav-burger{display:none;width:48px;height:48px;border-radius:50%;background:rgba(255,246,233,.88);
@@ -31,6 +32,8 @@
 .msheet-link{display:block;width:100%;text-align:left;font-family:var(--d);font-weight:700;
   font-size:19px;padding:13px 14px;border-radius:14px;margin-top:4px}
 .msheet-link.on{background:var(--plum);color:var(--cream)}
+.msheet-divider{margin:14px 2px 4px;padding-top:12px;border-top:1px dashed rgba(42,26,46,.18)}
+.msheet-link-quiet{opacity:.75;font-size:16px}
 
 /* ─── hero ─── */
 .hero{padding-top:clamp(110px,14vh,160px);padding-bottom:clamp(30px,5vw,60px)}
@@ -163,6 +166,42 @@
 .fc{background:#fff;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:8px;text-align:left;
   box-shadow:0 8px 0 rgba(42,26,46,.08);transition:transform .28s cubic-bezier(.3,1.6,.4,1),box-shadow .28s}
 .fc:hover{transform:translateY(-7px) rotate(-1deg);box-shadow:0 15px 0 rgba(42,26,46,.08)}
+.fc-soon{opacity:.72;cursor:default}
+.fc-soon:hover{transform:none;box-shadow:0 8px 0 rgba(42,26,46,.08)}
+
+/* ─── mini-games ─── */
+.game-dialog{max-width:640px}
+.game-body{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:16px}
+
+.coloring-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.coloring-palette{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.swatch{width:34px;height:34px;border-radius:50%;border:3px solid rgba(42,26,46,.15);
+  transition:transform .18s,border-color .18s}
+.swatch.on{transform:scale(1.18);border-color:var(--plum)}
+.coloring-canvas{position:relative;width:100%;max-width:320px}
+.coloring-svg{display:block;width:100%;height:auto}
+.coloring-svg *{transition:fill .15s}
+.coloring-hitareas{position:absolute;inset:0}
+.coloring-hit{position:absolute;background:transparent;border:none;padding:0;margin:0;cursor:pointer}
+.coloring-hit:focus-visible{outline:3px solid var(--plum);outline-offset:2px;z-index:1}
+.coloring-hint{color:var(--ink60);font-size:14px;text-align:center}
+
+.memory-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.memory-status{color:var(--ink60);font-size:14px}
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:340px}
+.memory-card{aspect-ratio:1;border-radius:14px;background:var(--plum);box-shadow:0 5px 0 rgba(42,26,46,.18);
+  display:flex;align-items:center;justify-content:center;transition:transform .18s;padding:8px}
+.memory-card:not(:disabled):hover{transform:translateY(-2px)}
+.memory-card.up{background:#fff;box-shadow:inset 0 0 0 3px rgba(42,26,46,.08)}
+.memory-card-face{width:100%;height:100%}
+
+.whack-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.whack-status{color:var(--ink60);font-size:14px}
+.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:300px}
+.whack-cell{aspect-ratio:1;border-radius:16px;background:rgba(42,26,46,.06);display:flex;
+  align-items:center;justify-content:center;transition:transform .12s,background .12s;padding:10px}
+.whack-cell.up{background:#FFE3C0;transform:scale(1.06)}
+.whack-icon{width:100%;height:100%}
 
 /* ─── explorer ring ─── */
 .ring{position:fixed;left:14px;bottom:14px;z-index:340;background:rgba(255,246,233,.94);
@@ -191,9 +230,37 @@
 .shaker{animation:shk .65s cubic-bezier(.36,.07,.19,.97)}
 @keyframes shk{10%,90%{transform:translate3d(-3px,0,0)}20%,80%{transform:translate3d(5px,0,0)}
   30%,50%,70%{transform:translate3d(-9px,0,0)}40%,60%{transform:translate3d(9px,0,0)}}
-.drip{position:fixed;top:0;z-index:420;width:18px;border-radius:0 0 12px 12px;
-  background:linear-gradient(180deg,#4E2B14,#8B4A28);animation:dD 1.9s cubic-bezier(.3,.1,.4,1) forwards;pointer-events:none}
-@keyframes dD{0%{height:0;opacity:1}70%{opacity:1}100%{height:var(--h);opacity:0}}
+.wobble{animation:wbl .6s ease-in-out}
+@keyframes wbl{0%,100%{transform:rotate(0)}25%{transform:rotate(-1.1deg)}50%{transform:rotate(0)}75%{transform:rotate(1.1deg)}}
+
+/* map "wow" particles — one shared base, one animation per `kind` (see
+   WOW_FX in App.jsx and FxLayers.jsx) so every location's effect feels
+   different without needing its own state/render logic. */
+.wow-fx{position:fixed;top:0;z-index:420;width:18px;pointer-events:none}
+.wow-chocolate{border-radius:0 0 12px 12px;background:linear-gradient(180deg,#4E2B14,#8B4A28);
+  animation:dropFall 1.9s cubic-bezier(.3,.1,.4,1) forwards}
+.wow-berry{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#E8657F,#A72446);
+  animation:berryFall 1.8s cubic-bezier(.3,.1,.4,1) forwards}
+.wow-donut{width:22px;height:22px;border-radius:50%;
+  background:radial-gradient(circle,#F7ECD7 34%,#D9A05B 38%,#A72446 100%);
+  animation:donutFall 2.1s ease-in forwards}
+.wow-jellybean{width:13px;height:18px;border-radius:50%;animation:beanBounce 1.9s cubic-bezier(.3,.1,.4,1) forwards}
+.wow-jellybean:nth-child(3n){background:#6F9C7E}
+.wow-jellybean:nth-child(3n+1){background:#A72446}
+.wow-jellybean:nth-child(3n+2){background:#D8AA58}
+.wow-frost{top:auto;bottom:0;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#fff,#9fd0e6);
+  box-shadow:0 0 8px rgba(160,220,240,.8);animation:frostRise 2.1s ease-out forwards}
+@keyframes dropFall{0%{height:0;opacity:1}70%{opacity:1}100%{height:var(--dist);opacity:0}}
+@keyframes berryFall{0%{transform:translate(0,0);opacity:1}100%{transform:translate(14px,var(--dist));opacity:0}}
+@keyframes donutFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(var(--dist)) rotate(340deg);opacity:0}}
+@keyframes beanBounce{0%{transform:translateY(0);opacity:1}30%{transform:translateY(var(--dist))}
+  45%{transform:translateY(calc(var(--dist)*.7))}60%{transform:translateY(var(--dist));opacity:1}
+  75%{transform:translateY(calc(var(--dist)*.85))}100%{transform:translateY(var(--dist));opacity:0}}
+@keyframes frostRise{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(calc(var(--dist) * -1));opacity:0}}
+.wow-flash{position:fixed;inset:0;z-index:410;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,247,232,.9),rgba(216,170,88,.35));
+  animation:wowFlash .32s ease-out forwards}
+@keyframes wowFlash{0%{opacity:1}100%{opacity:0}}
 .spark{position:fixed;pointer-events:none;z-index:430;animation:spO .85s ease-out forwards}
 @keyframes spO{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.2) rotate(140deg) translateY(18px)}}
 .conf{position:fixed;top:-26px;z-index:820;pointer-events:none;animation:fall linear forwards}

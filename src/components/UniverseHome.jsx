@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { BOOKS } from "../data/books.js";
+import { useDialogTrap } from "../hooks/useDialogTrap.js";
 
 const NAV_ITEMS = [
   { id: "worlds", label: "Worlds" },
@@ -37,32 +38,13 @@ export function UniverseHome({ onEnterSnackville }) {
   const [signupState, setSignupState] = useState("idle");
   const emailRef = useRef(null);
   const menuRef = useRef(null);
-  const menuButtonRef = useRef(null);
 
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    const controls = [...menuRef.current.querySelectorAll("button")];
-    document.body.style.overflow = "hidden";
-    controls[0]?.focus();
-    const handleKey = (event) => {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-        menuButtonRef.current?.focus();
-      }
-      if (event.key === "Tab" && controls.length) {
-        const first = controls[0];
-        const last = controls[controls.length - 1];
-        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-        if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKey);
-    };
-  }, [menuOpen]);
+  // Stable identity: useDialogTrap's effect depends on this callback, and
+  // an inline arrow recreated every render would re-arm the focus trap
+  // (re-focusing the menu's first link) on every unrelated re-render
+  // while the menu is open.
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  useDialogTrap(menuRef, closeMenu, menuOpen);
 
   const go = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -92,7 +74,7 @@ export function UniverseHome({ onEnterSnackville }) {
         <nav className="universe-nav__links" aria-label="Main navigation">
           {NAV_ITEMS.map((item) => <button key={item.id} onClick={() => go(item.id)}>{item.label}</button>)}
         </nav>
-        <button ref={menuButtonRef} className="universe-menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close navigation" : "Open navigation"}>
+        <button className="universe-menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close navigation" : "Open navigation"}>
           <span /><span />
         </button>
       </header>

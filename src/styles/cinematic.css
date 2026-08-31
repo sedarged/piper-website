@@ -668,8 +668,8 @@ a { -webkit-tap-highlight-color: transparent; }
   border: 2px solid rgba(255,247,232,.9);
   border-radius: 50%;
 }
-.map-hotspot.dragon { animation: mapDragonPulse 2.6s ease-in-out infinite; }
-@keyframes mapDragonPulse {
+.map-hotspot.wow-spot { animation: mapWowPulse 2.6s ease-in-out infinite; }
+@keyframes mapWowPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(216,170,88,0); }
   50% { box-shadow: 0 0 0 8px rgba(216,170,88,.22); }
 }
@@ -1210,7 +1210,7 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
 
 @media (prefers-reduced-motion: reduce) {
   body::before { opacity: .45; }
-  .map-hotspot.dragon,
+  .map-hotspot.wow-spot,
   .place-dialog-scrim,
   .place-dialog { animation: none; }
   .world-image img { animation: none; transition: none; }

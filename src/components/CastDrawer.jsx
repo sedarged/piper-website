@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { drive, AMAZON_URL } from "../config.js";
 import { CAST } from "../data/cast.js";
+import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { Img } from "./Img.jsx";
 
 /**
@@ -11,37 +12,14 @@ import { Img } from "./Img.jsx";
  *
  * Closes on Escape and locks body scroll while open (a modal that lets
  * the page scroll behind it is a common source of "why is my page
- * jumping" bug reports).
+ * jumping" bug reports) — see useDialogTrap for the shared mechanics.
  */
 export function CastDrawer({ index, onClose, onNavigate }) {
   const open = index !== null;
   const character = open ? CAST[index] : null;
   const drawerRef = useRef(null);
-  const lastTriggerRef = useRef(null);
 
-  useEffect(() => {
-    if (!open) return;
-    lastTriggerRef.current = document.activeElement;
-    const previousOverflow = document.body.style.overflow;
-    const drawer = drawerRef.current;
-    const getFocusable = () => drawer?.querySelectorAll("button:not([disabled]), a[href]") ?? [];
-    const onKey = (e) => {
-      if (e.key === "Escape") { e.preventDefault(); onClose(); return; }
-      if (e.key !== "Tab") return;
-      const focusable = getFocusable();
-      if (focusable.length < 2) return;
-      if (e.shiftKey && document.activeElement === focusable[0]) { e.preventDefault(); focusable[focusable.length - 1].focus(); }
-      if (!e.shiftKey && document.activeElement === focusable[focusable.length - 1]) { e.preventDefault(); focusable[0].focus(); }
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    getFocusable()[0]?.focus();
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
-      window.setTimeout(() => lastTriggerRef.current?.focus(), 0);
-    };
-  }, [open, onClose]);
+  useDialogTrap(drawerRef, onClose, open);
 
   const next = open ? CAST[(index + 1) % CAST.length] : null;
 
