@@ -5,9 +5,13 @@ import { C } from "../styles/tokens.js";
  * Coordinates are percentages measured against the 1536 × 864 map artwork,
  * so the accessible hit targets remain aligned at every rendered size.
  *
- * A place with a `wow` key gets an extra action button that plays a
- * signature "wow" effect (screen shake, falling/rising particles, sound
- * and a toast) — see the WOW_FX table in App.jsx for what each key does.
+ * Every place has a `wow` flag and gets an extra action button that plays
+ * a signature effect (screen reaction, particles, sound and a toast) —
+ * see the WOW_FX table in App.jsx, keyed by each place's own `id`, for
+ * exactly what happens. Each of the 20 is a bespoke effect tied to that
+ * location's own theme (Dragon Cave's smoke rings are not Chocolate
+ * Volcano's drips wearing a different colour) — no two locations share
+ * the same combination of motion, particles and sound.
  */
 export const PLACES = [
   {
@@ -16,6 +20,7 @@ export const PLACES = [
     intro: "The warm, berry-bright heart of Snackville.",
     d: "Piper's cottage wears a strawberry roof and a garden that glimmers after sunset. This is where brave plans begin, friends gather for tea, and there is always room for one more at the table.",
     note: "Listen near the gate and you may hear the strawberries humming.",
+    wow: true, actionLabel: "Ring the cottage bell",
   },
   {
     id: "berry-patch", n: 2, x: 14.4, y: 31.6, ink: C.strawberry,
@@ -23,7 +28,7 @@ export const PLACES = [
     intro: "Snackville's sweetest patch of growing courage.",
     d: "Rows of strawberries, raspberries and tiny moon-berries curl around the western shore. Piper knows every path between the leaves and shares the ripest fruit with anyone who needs cheering up.",
     note: "The best berries hide beneath leaves shaped like little hearts.",
-    wow: "berry", actionLabel: "Shake the berry bush",
+    wow: true, actionLabel: "Shake the berry bush",
   },
   {
     id: "hq", n: 3, x: 50.1, y: 9.6, ink: C.mint,
@@ -31,6 +36,7 @@ export const PLACES = [
     intro: "Four friends, one table, and a hundred possible adventures.",
     d: "Behind the green towers is the Squad's famous planning room. Piper brings courage, Croissant Kitty brings speed, Toast Kitty brings inventions, and Sandwich Kitty makes sure every plan is strong enough to work.",
     note: "The golden S on the towers shines whenever Snackville needs help.",
+    wow: true, actionLabel: "Sound the alarm",
   },
   {
     id: "square", n: 4, x: 46.0, y: 25.9, ink: C.strawberry,
@@ -38,7 +44,7 @@ export const PLACES = [
     intro: "Every road, rumour and celebration meets here.",
     d: "Candy-cane paths spiral around the tall chocolate fountain in Snackville's bustling centre. Neighbours trade treats, musicians rehearse, and the Snack Squad can usually be found racing through on urgent business.",
     note: "Stand on the centre stone and every path points toward a friend.",
-    wow: "candy", actionLabel: "Swing at the candy piñata",
+    wow: true, actionLabel: "Swing at the candy piñata",
   },
   {
     id: "fountain", n: 5, x: 55.9, y: 40.4, ink: C.strawberry,
@@ -46,6 +52,7 @@ export const PLACES = [
     intro: "A tall, cocoa-scented landmark at the centre of town.",
     d: "Warm chocolate tumbles down its many tiers without ever overflowing. The fountain marks the centre of Snackville and turns especially glossy when an adventure has ended well.",
     note: "The bottom tier is for looking, not licking — mostly.",
+    wow: true, actionLabel: "Dip into the fountain",
   },
   {
     id: "sweet-treats-street", n: 6, x: 28.2, y: 41.5, ink: C.strawberry,
@@ -53,6 +60,7 @@ export const PLACES = [
     intro: "A crooked little street with a delicious smell around every corner.",
     d: "Biscuit-roofed shops sell sugared buns, jam tarts and mysterious daily specials. Croissant Kitty can cross the whole street before a cooling tray of pastries reaches the window.",
     note: "Follow the cinnamon breeze to find the bakery bell.",
+    wow: true, actionLabel: "Follow the cinnamon breeze",
   },
   {
     id: "cupcake-cart", n: 7, x: 8.9, y: 49.7, ink: C.grape,
@@ -60,6 +68,7 @@ export const PLACES = [
     intro: "A tiny wheeled bakery with a very big frosting swirl.",
     d: "The Cupcake Cart trundles from party to party along the coast. Its shelves rattle, its bell jingles, and somehow every cupcake arrives with its sprinkles still perfectly in place.",
     note: "Its wheels leave little sugar stars in the road.",
+    wow: true, actionLabel: "Ring the cart bell",
   },
   {
     id: "croissant-house", n: 8, x: 62.9, y: 47.7, ink: C.butter,
@@ -67,6 +76,7 @@ export const PLACES = [
     intro: "Curved, golden and ready to whoosh at a moment's notice.",
     d: "Croissant Kitty's home is built in buttery layers with a long runway through the garden. Scarves hang beside every door, ready for the fastest member of the Squad to dash into action.",
     note: "The weather vane spins whenever Croissant Kitty zooms past.",
+    wow: true, actionLabel: "Watch Croissant Kitty zoom past",
   },
   {
     id: "sandwich-fort", n: 9, x: 71.8, y: 51.6, ink: C.mint,
@@ -74,6 +84,7 @@ export const PLACES = [
     intro: "The strongest, safest sandwich in all of Snackville.",
     d: "Two enormous toast towers guard a leafy courtyard made for training, picnics and heroic rescues. Sandwich Kitty built every sturdy corner and keeps spare capes by the front door.",
     note: "The drawbridge can hold twelve kittens and one enormous picnic.",
+    wow: true, actionLabel: "Raise the drawbridge",
   },
   {
     id: "workshop", n: 10, x: 86.3, y: 54.0, ink: C.ember,
@@ -81,6 +92,7 @@ export const PLACES = [
     intro: "Where clever ideas pop up faster than breakfast.",
     d: "Gear-shaped windows glow late into the night while Toast Kitty sketches, tests and tinkers. Half-finished gadgets cover every bench, but the right invention is always ready when the Squad needs it.",
     note: "If a machine says ping, duck first and ask questions second.",
+    wow: true, actionLabel: "Pull the big lever",
   },
   {
     id: "donut-park", n: 11, x: 23.0, y: 63.1, ink: C.grape,
@@ -88,7 +100,7 @@ export const PLACES = [
     intro: "A shady park where breakfast grows on branches.",
     d: "Pink and chocolate donut trees ring a soft grassy clearing. Snackville families picnic here, while the Squad practises quiet landings beneath branches heavy with morning treats.",
     note: "Arrive at dawn if you hope to find the sprinkled ones.",
-    wow: "donut", actionLabel: "Shake the donut tree",
+    wow: true, actionLabel: "Shake the donut tree",
   },
   {
     id: "jellybean-hill", n: 12, x: 36.8, y: 77.1, ink: C.grape,
@@ -96,7 +108,7 @@ export const PLACES = [
     intro: "The Squad's favourite place to watch the stars.",
     d: "A sparkling hill of smooth jellybeans rises above the southern shore. After every adventure, the four friends curl up here together and remember that even the biggest problem feels smaller beneath the night sky.",
     note: "Blue jellybeans make the best seats, according to Piper.",
-    wow: "jellybean", actionLabel: "Roll the jellybean barrel",
+    wow: true, actionLabel: "Roll the jellybean barrel",
   },
   {
     id: "croissant-bridge", n: 13, x: 59.7, y: 75.1, ink: C.ember,
@@ -104,6 +116,7 @@ export const PLACES = [
     intro: "A golden shortcut arcing over the sparkling river.",
     d: "The bridge's flaky-looking stones are much stronger than they seem. Croissant Kitty uses its smooth curve as a practice track and can cross it before the river below finishes one splash.",
     note: "A tiny bell rings whenever someone sets a new crossing record.",
+    wow: true, actionLabel: "Race across the bridge",
   },
   {
     id: "cloud-bridge", n: 14, x: 85.5, y: 79.3, ink: C.sky,
@@ -111,6 +124,7 @@ export const PLACES = [
     intro: "Soft underfoot, slightly bouncy, and always pointing home.",
     d: "Whipped-cream clouds gather into a long bridge above the sea. It connects Snackville to faraway paths and gently lifts tired travellers over the final hill.",
     note: "Walk in the middle — the edges are exceptionally ticklish.",
+    wow: true, actionLabel: "Bounce on the cloud",
   },
   {
     id: "volcano", n: 15, x: 68.6, y: 12.1, ink: C.cocoa,
@@ -118,7 +132,7 @@ export const PLACES = [
     intro: "Warm, rumbly and not nearly as cross as it looks.",
     d: "Rivers of melted chocolate glow along the mountain's dark ridges. Deep inside, the Chocolate Dragon guards old tunnels and tries very hard not to sneeze cocoa dust across the whole island.",
     note: "A rumble means the dragon is stirring. Two rumbles mean cover your treats.",
-    wow: "chocolate", actionLabel: "Wake the Chocolate Dragon",
+    wow: true, actionLabel: "Wake the Chocolate Dragon",
   },
   {
     id: "hidden-cave", n: 16, x: 64.9, y: 22.5, ink: C.cocoa,
@@ -126,6 +140,7 @@ export const PLACES = [
     intro: "A shadowy doorway concealed behind glossy chocolate folds.",
     d: "The entrance appears only when the volcano's warm light catches the rocks just right. It leads toward old cocoa tunnels, forgotten clues and more than one route the Snack Squad has yet to map.",
     note: "Toast Kitty recommends bringing a torch and two emergency biscuits.",
+    wow: true, actionLabel: "Peek into the cave",
   },
   {
     id: "dragon-cave", n: 17, x: 79.5, y: 36.8, ink: C.cocoa,
@@ -133,7 +148,7 @@ export const PLACES = [
     intro: "A cosy cavern for one enormous, sneezy neighbour.",
     d: "The cave walls shine like dark chocolate and the floor is warm beneath your paws. The Chocolate Dragon keeps a nest of wrappers, shiny pebbles and thank-you notes from everyone he has accidentally helped.",
     note: "Speak softly. The dragon's naps are legendary; so are his sneezes.",
-    wow: "chocolate", actionLabel: "Say hello to the dragon",
+    wow: true, actionLabel: "Say hello to the dragon",
   },
   {
     id: "chocolate-river", n: 18, x: 77.7, y: 45.0, ink: C.cocoa,
@@ -141,6 +156,7 @@ export const PLACES = [
     intro: "A slow, shining river curling around the eastern path.",
     d: "The river carries warm chocolate from the volcano toward the sea before cooling into harmless cocoa pebbles. Little stone bridges keep every paw clean during busy rescue missions.",
     note: "Never race a marshmallow boat here after lunchtime.",
+    wow: true, actionLabel: "Float a marshmallow boat",
   },
   {
     id: "landing-site", n: 19, x: 16.8, y: 12.2, ink: C.butter,
@@ -148,6 +164,7 @@ export const PLACES = [
     intro: "The place where a perfectly ordinary day became an alien adventure.",
     d: "A silver craft once bounced down here with a wobble, a plop and a crowd of giggling custard aliens. The Squad keeps the landing rings clear, just in case the visitors decide to return.",
     note: "Some mornings, tiny yellow footprints still sparkle in the dust.",
+    wow: true, actionLabel: "Look for footprints",
   },
   {
     id: "ice-cream-caves", n: 20, x: 89.5, y: 27.8, ink: C.sky,
@@ -155,6 +172,6 @@ export const PLACES = [
     intro: "A blue-glowing maze beyond the Chocolate Volcano.",
     d: "Pastel towers surround caverns of cool light, frozen waterfalls and echoing tunnels. Toast Kitty believes the deepest chamber hides a door to an adventure nobody has discovered yet.",
     note: "The walls change flavour with the weather — but explorers only look.",
-    wow: "frost", actionLabel: "Wake the cave echo",
+    wow: true, actionLabel: "Wake the cave echo",
   },
 ];

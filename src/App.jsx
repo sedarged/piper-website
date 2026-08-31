@@ -35,44 +35,123 @@ import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
 
 /**
- * One entry per map location `wow` key (see data/places.js): the pitch
- * and duration of its chime, whether it shakes the screen ("hard" like
- * the volcano, "soft" like a gentler wobble, or none), what particles
- * fall/rise, and the toast + guide-bubble copy that goes with it. Every
- * location shares the exact same trigger mechanics as the original
- * Chocolate Dragon sneeze — only the numbers and particle `kind` differ
- * — so the map stays varied without any per-effect bespoke code.
+ * One entry per map location, keyed by its own `id` (see data/places.js)
+ * — every one of the 20 stops has its own bespoke reaction, not a shared
+ * template recoloured. Each entry picks its own combination of:
+ *   - `shake`: null | "hard" (the volcano's rumble) | "soft" (a gentle
+ *     wobble) | "bounce" (a springy scale-pulse) | "thud" (one sharp bump)
+ *   - `particles`: a `kind` (its own CSS class + keyframe family — falling,
+ *     rising, bouncing, drifting sideways, a staggered ground trail, a
+ *     radial spark shower, an expanding smoke ring, or a scattered flicker)
+ *     plus a `count`
+ *   - `rings` / `streaks`: alternatives to particles for an alarm-style
+ *     pulse or a fast motion-blur streak
+ *   - `flashTint`: a brief full-screen tint ("gold", "green", or "dark"
+ *     for a vignette peek)
+ *   - `confettiBurst`: reuses the existing multicolour confetti system
+ * so that Dragon Cave's sleepy smoke rings, say, share no visual DNA with
+ * Chocolate Volcano's rumble-and-drip, even though they're neighbours.
  */
 const WOW_FX = {
-  chocolate: {
-    shake: "hard", pitch: 170, dur: 0.36, particles: { kind: "chocolate", count: 12 },
-    toastTitle: "Bless you!", toastBody: "The Chocolate Dragon sneezed. That happens a lot.",
-    guide: "He does that. He's not cross — he's just dusty.",
+  cottage: {
+    shake: null, pitch: 760, dur: 0.22, particles: { kind: "heart", count: 10, life: 2200 },
+    toastTitle: "Ding dong!", toastBody: "The cottage bell rang all through the garden.",
+    guide: "Piper says the bell means someone's welcome for tea.",
   },
-  berry: {
-    shake: "soft", pitch: 520, dur: 0.22, particles: { kind: "berry", count: 14 },
+  "berry-patch": {
+    shake: "soft", pitch: 520, dur: 0.22, particles: { kind: "berry", count: 14, life: 2400 },
     toastTitle: "Berry shower!", toastBody: "The berry bush let go of everything it was holding.",
     guide: "Piper says that happens when you tickle the roots.",
   },
-  donut: {
-    shake: "soft", pitch: 300, dur: 0.24, particles: { kind: "donut", count: 10 },
+  hq: {
+    shake: null, pitch: 300, dur: 0.3, rings: { count: 3, color: "#6F9C7E" }, flashTint: "green",
+    toastTitle: "Alert!", toastBody: "The golden S is glowing — Snackville needs a hero.",
+    guide: "That's the signal. Something's about to happen.",
+  },
+  square: {
+    shake: null, pitch: 640, dur: 0.3, confettiBurst: 40, flashTint: "gold",
+    toastTitle: "Piñata!", toastBody: "Candy Path Square just got a lot more colourful.",
+    guide: "Somebody's going to be sweeping confetti for a week.",
+  },
+  fountain: {
+    shake: null, pitch: 230, dur: 0.28, particles: { kind: "fountain", count: 14, life: 1900 },
+    toastTitle: "Splash!", toastBody: "The fountain overflowed with warm chocolate.",
+    guide: "Careful — it's warmer than it looks.",
+  },
+  "sweet-treats-street": {
+    shake: null, pitch: 500, dur: 0.2, particles: { kind: "aroma", count: 10, life: 2600 },
+    toastTitle: "Mmm, cinnamon!", toastBody: "The bakery bell brought the whole street outside.",
+    guide: "Follow your nose. It never lies on this street.",
+  },
+  "cupcake-cart": {
+    shake: null, pitch: 880, dur: 0.16, particles: { kind: "trailstar", count: 9, life: 2600 },
+    toastTitle: "Ding ding!", toastBody: "The cart rattled past, leaving sugar stars behind.",
+    guide: "Its wheels always leave a trail like that.",
+  },
+  "croissant-house": {
+    shake: null, pitch: 1100, dur: 0.12, streaks: { count: 1, color: "#ffffff" },
+    toastTitle: "Whoosh!", toastBody: "Croissant Kitty just zoomed past the weather vane.",
+    guide: "Blink and you'll miss her. She's the fastest in Snackville.",
+  },
+  "sandwich-fort": {
+    shake: "thud", pitch: 150, dur: 0.3, particles: { kind: "brick", count: 8, life: 1900 },
+    toastTitle: "Thud!", toastBody: "The drawbridge slammed shut, safe and sound.",
+    guide: "Sandwich Kitty built it strong enough for twelve kittens.",
+  },
+  workshop: {
+    shake: "soft", pitch: 950, dur: 0.14, particles: { kind: "spark", count: 18, life: 900 },
+    toastTitle: "Ping!", toastBody: "Toast Kitty's invention sparked to life.",
+    guide: "That's usually a good sign. Usually.",
+  },
+  "donut-park": {
+    shake: "soft", pitch: 300, dur: 0.24, particles: { kind: "donut", count: 10, life: 2400 },
     toastTitle: "Donut rain!", toastBody: "The whole tree let go at once. Breakfast, sorted.",
     guide: "Croissant Kitty is already down there catching them.",
   },
-  jellybean: {
-    shake: "soft", pitch: 460, dur: 0.2, particles: { kind: "jellybean", count: 16 },
+  "jellybean-hill": {
+    shake: "soft", pitch: 460, dur: 0.2, particles: { kind: "jellybean", count: 16, life: 2400 },
     toastTitle: "Jellybeans everywhere!", toastBody: "The barrel rolled a little too far downhill.",
     guide: "Blue ones bounce highest, according to Piper.",
   },
-  frost: {
-    shake: null, pitch: 900, dur: 0.3, particles: { kind: "frost", count: 14 },
+  "croissant-bridge": {
+    shake: null, pitch: 700, dur: 0.18, streaks: { count: 3, color: "#D8AA58" },
+    toastTitle: "Ding!", toastBody: "Someone just set a new crossing record.",
+    guide: "The bell only rings for the fastest paws.",
+  },
+  "cloud-bridge": {
+    shake: "bounce", pitch: 400, dur: 0.24, particles: { kind: "cloud", count: 10, life: 2400 },
+    toastTitle: "Boing!", toastBody: "The whipped-cream clouds bounced you right up.",
+    guide: "Soft, bouncy, and always pointing home.",
+  },
+  volcano: {
+    shake: "hard", pitch: 170, dur: 0.36, particles: { kind: "chocolate", count: 12, life: 2400 },
+    toastTitle: "Bless you!", toastBody: "The Chocolate Dragon sneezed. That happens a lot.",
+    guide: "He does that. He's not cross — he's just dusty.",
+  },
+  "hidden-cave": {
+    shake: null, pitch: 900, dur: 0.12, particles: { kind: "glint", count: 6, life: 1300 }, flashTint: "dark",
+    toastTitle: "Shh...", toastBody: "Something glinted in the shadows of the cave.",
+    guide: "Toast Kitty says bring a torch next time.",
+  },
+  "dragon-cave": {
+    shake: "hard", pitch: 130, dur: 0.4, particles: { kind: "smoke", count: 8, life: 2200 },
+    toastTitle: "Roooar... *sniff*", toastBody: "The dragon stirred in his sleep, puffing smoke rings.",
+    guide: "He's not awake yet. Just dreaming, probably.",
+  },
+  "chocolate-river": {
+    shake: null, pitch: 260, dur: 0.2, particles: { kind: "boat", count: 5, life: 3200 },
+    toastTitle: "Ripple!", toastBody: "A marshmallow boat drifted safely down the river.",
+    guide: "Never race a marshmallow boat after lunchtime.",
+  },
+  "landing-site": {
+    shake: null, pitch: 1046, dur: 0.18, particles: { kind: "footprint", count: 7, life: 2800 },
+    toastTitle: "Beep boop!", toastBody: "Tiny footprints sparkled in the dust for a moment.",
+    guide: "The custard aliens might be closer than you think.",
+  },
+  "ice-cream-caves": {
+    shake: null, pitch: 900, dur: 0.3, particles: { kind: "frost", count: 14, life: 2400 },
     toastTitle: "The caves echo back!", toastBody: "Something sparkly answered from deep inside.",
     guide: "Toast Kitty thinks it's the door he's been looking for.",
-  },
-  candy: {
-    shake: null, pitch: 640, dur: 0.3, confettiBurst: 40,
-    toastTitle: "Piñata!", toastBody: "Candy Path Square just got a lot more colourful.",
-    guide: "Somebody's going to be sweeping confetti for a week.",
   },
 };
 
@@ -83,8 +162,8 @@ const WOW_FX = {
  *                    action completed so far (drives the Explorer ring
  *                    + badges)
  *   - `castIndex`    which character's drawer is open, if any
- *   - the FX state arrays (sparks, wowFx, confetti, flash) and the
- *     toast/celebration/guide-message singletons
+ *   - the FX state arrays (sparks, wowFx, wowRings, wowStreaks, confetti,
+ *     flash) and the toast/celebration/guide-message singletons
  *
  * Scroll-driven visuals (parallax, sky, sun/moon, day/night) do NOT
  * live here as state — see hooks/useScrollEngine.js for why, and for
@@ -103,10 +182,12 @@ function SnackvilleExperience({ onBackHome }) {
   });
   const [sparks, setSparks] = useState([]);
   const [wowFx, setWowFx] = useState([]);
+  const [wowRings, setWowRings] = useState([]);
+  const [wowStreaks, setWowStreaks] = useState([]);
   const [confetti, setConfetti] = useState([]);
   const [toast, setToast] = useState(null);
   const [shakeKind, setShakeKind] = useState(null);
-  const [flash, setFlash] = useState(false);
+  const [flash, setFlash] = useState(null);
   const [celebration, setCelebration] = useState(null);
   const [guideVisible, setGuideVisible] = useState(true);
   const [guideMessage, setGuideMessage] = useState(null);
@@ -236,7 +317,7 @@ function SnackvilleExperience({ onBackHome }) {
   }, [chime, burst, showToast]);
 
   const onWow = useCallback((place) => {
-    const fx = WOW_FX[place.wow];
+    const fx = WOW_FX[place.id];
     if (!fx) return;
 
     chime(fx.pitch, fx.dur);
@@ -246,22 +327,61 @@ function SnackvilleExperience({ onBackHome }) {
     }
     if (!reduceMotion.current) {
       if (fx.particles) {
-        const items = Array.from({ length: fx.particles.count }, (_, i) => ({
-          id: `w${Date.now()}-${i}-${Math.random()}`, kind: fx.particles.kind,
-          left: Math.random() * 100, dist: 70 + Math.random() * 200, delay: Math.random() * 0.3,
-        }));
+        const count = fx.particles.count;
+        // A few particle kinds need extra per-item fields beyond the
+        // default (left/dist/delay): "glint" scatters vertically too,
+        // "spark" flies outward in a random direction, and the two
+        // ground-trail kinds walk left-to-right in sequence instead of
+        // all appearing across random positions at once.
+        const items = Array.from({ length: count }, (_, i) => {
+          const item = {
+            id: `w${Date.now()}-${i}-${Math.random()}`, kind: fx.particles.kind,
+            left: Math.random() * 100, dist: 70 + Math.random() * 200, delay: Math.random() * 0.3,
+          };
+          if (fx.particles.kind === "glint") {
+            item.top = Math.random() * 70;
+          }
+          if (fx.particles.kind === "spark") {
+            const angle = Math.random() * Math.PI * 2;
+            const mag = 80 + Math.random() * 140;
+            item.dx = Math.cos(angle) * mag;
+            item.dy = Math.sin(angle) * mag;
+          }
+          if (fx.particles.kind === "trailstar" || fx.particles.kind === "footprint") {
+            item.left = (i / Math.max(count - 1, 1)) * 90 + 5;
+            item.delay = i * 0.12;
+          }
+          return item;
+        });
         // Append + remove-by-id, same reasoning as burst() above: triggering
         // a second wow effect (or the same one twice) before the first
-        // batch finishes its ~2.4s animation should let both play out,
-        // not have one wipe the other's still-falling particles.
+        // batch finishes its animation should let both play out, not have
+        // one wipe the other's still-animating particles.
         setWowFx((prev) => [...prev, ...items]);
         const ids = new Set(items.map((it) => it.id));
-        setTimeout(() => setWowFx((prev) => prev.filter((it) => !ids.has(it.id))), 2400);
+        setTimeout(() => setWowFx((prev) => prev.filter((it) => !ids.has(it.id))), fx.particles.life || 2400);
       }
-      if (fx.confettiBurst) {
-        setFlash(true);
-        setTimeout(() => setFlash(false), 320);
-        burst(fx.confettiBurst);
+      if (fx.rings) {
+        const items = Array.from({ length: fx.rings.count }, (_, i) => ({
+          id: `r${Date.now()}-${i}`, color: fx.rings.color, delay: i * 0.28,
+        }));
+        setWowRings((prev) => [...prev, ...items]);
+        const ids = new Set(items.map((it) => it.id));
+        setTimeout(() => setWowRings((prev) => prev.filter((it) => !ids.has(it.id))), 1600);
+      }
+      if (fx.streaks) {
+        const items = Array.from({ length: fx.streaks.count }, (_, i) => ({
+          id: `t${Date.now()}-${i}`, top: 20 + Math.random() * 55, delay: i * 0.09, color: fx.streaks.color,
+        }));
+        setWowStreaks((prev) => [...prev, ...items]);
+        const ids = new Set(items.map((it) => it.id));
+        setTimeout(() => setWowStreaks((prev) => prev.filter((it) => !ids.has(it.id))), 900);
+      }
+      if (fx.confettiBurst) burst(fx.confettiBurst);
+      if (fx.flashTint) {
+        setFlash(fx.flashTint);
+        const flashLife = fx.flashTint === "dark" ? 900 : 320;
+        setTimeout(() => setFlash((current) => (current === fx.flashTint ? null : current)), flashLife);
       }
     }
     showToast(fx.toastTitle, fx.toastBody);
@@ -341,7 +461,17 @@ function SnackvilleExperience({ onBackHome }) {
   })), []);
 
   return (
-    <div ref={rootRef} className={shakeKind === "hard" ? "shaker" : shakeKind === "soft" ? "wobble" : ""} data-night="0">
+    <div
+      ref={rootRef}
+      className={
+        shakeKind === "hard" ? "shaker"
+        : shakeKind === "soft" ? "wobble"
+        : shakeKind === "bounce" ? "bump"
+        : shakeKind === "thud" ? "thud"
+        : ""
+      }
+      data-night="0"
+    >
       <a className="skip-link" href="#story">Skip to the story</a>
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
@@ -431,7 +561,7 @@ function SnackvilleExperience({ onBackHome }) {
 
       <CastDrawer index={castIndex} onClose={closeDrawer} onNavigate={setCastIndex} />
 
-      <FxLayers sparks={sparks} wowFx={wowFx} confetti={confetti} flash={flash} />
+      <FxLayers sparks={sparks} wowFx={wowFx} wowRings={wowRings} wowStreaks={wowStreaks} confetti={confetti} flash={flash} />
 
       {!celebration && (
         <ExplorerRing
