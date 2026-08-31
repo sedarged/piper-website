@@ -26,6 +26,10 @@ export function GrownUps({ chime, burst }) {
   const [sent, setSent] = useState(false);
 
   return (
+    // The "gu" class carries no visible styling of its own here — it's kept
+    // solely so cinematic.css's `:has(.gu)` selector still recognises this
+    // as the grown-ups panel and applies the parchment card look to its
+    // wrapping .panel (see App.jsx).
     <div className="gu" style={{ background: "transparent", border: "none", padding: 0 }}>
       <div className="gu-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,4vw,52px)", alignItems: "start" }}>
         <div>

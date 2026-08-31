@@ -7,6 +7,18 @@ import { useDialogTrap } from "../../hooks/useDialogTrap.js";
  * useDialogTrap) and its `.place-dialog` visuals, so a game feels like
  * part of the same storybook rather than a bolted-on widget.
  */
+/** The "you won" action every mini-game ends on — shared so the three
+ *  games don't each hardcode the same button. */
+export function GameCompleteButton({ onComplete, label = "Collect my badge!" }) {
+  return <button className="btn b-straw" onClick={onComplete}>{label}</button>;
+}
+
+/** The secondary "go again" action shown alongside GameCompleteButton,
+ *  or on its own before a game's first round has finished. */
+export function GameRetryButton({ onRetry, label }) {
+  return <button className="btn b-ghost btn-sm" onClick={onRetry}>{label}</button>;
+}
+
 export function GameModal({ title, eyebrow, onClose, children }) {
   const dialogRef = useRef(null);
   useDialogTrap(dialogRef, onClose, true);

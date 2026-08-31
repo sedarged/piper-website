@@ -178,8 +178,12 @@
 .swatch{width:34px;height:34px;border-radius:50%;border:3px solid rgba(42,26,46,.15);
   transition:transform .18s,border-color .18s}
 .swatch.on{transform:scale(1.18);border-color:var(--plum)}
-.coloring-svg{width:100%;max-width:320px;height:auto}
-.coloring-svg *{cursor:pointer;transition:fill .15s}
+.coloring-canvas{position:relative;width:100%;max-width:320px}
+.coloring-svg{display:block;width:100%;height:auto}
+.coloring-svg *{transition:fill .15s}
+.coloring-hitareas{position:absolute;inset:0}
+.coloring-hit{position:absolute;background:transparent;border:none;padding:0;margin:0;cursor:pointer}
+.coloring-hit:focus-visible{outline:3px solid var(--plum);outline-offset:2px;z-index:1}
 .coloring-hint{color:var(--ink60);font-size:14px;text-align:center}
 
 .memory-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}

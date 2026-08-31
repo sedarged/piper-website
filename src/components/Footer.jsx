@@ -1,5 +1,4 @@
 import { AMAZON_URL } from "../config.js";
-import { I } from "./Icons.jsx";
 
 /**
  * The site footer: brand mark, three link columns, and a colophon line

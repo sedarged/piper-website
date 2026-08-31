@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { I } from "../Icons.jsx";
 import { C } from "../../styles/tokens.js";
+import { GameCompleteButton, GameRetryButton } from "./GameModal.jsx";
 
 const GRID = 9;
 const ROUND_SECONDS = 20;
@@ -81,8 +82,8 @@ export function WhackASnack({ onComplete, chime }) {
       {!running && !finished && <button className="btn b-straw" onClick={start}>Start!</button>}
       {finished && (
         <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-          <button className="btn b-straw" onClick={onComplete}>Collect my badge!</button>
-          <button className="btn b-ghost btn-sm" onClick={start}>Play again</button>
+          <GameCompleteButton onComplete={onComplete} />
+          <GameRetryButton onRetry={start} label="Play again" />
         </div>
       )}
     </div>

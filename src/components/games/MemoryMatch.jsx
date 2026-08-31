@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { TI } from "../Icons.jsx";
+import { GameCompleteButton, GameRetryButton } from "./GameModal.jsx";
 
 // Each icon's default colour (see Icons.jsx) is already the right one
 // for this game, so TI[key]() is called with no colour override below.
@@ -69,9 +70,9 @@ export function MemoryMatch({ onComplete, chime }) {
         })}
       </div>
       {done ? (
-        <button className="btn b-straw" onClick={onComplete}>Collect my badge!</button>
+        <GameCompleteButton onComplete={onComplete} />
       ) : (
-        <button className="btn b-ghost btn-sm" onClick={restart}>Shuffle again</button>
+        <GameRetryButton onRetry={restart} label="Shuffle again" />
       )}
     </div>
   );

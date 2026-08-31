@@ -67,7 +67,7 @@ export function Free({ mark, burst, chime, showToast }) {
       {GameComponent && (
         <GameModal
           title={openGame.name}
-          eyebrow={`Snackville studio · ${openGame.n}`}
+          eyebrow="Snackville studio"
           onClose={() => setOpenGameId(null)}
         >
           <GameComponent chime={chime} onComplete={() => complete(openGame)} />
