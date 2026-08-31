@@ -1,34 +1,32 @@
 import { useCallback, useRef, useState } from "react";
-import { PLACES } from "../data/places.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
 
-const MAP_SRC = "/images/snackville-interactive-map.jpeg";
-
 /**
- * The official twenty-stop Snackville map.
+ * A generic illustrated, numbered map — the same interaction pattern as
+ * Snackville's MapHub (accessible hotspots, a field-note dialog, a
+ * scrollable index), reused for Stackwich Kingdom and Crumbhollow so a
+ * new world's map doesn't need its own bespoke component.
  *
- * Every printed number on the illustration has a matching native button.
- * Selecting a location updates the field-note panel, marks Explorer progress,
- * and opens an accessible storybook introduction. Every location also carries
- * a `wow` key (see data/places.js) and gets an extra action button that plays
- * its own signature screen-reaction-and-particles effect — see WOW_FX in App.jsx.
+ * Unlike Snackville, these worlds don't have a "wow" screen effect per
+ * location yet — the dialog is informational only (no action button).
+ * "Visited" state is local to this component (not persisted), since
+ * these worlds aren't part of Snackville's Explorer/badge system.
  */
-export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
-  const [selected, setSelected] = useState(PLACES[0]);
+export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow, heading, lead }) {
+  const [selected, setSelected] = useState(places[0]);
   const [openPlace, setOpenPlace] = useState(null);
+  const [visited, setVisited] = useState(() => new Set());
   const dialogRef = useRef(null);
-  const seenCount = PLACES.filter((place) => visitedPlaceIds.has(place.id)).length;
 
   const closePlace = useCallback(() => setOpenPlace(null), []);
 
   const pick = (place) => {
     setSelected(place);
     setOpenPlace(place);
-    mark(`place-${place.id}`);
-    chime(640, 0.12);
+    setVisited((prev) => new Set(prev).add(place.id));
   };
 
   useDialogTrap(dialogRef, closePlace, openPlace);
@@ -37,33 +35,24 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
     <>
       <Reveal className="map-heading">
         <div>
-          <div className="eyebrow on-sky-s">The official illustrated map</div>
-          <h2 className="h2 on-sky">Choose your next Snackville stop</h2>
-          <p className="lead on-sky-s">
-            Every numbered place holds a piece of Piper's world. Select a location to meet it,
-            discover its story and add it to your Explorer trail.
-          </p>
+          <div className="eyebrow on-sky-s">{eyebrow}</div>
+          <h2 className="h2 on-sky">{heading}</h2>
+          <p className="lead on-sky-s">{lead}</p>
         </div>
         <div className="explore-counter" aria-live="polite">
           <span className="map-counter-icon">{I.mapic()}</span>
-          <span className="u">{seenCount} of {PLACES.length} places explored</span>
+          <span className="u">{visited.size} of {places.length} places explored</span>
         </div>
       </Reveal>
 
       <Reveal className="map-atlas panel">
         <div className="map-scroll" aria-label="Scrollable illustrated map">
           <div className="map-f">
-            <Img
-              src={MAP_SRC}
-              alt="Illustrated map of Snackville with twenty numbered locations"
-              fb="Snackville map"
-              width="1536"
-              height="864"
-            />
-            {PLACES.map((place) => (
+            <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
+            {places.map((place) => (
               <button
                 key={place.id}
-                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
+                className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visited.has(place.id) ? "seen" : ""}`}
                 style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
@@ -75,7 +64,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
           </div>
         </div>
 
-        <p className="map-pan-hint u">On a small screen, swipe the map sideways to see every shore.</p>
+        <p className="map-pan-hint u">On a small screen, swipe the map sideways to see every corner.</p>
 
         <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
           <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>
@@ -89,8 +78,8 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
           </button>
         </div>
 
-        <div className="map-index" aria-label="All Snackville locations">
-          {PLACES.map((place) => (
+        <div className="map-index" aria-label="All locations">
+          {places.map((place) => (
             <button
               key={place.id}
               className={`map-index-item ${selected.id === place.id ? "on" : ""}`}
@@ -101,7 +90,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
                 {String(place.n).padStart(2, "0")}
               </span>
               <span>{place.name}</span>
-              {visitedPlaceIds.has(place.id) && <span className="sr-only"> — explored</span>}
+              {visited.has(place.id) && <span className="sr-only"> — explored</span>}
             </button>
           ))}
         </div>
@@ -117,34 +106,21 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
             className="place-dialog"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="place-dialog-title"
+            aria-labelledby="world-place-dialog-title"
             style={{ "--place-accent": openPlace.ink }}
           >
             <div className="place-dialog-topline">
-              <span className="eyebrow">Snackville field note · {String(openPlace.n).padStart(2, "0")}/{PLACES.length}</span>
+              <span className="eyebrow">Field note · {String(openPlace.n).padStart(2, "0")}/{places.length}</span>
               <button className="place-dialog-close u" onClick={closePlace}>Close</button>
             </div>
 
             <div className="place-dialog-number d" aria-hidden="true">{String(openPlace.n).padStart(2, "0")}</div>
             <div className="eyebrow place-dialog-kind">{openPlace.kind} · {openPlace.who}</div>
-            <h3 id="place-dialog-title" className="d">{openPlace.name}</h3>
+            <h3 id="world-place-dialog-title" className="d">{openPlace.name}</h3>
             <p className="place-dialog-intro">{openPlace.intro}</p>
             <p className="place-dialog-copy">{openPlace.d}</p>
 
-            <aside className="place-dialog-note">
-              <span className="eyebrow">Piper's explorer note</span>
-              <p>{openPlace.note}</p>
-            </aside>
-
             <div className="place-dialog-actions">
-              {openPlace.wow && (
-                <button
-                  className="btn b-straw"
-                  onClick={() => onWow(openPlace)}
-                >
-                  {openPlace.actionLabel}
-                </button>
-              )}
               <button className="btn b-plum" onClick={closePlace}>Back to the map</button>
             </div>
           </article>

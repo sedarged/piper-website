@@ -33,6 +33,9 @@ import { PiperGuide } from "./components/PiperGuide.jsx";
 import { Toast } from "./components/Toast.jsx";
 import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
+import { WorldExperience } from "./components/WorldExperience.jsx";
+import { STACKWICH_PLACES } from "./data/stackwich.js";
+import { CRUMBHOLLOW_PLACES } from "./data/crumbhollow.js";
 
 /**
  * One entry per map location, keyed by its own `id` (see data/places.js)
@@ -89,7 +92,7 @@ const WOW_FX = {
     guide: "Its wheels always leave a trail like that.",
   },
   "croissant-house": {
-    shake: null, pitch: 1100, dur: 0.12, streaks: { count: 1, color: "#ffffff" },
+    shake: null, pitch: 1100, dur: 0.12, streaks: { count: 1, image: "croissant" },
     toastTitle: "Whoosh!", toastBody: "Croissant Kitty just zoomed past the weather vane.",
     guide: "Blink and you'll miss her. She's the fastest in Snackville.",
   },
@@ -114,7 +117,7 @@ const WOW_FX = {
     guide: "Blue ones bounce highest, according to Piper.",
   },
   "croissant-bridge": {
-    shake: null, pitch: 700, dur: 0.18, streaks: { count: 3, color: "#D8AA58" },
+    shake: null, pitch: 700, dur: 0.18, streaks: { count: 3, image: "bridge" },
     toastTitle: "Ding!", toastBody: "Someone just set a new crossing record.",
     guide: "The bell only rings for the fastest paws.",
   },
@@ -371,7 +374,7 @@ function SnackvilleExperience({ onBackHome }) {
       }
       if (fx.streaks) {
         const items = Array.from({ length: fx.streaks.count }, (_, i) => ({
-          id: `t${Date.now()}-${i}`, top: 20 + Math.random() * 55, delay: i * 0.09, color: fx.streaks.color,
+          id: `t${Date.now()}-${i}`, top: 20 + Math.random() * 55, delay: i * 0.09, image: fx.streaks.image,
         }));
         setWowStreaks((prev) => [...prev, ...items]);
         const ids = new Set(items.map((it) => it.id));
@@ -597,13 +600,17 @@ function SnackvilleExperience({ onBackHome }) {
   );
 }
 
+const HASH_VIEWS = { "#snackville": "snackville", "#stackwich": "stackwich", "#crumbhollow": "crumbhollow" };
+
+function viewFromHash() {
+  return HASH_VIEWS[window.location.hash] || "home";
+}
+
 export default function App() {
-  const [view, setView] = useState(() => (
-    window.location.hash === "#snackville" ? "snackville" : "home"
-  ));
+  const [view, setView] = useState(viewFromHash);
 
   useEffect(() => {
-    const syncView = () => setView(window.location.hash === "#snackville" ? "snackville" : "home");
+    const syncView = () => setView(viewFromHash());
     window.addEventListener("hashchange", syncView);
     return () => window.removeEventListener("hashchange", syncView);
   }, []);
@@ -612,16 +619,62 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [view]);
 
-  const openSnackville = useCallback(() => {
-    window.location.hash = "snackville";
-  }, []);
+  const openSnackville = useCallback(() => { window.location.hash = "snackville"; }, []);
+  const openStackwich = useCallback(() => { window.location.hash = "stackwich"; }, []);
+  const openCrumbhollow = useCallback(() => { window.location.hash = "crumbhollow"; }, []);
 
   const openHome = useCallback(() => {
     window.history.pushState(null, "", `${window.location.pathname}${window.location.search}`);
     setView("home");
   }, []);
 
-  return view === "snackville"
-    ? <SnackvilleExperience onBackHome={openHome} />
-    : <UniverseHome onEnterSnackville={openSnackville} />;
+  if (view === "snackville") return <SnackvilleExperience onBackHome={openHome} />;
+
+  if (view === "stackwich") {
+    return (
+      <WorldExperience
+        worldClass="world-experience--stackwich"
+        brandLabel="Wallace-Siedlarz Productions"
+        title="Stackwich Kingdom"
+        tagline="The floating sandwich-castle world above the clouds."
+        mapEyebrow="The official illustrated map"
+        mapHeading="Choose your next Stackwich stop"
+        mapLead="Every numbered place holds a piece of the kingdom's story. Select a location to read its field note."
+        places={STACKWICH_PLACES}
+        mapSrc="/images/stackwich-interactive-map.jpeg"
+        mapAlt="Illustrated map of Stackwich Kingdom with fourteen numbered locations"
+        mapWidth="1536"
+        mapHeight="1024"
+        onBackHome={openHome}
+      />
+    );
+  }
+
+  if (view === "crumbhollow") {
+    return (
+      <WorldExperience
+        worldClass="world-experience--crumbhollow"
+        brandLabel="Wallace-Siedlarz Productions"
+        title="Crumbhollow"
+        tagline="The hidden Pie-Rat village beneath Snackville."
+        mapEyebrow="The official illustrated map"
+        mapHeading="Choose your next Crumbhollow stop"
+        mapLead="Every numbered place holds a piece of the village's story. Select a location to read its field note."
+        places={CRUMBHOLLOW_PLACES}
+        mapSrc="/images/crumbhollow-interactive-map.jpeg"
+        mapAlt="Illustrated map of Crumbhollow with twelve numbered locations"
+        mapWidth="1536"
+        mapHeight="864"
+        onBackHome={openHome}
+      />
+    );
+  }
+
+  return (
+    <UniverseHome
+      onEnterSnackville={openSnackville}
+      onEnterStackwich={openStackwich}
+      onEnterCrumbhollow={openCrumbhollow}
+    />
+  );
 }

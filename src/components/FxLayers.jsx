@@ -47,7 +47,7 @@ export function FxLayers({ sparks, wowFx, wowRings, wowStreaks, confetti, flash 
         <span key={r.id} className="wow-ring" style={{ "--ring-color": r.color, animationDelay: `${r.delay}s` }} />
       ))}
       {(wowStreaks || []).map((s) => (
-        <span key={s.id} className="wow-streak" style={{ top: `${s.top}%`, "--streak-color": s.color, animationDelay: `${s.delay}s` }} />
+        <span key={s.id} className={`wow-streak wow-streak-${s.image}`} style={{ top: `${s.top}%`, animationDelay: `${s.delay}s` }} />
       ))}
       {confetti.map((b) => (
         <span

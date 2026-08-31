@@ -184,12 +184,13 @@
 .ornament-heading span:last-child { background: linear-gradient(90deg, var(--universe-gold), transparent); }
 .ornament-heading h2 { margin: 0; color: var(--universe-gold); font: 500 clamp(38px, 4vw, 58px)/1 var(--d); }
 .worlds-intro { margin: 15px auto 34px; text-align: center; color: rgba(255,242,214,.68); font: 400 17px/1.5 var(--b); }
-.universe-home .world-grid { display: grid; grid-template-columns: 332fr 269fr 301fr; gap: 7px; align-items: start; }
+.universe-home .world-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; align-items: start; }
 .universe-home .world-card { min-width: 0; }
 .universe-home .world-card__button { position: relative; display: block; width: 100%; padding: 0; overflow: hidden; border: 1px solid rgba(231,183,88,.66); border-radius: 12px; background: var(--universe-panel); text-align: left; cursor: pointer; box-shadow: 0 22px 52px rgba(0,0,0,.34); }
 .universe-home .world-card__button:disabled { cursor: default; }
-.universe-home .world-card__button .universe-crop { width: 100%; transition: transform .65s cubic-bezier(.2,.75,.2,1); }
-.universe-home .world-card--available .world-card__button:hover .universe-crop { transform: scale(1.025); }
+.world-card-cover { display: block; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; }
+.world-card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .65s cubic-bezier(.2,.75,.2,1); }
+.universe-home .world-card--available .world-card__button:hover .world-card-cover img { transform: scale(1.025); }
 .universe-home .world-pagination { display: flex; justify-content: center; gap: 9px; margin-top: 24px; }
 .universe-home .world-pagination i { width: 7px; height: 7px; border-radius: 50%; background: rgba(231,183,88,.38); }
 .universe-home .world-pagination i.on { width: 24px; border-radius: 999px; background: var(--universe-gold); }
@@ -325,7 +326,7 @@
   .universe-lede { margin-inline: auto; }
   .universe-portal { grid-row: 2; justify-self: center; width: min(84%, 500px); margin: 42px auto 0; }
   .worlds-section { width: min(100% - 36px, 720px); }
-  .universe-home .world-grid { grid-template-columns: 82% 66.5% 74.3%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 1px; scrollbar-width: none; padding-bottom: 8px; overscroll-behavior-inline: contain; touch-action: pan-x pan-y; }
+  .universe-home .world-grid { grid-template-columns: repeat(3, 82%); gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 1px; scrollbar-width: none; padding-bottom: 8px; overscroll-behavior-inline: contain; touch-action: pan-x pan-y; }
   .universe-home .world-grid::-webkit-scrollbar { display: none; }
   .universe-home .world-card { scroll-snap-align: start; }
   .universe-paper { width: min(100% - 20px, 720px); padding: 36px 24px; }
