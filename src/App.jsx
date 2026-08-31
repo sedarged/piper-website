@@ -288,11 +288,15 @@ function SnackvilleExperience({ onBackHome }) {
   }, [doneKeys, chime, showToast, mark]);
 
   // Piper's guide bubble auto-updates its message as the visitor scrolls
-  // between sections, and fades out after ~6.5s.
+  // between sections, and fades out after ~6.5s. Only clears the message
+  // this effect itself set — a wow effect (see onWow) can set a newer
+  // message from a different call path while this timer is still
+  // pending, and an unconditional clear here would wipe that out early.
   useEffect(() => {
     if (!guideVisible) return;
-    setGuideMessage(GUIDE_MESSAGES[active] || null);
-    const t = setTimeout(() => setGuideMessage(null), 6500);
+    const message = GUIDE_MESSAGES[active] || null;
+    setGuideMessage(message);
+    const t = setTimeout(() => setGuideMessage((current) => (current === message ? null : current)), 6500);
     return () => clearTimeout(t);
   }, [active, guideVisible]);
 
@@ -304,10 +308,21 @@ function SnackvilleExperience({ onBackHome }) {
    *  functional state updater more than once per commit to check for
    *  purity — scheduling a real setTimeout/chime/burst from inside one
    *  is an impure side effect, so crossing a threshold in dev could
-   *  double-fire the celebration, chime and confetti. `lastCelebratedRef`
-   *  guards this effect against that same double-invoke. */
-  const lastCelebratedAtRef = useRef(0);
+   *  double-fire the celebration, chime and confetti. `lastCelebratedAtRef`
+   *  guards this effect against that same double-invoke.
+   *
+   *  It also guards against replaying the celebration on mount: a
+   *  returning visitor's *persisted* progress can already sit exactly on
+   *  a threshold (loaded synchronously into `doneKeys`'s initial state),
+   *  and this effect's first run should record that as "already
+   *  accounted for" rather than treat it as a fresh crossing — only a
+   *  live increase in doneCount during this session should celebrate. */
+  const lastCelebratedAtRef = useRef(null);
   useEffect(() => {
+    if (lastCelebratedAtRef.current === null) {
+      lastCelebratedAtRef.current = doneCount;
+      return undefined;
+    }
     const badge = BADGES.find((b) => b.at === doneCount);
     if (!badge || lastCelebratedAtRef.current === doneCount) return undefined;
     lastCelebratedAtRef.current = doneCount;

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { BOOKS } from "../data/books.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 
@@ -39,7 +39,12 @@ export function UniverseHome({ onEnterSnackville }) {
   const emailRef = useRef(null);
   const menuRef = useRef(null);
 
-  useDialogTrap(menuRef, () => setMenuOpen(false), menuOpen);
+  // Stable identity: useDialogTrap's effect depends on this callback, and
+  // an inline arrow recreated every render would re-arm the focus trap
+  // (re-focusing the menu's first link) on every unrelated re-render
+  // while the menu is open.
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  useDialogTrap(menuRef, closeMenu, menuOpen);
 
   const go = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });

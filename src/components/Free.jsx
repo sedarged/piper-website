@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { PRINTABLES } from "../data/printables.js";
 import { Reveal } from "./Reveal.jsx";
 import { FI } from "./Icons.jsx";
@@ -21,6 +21,13 @@ export function Free({ mark, burst, chime, showToast }) {
   const [openGameId, setOpenGameId] = useState(null);
   const openGame = PRINTABLES.find((p) => p.id === openGameId);
   const GameComponent = openGame && GAME_COMPONENTS[openGame.id];
+
+  // Stable identity matters here: useDialogTrap's effect depends on
+  // onClose, and Free re-renders often while a game is open (App.jsx's
+  // cursor-sparkle trail updates state on every mousemove) — a fresh
+  // arrow function each render would re-arm the focus trap constantly,
+  // snapping focus back to the modal's first control mid-play.
+  const closeGame = useCallback(() => setOpenGameId(null), []);
 
   const complete = (p) => {
     mark?.(`activity-${p.id}`);
@@ -51,6 +58,14 @@ export function Free({ mark, burst, chime, showToast }) {
                 <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>
                 <span className="u" style={{ fontSize: 15, color: p.ink, marginTop: 4 }}>Play now →</span>
               </button>
+            ) : p.url ? (
+              <a className="fc" href={p.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
+                <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
+                <span className="eyebrow">{p.n}</span>
+                <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>
+                <span className="u" style={{ fontSize: 15, color: p.ink, marginTop: 4 }}>Download →</span>
+              </a>
             ) : (
               <div className="fc fc-soon" aria-disabled="true">
                 <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
@@ -68,7 +83,7 @@ export function Free({ mark, burst, chime, showToast }) {
         <GameModal
           title={openGame.name}
           eyebrow="Snackville studio"
-          onClose={() => setOpenGameId(null)}
+          onClose={closeGame}
         >
           <GameComponent chime={chime} onComplete={() => complete(openGame)} />
         </GameModal>

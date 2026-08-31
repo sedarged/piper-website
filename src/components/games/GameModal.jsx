@@ -1,12 +1,6 @@
 import { useRef } from "react";
 import { useDialogTrap } from "../../hooks/useDialogTrap.js";
 
-/**
- * Shared dialog shell for the Snackville studio mini-games. Reuses the
- * same accessible dialog behaviour as the map's place-dialog (see
- * useDialogTrap) and its `.place-dialog` visuals, so a game feels like
- * part of the same storybook rather than a bolted-on widget.
- */
 /** The "you won" action every mini-game ends on — shared so the three
  *  games don't each hardcode the same button. */
 export function GameCompleteButton({ onComplete, label = "Collect my badge!" }) {
@@ -19,6 +13,12 @@ export function GameRetryButton({ onRetry, label }) {
   return <button className="btn b-ghost btn-sm" onClick={onRetry}>{label}</button>;
 }
 
+/**
+ * Shared dialog shell for the Snackville studio mini-games. Reuses the
+ * same accessible dialog behaviour as the map's place-dialog (see
+ * useDialogTrap) and its `.place-dialog` visuals, so a game feels like
+ * part of the same storybook rather than a bolted-on widget.
+ */
 export function GameModal({ title, eyebrow, onClose, children }) {
   const dialogRef = useRef(null);
   useDialogTrap(dialogRef, onClose, true);
