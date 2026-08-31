@@ -25,7 +25,7 @@ function ReferenceCrop({ crop, className = "", alt = "" }) {
   );
 }
 
-function WorldCard({ type, title, description, status, onClick, crop }) {
+function WorldCard({ type, title, description, status, onClick, coverSrc }) {
   const active = type === "available";
   return (
     <article className={`world-card world-card--${type}`}>
@@ -35,13 +35,15 @@ function WorldCard({ type, title, description, status, onClick, crop }) {
         aria-label={active ? `Enter ${title}` : `${title} — coming soon`}
         disabled={!active}
       >
-        <ReferenceCrop crop={crop} alt={`${title}. ${description} ${status}.`} />
+        <span className="world-card-cover">
+          <img src={coverSrc} alt={`${title}. ${description} ${status}.`} />
+        </span>
       </button>
     </article>
   );
 }
 
-export function UniverseHome({ onEnterSnackville }) {
+export function UniverseHome({ onEnterSnackville, onEnterStackwich, onEnterCrumbhollow }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [parentSignupSent, setParentSignupSent] = useState(false);
   const menuRef = useRef(null);
@@ -108,21 +110,23 @@ export function UniverseHome({ onEnterSnackville }) {
               description="A berry-sweet town where courage is as tasty as friendship."
               status="Available now"
               onClick={onEnterSnackville}
-              crop={{ x: 16, y: 783, w: 332, h: 412 }}
+              coverSrc="/images/worlds/snackville-cover.webp"
             />
             <WorldCard
-              type="locked"
-              title="Pie-Rats Underground Village"
-              description="The hidden Pie-Rat world beneath Snackville."
-              status="World two"
-              crop={{ x: 352, y: 783, w: 269, h: 412 }}
+              type="available"
+              title="Crumbhollow"
+              description="The hidden Pie-Rat village beneath Snackville."
+              status="Available now"
+              onClick={onEnterCrumbhollow}
+              coverSrc="/images/worlds/crumbhollow-cover.webp"
             />
             <WorldCard
-              type="locked"
-              title="The Enchanted Sandwich Kingdom"
-              description="A golden road through the clouds leads to a layered realm of royal magic."
-              status="World three"
-              crop={{ x: 625, y: 783, w: 301, h: 412 }}
+              type="available"
+              title="Stackwich Kingdom"
+              description="A floating sandwich-castle world above the clouds."
+              status="Available now"
+              onClick={onEnterStackwich}
+              coverSrc="/images/worlds/stackwich-cover.webp"
             />
           </div>
           <div className="world-pagination" aria-hidden="true"><i className="on" /><i /><i /></div>
