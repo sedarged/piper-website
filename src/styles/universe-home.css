@@ -46,6 +46,9 @@
   min-height: 96px;
   margin-inline: auto;
   border-bottom: 1px solid rgba(231,183,88,.28);
+  background: rgba(2,11,26,.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .universe-brand {
