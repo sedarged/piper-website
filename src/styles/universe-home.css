@@ -39,16 +39,26 @@
 .universe-nav {
   position: relative;
   z-index: 20;
+  background: linear-gradient(180deg, rgba(2,11,26,.74), rgba(2,11,26,.4));
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+}
+.universe-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(231,183,88,.4), transparent);
+}
+.universe-nav__inner {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   width: min(100% - 64px, 1380px);
   min-height: 96px;
   margin-inline: auto;
-  border-bottom: 1px solid rgba(231,183,88,.28);
-  background: rgba(2,11,26,.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .universe-brand {
@@ -75,7 +85,7 @@
   text-transform: uppercase;
 }
 
-.universe-nav__links { display: flex; gap: clamp(26px, 4vw, 58px); }
+.universe-nav__links { display: flex; gap: clamp(14px, 2.2vw, 28px); }
 .universe-nav__links button,
 .universe-footer nav button {
   border: 0;
@@ -85,6 +95,13 @@
   cursor: pointer;
   transition: color .2s ease, transform .2s ease;
 }
+.universe-nav__links button::after {
+  content: "✦";
+  margin-left: clamp(14px, 2.2vw, 28px);
+  color: rgba(231,183,88,.4);
+  font-size: 8px;
+}
+.universe-nav__links button:last-child::after { display: none; }
 .universe-nav__links button:hover,
 .universe-footer nav button:hover { color: var(--universe-gold-bright); transform: translateY(-1px); }
 
@@ -351,7 +368,7 @@
 }
 
 @media (max-width: 820px) {
-  .universe-nav { grid-template-columns: 1fr auto; width: min(100% - 36px, 720px); min-height: 78px; }
+  .universe-nav__inner { grid-template-columns: 1fr auto; width: min(100% - 36px, 720px); min-height: 78px; }
   .universe-nav__links { display: none; }
   .universe-nav__cta { display: none; }
   .universe-menu { display: grid; gap: 7px; width: 46px; height: 46px; place-content: center; border: 1px solid rgba(231,183,88,.38); border-radius: 50%; background: rgba(4,14,30,.72); cursor: pointer; }
@@ -375,7 +392,7 @@
 @media (max-width: 560px) {
   .universe-brand strong { font-size: 22px; }
   .universe-brand span { font-size: 8px; letter-spacing: .32em; }
-  .universe-nav { width: min(100% - 28px, 720px); }
+  .universe-nav__inner { width: min(100% - 28px, 720px); }
   .universe-mobile-nav { inset-inline: 12px; }
   .universe-hero { width: min(100% - 28px, 720px); padding: 42px 0 58px; }
   .universe-hero h1 { max-width: 8ch; font-size: clamp(52px, 16.5vw, 70px); line-height: .86; }
