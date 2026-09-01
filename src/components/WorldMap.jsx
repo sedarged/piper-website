@@ -47,7 +47,12 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
 
       <Reveal className="map-atlas panel">
         <div className="map-scroll" aria-label="Scrollable illustrated map">
-          <div className="map-f">
+          {/* .map-f's base CSS hardcodes aspect-ratio:16/9 for Snackville's own
+              1536x864 map — a world with a differently-shaped map (Stackwich's
+              is 1536x1024, i.e. 3:2) needs its own ratio here, or object-fit:
+              cover crops the image and every hotspot's x/y% stops lining up
+              with the printed numbers underneath it. */}
+          <div className="map-f" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
             <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
             {places.map((place) => (
               <button
