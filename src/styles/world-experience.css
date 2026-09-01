@@ -1,4 +1,4 @@
-/* A minimal page shell for a newly-unlocked world's map (Stackwich
+/* A minimal page shell for a newly-unlocked world's map (Sandwich
    Kingdom, Crumbhollow) — see WorldExperience.jsx. Reuses the same
    .map-atlas / .place-dialog system as Snackville's map (cinematic.css)
    but without the parallax sky/landscape layers, so each world gets its
@@ -10,7 +10,7 @@
   background: linear-gradient(180deg, var(--night-900, #0b1424), var(--night-950));
 }
 
-.world-experience--stackwich {
+.world-experience--sandwich {
   background:
     radial-gradient(1200px 700px at 50% -10%, rgba(255, 214, 150, .22), transparent 60%),
     linear-gradient(180deg, #2b2350 0%, #4a3a72 42%, #1c1735 100%);
