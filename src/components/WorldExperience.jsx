@@ -1,7 +1,7 @@
 import { WorldMap } from "./WorldMap.jsx";
 
 /**
- * A minimal page shell for a newly-unlocked world (Stackwich Kingdom,
+ * A minimal page shell for a newly-unlocked world (Sandwich Kingdom,
  * Crumbhollow): a small top bar with a way back to the world-select
  * screen, a short intro, and the interactive map itself.
  *

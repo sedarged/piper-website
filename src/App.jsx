@@ -34,7 +34,7 @@ import { Toast } from "./components/Toast.jsx";
 import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
 import { WorldExperience } from "./components/WorldExperience.jsx";
-import { STACKWICH_PLACES } from "./data/stackwich.js";
+import { SANDWICH_PLACES } from "./data/sandwich.js";
 import { CRUMBHOLLOW_PLACES } from "./data/crumbhollow.js";
 
 /**
@@ -600,7 +600,7 @@ function SnackvilleExperience({ onBackHome }) {
   );
 }
 
-const HASH_VIEWS = { "#snackville": "snackville", "#stackwich": "stackwich", "#crumbhollow": "crumbhollow" };
+const HASH_VIEWS = { "#snackville": "snackville", "#sandwich": "sandwich", "#crumbhollow": "crumbhollow" };
 
 function viewFromHash() {
   return HASH_VIEWS[window.location.hash] || "home";
@@ -620,7 +620,7 @@ export default function App() {
   }, [view]);
 
   const openSnackville = useCallback(() => { window.location.hash = "snackville"; }, []);
-  const openStackwich = useCallback(() => { window.location.hash = "stackwich"; }, []);
+  const openSandwich = useCallback(() => { window.location.hash = "sandwich"; }, []);
   const openCrumbhollow = useCallback(() => { window.location.hash = "crumbhollow"; }, []);
 
   const openHome = useCallback(() => {
@@ -630,19 +630,19 @@ export default function App() {
 
   if (view === "snackville") return <SnackvilleExperience onBackHome={openHome} />;
 
-  if (view === "stackwich") {
+  if (view === "sandwich") {
     return (
       <WorldExperience
-        worldClass="world-experience--stackwich"
+        worldClass="world-experience--sandwich"
         brandLabel="Wallace-Siedlarz Productions"
-        title="Stackwich Kingdom"
+        title="Sandwich Kingdom"
         tagline="The floating sandwich-castle world above the clouds."
         mapEyebrow="The official illustrated map"
-        mapHeading="Choose your next Stackwich stop"
+        mapHeading="Choose your next Sandwich Kingdom stop"
         mapLead="Every numbered place holds a piece of the kingdom's story. Select a location to read its field note."
-        places={STACKWICH_PLACES}
-        mapSrc="/images/stackwich-interactive-map.jpeg"
-        mapAlt="Illustrated map of Stackwich Kingdom with fourteen numbered locations"
+        places={SANDWICH_PLACES}
+        mapSrc="/images/sandwich-interactive-map.jpeg"
+        mapAlt="Illustrated map of Sandwich Kingdom with fourteen numbered locations"
         mapWidth="1536"
         mapHeight="1024"
         onBackHome={openHome}
@@ -673,7 +673,7 @@ export default function App() {
   return (
     <UniverseHome
       onEnterSnackville={openSnackville}
-      onEnterStackwich={openStackwich}
+      onEnterSandwich={openSandwich}
       onEnterCrumbhollow={openCrumbhollow}
     />
   );

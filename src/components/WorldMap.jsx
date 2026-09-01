@@ -7,7 +7,7 @@ import { I } from "./Icons.jsx";
 /**
  * A generic illustrated, numbered map — the same interaction pattern as
  * Snackville's MapHub (accessible hotspots, a field-note dialog, a
- * scrollable index), reused for Stackwich Kingdom and Crumbhollow so a
+ * scrollable index), reused for Sandwich Kingdom and Crumbhollow so a
  * new world's map doesn't need its own bespoke component.
  *
  * Unlike Snackville, these worlds don't have a "wow" screen effect per
@@ -48,7 +48,7 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
       <Reveal className="map-atlas panel">
         <div className="map-scroll" aria-label="Scrollable illustrated map">
           {/* .map-f's base CSS hardcodes aspect-ratio:16/9 for Snackville's own
-              1536x864 map — a world with a differently-shaped map (Stackwich's
+              1536x864 map — a world with a differently-shaped map (Sandwich Kingdom's
               is 1536x1024, i.e. 3:2) needs its own ratio here, or object-fit:
               cover crops the image and every hotspot's x/y% stops lining up
               with the printed numbers underneath it. */}

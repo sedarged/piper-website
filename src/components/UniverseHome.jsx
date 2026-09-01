@@ -43,7 +43,7 @@ function WorldCard({ type, title, description, status, onClick, coverSrc }) {
   );
 }
 
-export function UniverseHome({ onEnterSnackville, onEnterStackwich, onEnterCrumbhollow }) {
+export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbhollow }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [parentSignupSent, setParentSignupSent] = useState(false);
   const menuRef = useRef(null);
@@ -122,11 +122,11 @@ export function UniverseHome({ onEnterSnackville, onEnterStackwich, onEnterCrumb
             />
             <WorldCard
               type="available"
-              title="Stackwich Kingdom"
+              title="Sandwich Kingdom"
               description="A floating sandwich-castle world above the clouds."
               status="Available now"
-              onClick={onEnterStackwich}
-              coverSrc="/images/worlds/stackwich-cover.webp"
+              onClick={onEnterSandwich}
+              coverSrc="/images/worlds/sandwich-cover.webp"
             />
           </div>
           <div className="world-pagination" aria-hidden="true"><i className="on" /><i /><i /></div>

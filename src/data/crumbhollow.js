@@ -9,7 +9,7 @@ import { C } from "../styles/tokens.js";
  * The map itself doesn't give exact book lore for every stop, so these
  * descriptions are written as website flavour copy around what the map
  * shows (canals, docks, a market), not new book canon — same interaction
- * pattern as Snackville and Stackwich (WorldMap.jsx).
+ * pattern as Snackville and Sandwich Kingdom (WorldMap.jsx).
  */
 export const CRUMBHOLLOW_PLACES = [
   {
