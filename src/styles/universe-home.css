@@ -210,7 +210,7 @@
   box-shadow: 0 36px 110px rgba(0,0,0,.42), inset 0 0 0 6px rgba(153,99,34,.08);
 }
 .universe-paper .universe-kicker { color: #9f6823; }
-.book-invitation { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; gap: clamp(24px, 3vw, 46px); align-items: center; padding-right: clamp(28px, 4vw, 62px); border-right: 1px solid rgba(126,80,29,.28); }
+.book-invitation { display: grid; grid-template-columns: minmax(150px, 230px) 1fr; gap: clamp(24px, 3vw, 46px); align-items: start; padding-right: clamp(28px, 4vw, 62px); border-right: 1px solid rgba(126,80,29,.28); }
 .book-invitation__cover img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 5px 13px 13px 5px; box-shadow: 0 20px 42px rgba(73,41,17,.3); }
 .universe-paper h2 { margin: 0 0 15px; font: 550 clamp(31px, 3vw, 46px)/.98 var(--d); letter-spacing: -.02em; }
 .universe-paper p:not(.universe-kicker):not(.form-message) { margin: 0 0 18px; color: rgba(36,23,13,.72); font: 400 17px/1.5 var(--b); }
