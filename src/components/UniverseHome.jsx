@@ -65,16 +65,21 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
       <a className="skip-link" href="#worlds">Skip to the worlds</a>
 
       <header className="universe-nav">
-        <button className="universe-brand" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Wallace-Siedlarz Productions — home">
-          <strong>Wallace-Siedlarz</strong>
-          <span>Productions</span>
-        </button>
-        <nav className="universe-nav__links" aria-label="Main navigation">
-          {NAV_ITEMS.map((item) => <button key={item.id} onClick={() => go(item.id)}>{item.label}</button>)}
-        </nav>
-        <button className="universe-menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close navigation" : "Open navigation"}>
-          <span /><span />
-        </button>
+        <div className="universe-nav__inner">
+          <button className="universe-brand" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Wallace-Siedlarz Productions — home">
+            <strong>Wallace-Siedlarz</strong>
+            <span>Productions</span>
+          </button>
+          <nav className="universe-nav__links" aria-label="Main navigation">
+            {NAV_ITEMS.map((item) => <button key={item.id} onClick={() => go(item.id)}>{item.label}</button>)}
+          </nav>
+          <div className="universe-nav__end">
+            <button className="universe-nav__cta" onClick={onEnterSnackville}>Enter Snackville <span aria-hidden="true">→</span></button>
+            <button className="universe-menu" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close navigation" : "Open navigation"}>
+              <span /><span />
+            </button>
+          </div>
+        </div>
       </header>
 
       {menuOpen && (
@@ -89,7 +94,10 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
             <p className="universe-kicker">The Piper Storyworld</p>
             <h1 id="universe-title">Choose a world <em>to step into.</em></h1>
             <p className="universe-lede">Timeless illustrated adventures, each opening a new world shaped by imagination, friendship and a little bit of magic.</p>
-            <button className="universe-primary" onClick={onEnterSnackville}>Enter Snackville <span aria-hidden="true">→</span></button>
+            <div className="universe-hero__actions">
+              <button className="universe-primary" onClick={onEnterSnackville}>Enter Snackville <span aria-hidden="true">→</span></button>
+              <button className="universe-secondary" onClick={() => go("worlds")}>Explore all worlds</button>
+            </div>
             <p className="universe-note">Piper and the Snack Squad are waiting for you.</p>
           </div>
 
