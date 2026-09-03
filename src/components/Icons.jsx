@@ -76,4 +76,4 @@ export const I = {
 export const TI = { berry: I.berry, croix: I.croix, star: I.star, bean: I.bean, donut: I.donut, scale: I.scale };
 
 /** Free-printables icon lookup, keyed by printable id (see data/printables.js). */
-export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, map: I.mapic, badge: I.badgeic };
+export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, pattern: I.star, map: I.mapic, badge: I.badgeic };

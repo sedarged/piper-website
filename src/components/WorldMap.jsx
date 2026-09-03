@@ -1,8 +1,12 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
+import { useChime } from "../hooks/useChime.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
+import { FxLayers } from "./FxLayers.jsx";
+
+const CONFETTI_KINDS = ["berry", "star", "croix", "donut", "bean"];
 
 /**
  * A generic illustrated, numbered map — the same interaction pattern as
@@ -11,37 +15,100 @@ import { I } from "./Icons.jsx";
  * new world's map doesn't need its own bespoke component.
  *
  * Unlike Snackville, these worlds don't have a "wow" screen effect per
- * location yet — the dialog is informational only (no action button).
+ * location — but every *first* visit to a location still gets its own
+ * small chime-and-confetti moment (see burstConfetti/pick below), and
+ * finding every location pops a one-time "explored it all" certificate.
  * "Visited" state is local to this component (not persisted), since
  * these worlds aren't part of Snackville's Explorer/badge system.
  */
-export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow, heading, lead }) {
+export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow, heading, lead, worldTitle }) {
   const [selected, setSelected] = useState(places[0]);
   const [openPlace, setOpenPlace] = useState(null);
   const [visited, setVisited] = useState(() => new Set());
+  const [confetti, setConfetti] = useState([]);
+  const [showCertificate, setShowCertificate] = useState(false);
   const dialogRef = useRef(null);
+  const certRef = useRef(null);
+  const reduceMotion = useRef(false);
+  // Whether every location has been visited, and the certificate for it
+  // hasn't been shown yet — checked (and, once true, immediately
+  // consumed) from closePlace() below, rather than watched from a
+  // useEffect, so the certificate's chime/confetti stay inside the same
+  // user-gesture call stack as the click that closed the last dialog.
+  const celebrationPending = useRef(false);
+  const chime = useChime();
 
-  const closePlace = useCallback(() => setOpenPlace(null), []);
+  useEffect(() => {
+    reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  const burstConfetti = useCallback((count = 16) => {
+    if (reduceMotion.current) return;
+    const bits = Array.from({ length: count }, (_, i) => ({
+      id: `wc${Date.now()}-${i}-${Math.random()}`, left: Math.random() * 100,
+      dur: 2.4 + Math.random() * 2.2, delay: Math.random() * 0.6,
+      size: 16 + Math.random() * 20, kind: CONFETTI_KINDS[Math.floor(Math.random() * CONFETTI_KINDS.length)],
+    }));
+    // Capped at 60 concurrent pieces — a kid clicking through several new
+    // locations in quick succession would otherwise stack an unbounded
+    // number of still-animating bursts (each lives ~5s) at once.
+    setConfetti((prev) => [...prev, ...bits].slice(-60));
+    const ids = new Set(bits.map((b) => b.id));
+    setTimeout(() => setConfetti((prev) => prev.filter((b) => !ids.has(b.id))), 5400);
+  }, []);
+
+  const closePlace = useCallback(() => {
+    setOpenPlace(null);
+    if (celebrationPending.current) {
+      celebrationPending.current = false;
+      setShowCertificate(true);
+      chime(880, 0.22);
+      burstConfetti(24);
+    }
+  }, [chime, burstConfetti]);
+  const closeCertificate = useCallback(() => setShowCertificate(false), []);
 
   const pick = (place) => {
     setSelected(place);
     setOpenPlace(place);
-    setVisited((prev) => new Set(prev).add(place.id));
+    if (!visited.has(place.id)) {
+      const next = new Set(visited);
+      next.add(place.id);
+      setVisited(next);
+      chime(720, 0.16);
+      burstConfetti(16);
+      // Every location visited: hold the celebration until this dialog
+      // (which just opened for the location that completed the set)
+      // closes, so the certificate never stacks on top of it.
+      if (next.size === places.length) celebrationPending.current = true;
+    }
+  };
+
+  const surpriseMe = () => {
+    const unvisited = places.filter((p) => !visited.has(p.id));
+    const pool = unvisited.length ? unvisited : places;
+    pick(pool[Math.floor(Math.random() * pool.length)]);
   };
 
   useDialogTrap(dialogRef, closePlace, openPlace);
+  useDialogTrap(certRef, closeCertificate, showCertificate);
 
   return (
     <>
+      <FxLayers sparks={[]} wowFx={[]} confetti={confetti} flash={null} />
+
       <Reveal className="map-heading">
         <div>
           <div className="eyebrow on-sky-s">{eyebrow}</div>
           <h2 className="h2 on-sky">{heading}</h2>
           <p className="lead on-sky-s">{lead}</p>
         </div>
-        <div className="explore-counter" aria-live="polite">
-          <span className="map-counter-icon">{I.mapic()}</span>
-          <span className="u">{visited.size} of {places.length} places explored</span>
+        <div className="map-heading__actions">
+          <div className="explore-counter" aria-live="polite">
+            <span className="map-counter-icon">{I.mapic()}</span>
+            <span className="u">{visited.size} of {places.length} places explored</span>
+          </div>
+          <button className="btn btn-sm b-ghost" onClick={surpriseMe}>Surprise me →</button>
         </div>
       </Reveal>
 
@@ -127,6 +194,34 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
 
             <div className="place-dialog-actions">
               <button className="btn b-plum" onClick={closePlace}>Back to the map</button>
+            </div>
+          </article>
+        </div>
+      )}
+
+      {showCertificate && (
+        <div
+          className="place-dialog-scrim"
+          onMouseDown={(event) => { if (event.target === event.currentTarget) closeCertificate(); }}
+        >
+          <article
+            ref={certRef}
+            className="place-dialog world-cert"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="world-cert-title"
+          >
+            <div className="place-dialog-topline">
+              <span className="eyebrow">Explorer certificate</span>
+              <button className="place-dialog-close u" onClick={closeCertificate}>Close</button>
+            </div>
+            <div className="world-cert-badge" aria-hidden="true">{I.badgeic()}</div>
+            <h3 id="world-cert-title" className="d">You explored all of {worldTitle}!</h3>
+            <p className="place-dialog-intro">
+              Every hidden corner, every field note — nothing left to find. You're a true {worldTitle} Explorer.
+            </p>
+            <div className="place-dialog-actions">
+              <button className="btn b-plum" onClick={closeCertificate}>Keep exploring</button>
             </div>
           </article>
         </div>
