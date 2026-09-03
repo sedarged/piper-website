@@ -375,8 +375,8 @@
 .foot-g{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:clamp(24px,4vw,50px)}
 .foot h4{font-family:var(--u);font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   opacity:.5;margin-bottom:14px}
-.foot a{opacity:.8;text-decoration:none;font-size:15.5px;display:block;padding:11px 0;transition:opacity .2s}
-.foot a:hover{opacity:1}
+.foot a,.foot button{opacity:.8;text-decoration:none;font-size:15.5px;display:block;width:100%;text-align:left;padding:11px 0;transition:opacity .2s}
+.foot a:hover,.foot button:hover{opacity:1}
 .colo{margin-top:clamp(36px,5vw,56px);padding-top:22px;border-top:1px solid rgba(255,246,233,.18);
   display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:13px;opacity:.5}
 
