@@ -938,6 +938,12 @@ a { -webkit-tap-highlight-color: transparent; }
 .free-g > *:nth-child(3n) .fc { background: rgba(111,156,126,.055); }
 .fc:hover,
 .fc:focus-visible { transform: translateY(-4px); background: rgba(255,255,255,.72); border-color: rgba(159,116,51,.4); box-shadow: inset 0 0 0 4px rgba(216,170,88,.08), 0 20px 40px rgba(74,42,21,.1); }
+/* "Coming soon" cards are a non-interactive <div>, not a button/link —
+   this file's own .fc:hover above (same specificity, later in the
+   cascade) was overriding components.css's .fc-soon:hover reset, so
+   they were getting the same lift/highlight as the playable cards. */
+.fc-soon:hover,
+.fc-soon:focus-visible { transform: none; background: rgba(255,255,255,.27); border-color: rgba(134,94,43,.2); box-shadow: inset 0 1px rgba(255,255,255,.72), 0 12px 30px rgba(74,42,21,.06); }
 .fc-icon {
   width: 54px;
   height: 54px;
