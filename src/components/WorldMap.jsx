@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { useChime } from "../hooks/useChime.js";
+import { useReducedMotion } from "../hooks/useReducedMotion.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
@@ -29,7 +30,7 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
   const [showCertificate, setShowCertificate] = useState(false);
   const dialogRef = useRef(null);
   const certRef = useRef(null);
-  const reduceMotion = useRef(false);
+  const reduceMotion = useReducedMotion();
   // Whether every location has been visited, and the certificate for it
   // hasn't been shown yet — checked (and, once true, immediately
   // consumed) from closePlace() below, rather than watched from a
@@ -37,10 +38,6 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
   // user-gesture call stack as the click that closed the last dialog.
   const celebrationPending = useRef(false);
   const chime = useChime();
-
-  useEffect(() => {
-    reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
 
   const burstConfetti = useCallback((count = 16) => {
     if (reduceMotion.current) return;

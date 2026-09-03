@@ -64,6 +64,12 @@ export function SnackPattern({ onComplete, chime }) {
       const next = [...sequence, randomTile()];
       setSequence(next);
       setRound((r) => r + 1);
+      // Leave "input" immediately (playSequence sets it again once it
+      // actually starts) — otherwise tiles stay tappable for the whole
+      // 500ms gap below, with `step` still pointing at the round just
+      // finished, so an eager extra tap here either ends the game on a
+      // false mismatch or desyncs `step` ahead of the next round.
+      setPhase("showing");
       timers.current.push(setTimeout(() => playSequence(next), 500));
     } else {
       chime?.(660, 0.12);
