@@ -31,6 +31,12 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
     chime(640, 0.12);
   };
 
+  const surpriseMe = () => {
+    const unvisited = PLACES.filter((p) => !visitedPlaceIds.has(p.id));
+    const pool = unvisited.length ? unvisited : PLACES;
+    pick(pool[Math.floor(Math.random() * pool.length)]);
+  };
+
   useDialogTrap(dialogRef, closePlace, openPlace);
 
   return (
@@ -44,9 +50,12 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
             discover its story and add it to your Explorer trail.
           </p>
         </div>
-        <div className="explore-counter" aria-live="polite">
-          <span className="map-counter-icon">{I.mapic()}</span>
-          <span className="u">{seenCount} of {PLACES.length} places explored</span>
+        <div className="map-heading__actions">
+          <div className="explore-counter" aria-live="polite">
+            <span className="map-counter-icon">{I.mapic()}</span>
+            <span className="u">{seenCount} of {PLACES.length} places explored</span>
+          </div>
+          <button className="btn btn-sm b-ghost" onClick={surpriseMe}>Surprise me →</button>
         </div>
       </Reveal>
 

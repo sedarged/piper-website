@@ -74,7 +74,10 @@ export function WhackASnack({ onComplete, chime }) {
       </p>
       <div className="whack-grid">
         {Array.from({ length: GRID }, (_, i) => (
-          <button key={i} className={`whack-cell ${active === i ? "up" : ""}`} onClick={() => whack(i)}>
+          <button
+            key={i} className={`whack-cell ${active === i ? "up" : ""}`} onClick={() => whack(i)}
+            aria-label={active === i ? "Treat! Tap it" : "Empty"}
+          >
             {active === i && <span className="whack-icon">{I.donut(C.strawberry)}</span>}
           </button>
         ))}

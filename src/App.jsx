@@ -8,6 +8,7 @@ import { PLACES } from "./data/places.js";
 import { GUIDE_MESSAGES } from "./data/guide.js";
 
 import { useChime } from "./hooks/useChime.js";
+import { useReducedMotion } from "./hooks/useReducedMotion.js";
 import { useScrollEngine } from "./hooks/useScrollEngine.js";
 
 import { Nav } from "./components/Nav.jsx";
@@ -197,7 +198,7 @@ function SnackvilleExperience({ onBackHome }) {
 
   const chime = useChime();
   const keyBuffer = useRef("");
-  const reduceMotion = useRef(false);
+  const reduceMotion = useReducedMotion();
 
   // refs the scroll engine writes to directly, bypassing React state
   const rootRef = useRef(null);
@@ -206,10 +207,6 @@ function SnackvilleExperience({ onBackHome }) {
     dawn: useRef(null), day: useRef(null), dusk: useRef(null), night: useRef(null), stars: useRef(null),
   };
   const sunmoonRef = useRef(null);
-
-  useEffect(() => {
-    reduceMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
 
   useEffect(() => {
     try {

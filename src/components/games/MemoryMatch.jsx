@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TI } from "../Icons.jsx";
+import { TI, ICON_NAMES } from "../Icons.jsx";
 import { GameCompleteButton, GameRetryButton } from "./GameModal.jsx";
 
 // Each icon's default colour (see Icons.jsx) is already the right one
@@ -58,11 +58,12 @@ export function MemoryMatch({ onComplete, chime }) {
       </p>
       <div className="memory-grid">
         {deck.map((card, i) => {
-          const isUp = flipped.includes(i) || matched.includes(card.key);
+          const isMatched = matched.includes(card.key);
+          const isUp = flipped.includes(i) || isMatched;
           return (
             <button
               key={card.uid} className={`memory-card ${isUp ? "up" : ""}`} onClick={() => flip(i)}
-              disabled={isUp} aria-label={isUp ? card.key : "Hidden card"}
+              disabled={isUp} aria-label={isUp ? `${ICON_NAMES[card.key]}${isMatched ? " — matched" : ""}` : "Hidden card"}
             >
               {isUp && <span className="memory-card-face">{TI[card.key]()}</span>}
             </button>

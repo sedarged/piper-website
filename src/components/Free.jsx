@@ -6,13 +6,14 @@ import { GameModal } from "./games/GameModal.jsx";
 import { ColoringPage } from "./games/ColoringPage.jsx";
 import { MemoryMatch } from "./games/MemoryMatch.jsx";
 import { WhackASnack } from "./games/WhackASnack.jsx";
+import { SnackPattern } from "./games/SnackPattern.jsx";
 
-const GAME_COMPONENTS = { colour: ColoringPage, memory: MemoryMatch, whack: WhackASnack };
+const GAME_COMPONENTS = { colour: ColoringPage, memory: MemoryMatch, whack: WhackASnack, pattern: SnackPattern };
 
 /**
  * The Snackville studio: kid-facing activities only (the one parent-
  * oriented printable that used to live here — read-aloud notes — now
- * lives in the Parents' Corner, see GrownUps.jsx). Three cards open a
+ * lives in the Parents' Corner, see GrownUps.jsx). Four cards open a
  * real playable mini-game right in the browser; the rest are prints
  * still waiting on final artwork and show an honest "coming soon"
  * state instead of a dead link.

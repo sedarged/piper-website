@@ -46,6 +46,7 @@ export function WorldExperience({ worldClass, brandLabel, title, tagline, coverS
             eyebrow={mapEyebrow}
             heading={mapHeading}
             lead={mapLead}
+            worldTitle={title}
           />
         </div>
       </main>

@@ -75,5 +75,10 @@ export const I = {
 /** Treasure-hunt icon lookup, keyed by treasure id (see data/treasures.js). */
 export const TI = { berry: I.berry, croix: I.croix, star: I.star, bean: I.bean, donut: I.donut, scale: I.scale };
 
+/** Friendly spoken names for the same six icons, for screen-reader labels
+ *  in Snack Squad Memory and Piper's Pattern — the bare TI/ICON keys
+ *  ("croix", "bean") aren't real words and read oddly aloud. */
+export const ICON_NAMES = { berry: "Strawberry", croix: "Croissant", star: "Star", bean: "Jellybean", donut: "Donut", scale: "Dragon scale" };
+
 /** Free-printables icon lookup, keyed by printable id (see data/printables.js). */
-export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, map: I.mapic, badge: I.badgeic };
+export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, pattern: I.star, map: I.mapic, badge: I.badgeic };

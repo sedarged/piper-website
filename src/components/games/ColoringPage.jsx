@@ -73,7 +73,7 @@ export function ColoringPage({ onComplete }) {
 
   return (
     <div className="coloring-game">
-      <div className="coloring-palette" role="listbox" aria-label="Choose a colour">
+      <div className="coloring-palette" role="group" aria-label="Choose a colour">
         {PALETTE.map((c, i) => (
           <button
             key={c} className={`swatch ${colorIndex === i ? "on" : ""}`} style={{ background: c }}
