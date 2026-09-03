@@ -607,7 +607,18 @@ export default function App() {
   const [view, setView] = useState(viewFromHash);
 
   useEffect(() => {
-    const syncView = () => setView(viewFromHash());
+    // A plain in-page anchor (e.g. the footer's href="#map") changes
+    // window.location.hash too, firing this same event — but "#map" isn't
+    // a recognized page hash, so naively syncing on every hashchange would
+    // swap the mounted view to "home" mid-scroll, unmounting the very
+    // section the visitor just clicked toward. Only hashes this router
+    // actually owns (a known view, or empty/"home") should ever change
+    // `view`; anything else is some other element's in-page anchor and is
+    // left alone to scroll natively within whatever's already mounted.
+    const syncView = () => {
+      const hash = window.location.hash;
+      if (hash === "" || HASH_VIEWS[hash]) setView(viewFromHash());
+    };
     window.addEventListener("hashchange", syncView);
     return () => window.removeEventListener("hashchange", syncView);
   }, []);

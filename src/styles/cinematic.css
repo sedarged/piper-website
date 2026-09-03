@@ -983,9 +983,12 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
 }
 .footer-brand { color: var(--gold-bright); font: 600 24px/1 var(--d); }
 .foot h4 { color: var(--gold); opacity: 1; }
-.foot a { color: rgba(247,236,215,.68); }
-.foot a:hover { color: var(--gold-bright); }
-.foot a:focus-visible { color: var(--gold-bright); border-radius: 2px; }
+.foot a,
+.foot button { color: rgba(247,236,215,.68); }
+.foot a:hover,
+.foot button:hover { color: var(--gold-bright); }
+.foot a:focus-visible,
+.foot button:focus-visible { color: var(--gold-bright); border-radius: 2px; }
 .colo { border-top-color: rgba(216,170,88,.26); }
 
 /* Mobile sheet */
