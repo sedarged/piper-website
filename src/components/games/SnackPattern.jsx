@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { I } from "../Icons.jsx";
+import { I, ICON_NAMES } from "../Icons.jsx";
 import { GameCompleteButton, GameRetryButton } from "./GameModal.jsx";
 
 const TILES = ["berry", "croix", "star", "bean", "donut", "scale"];
@@ -52,7 +52,7 @@ export function SnackPattern({ onComplete, chime }) {
   const tap = (tile) => {
     if (phase !== "input") return;
     setLitTile(tile);
-    setTimeout(() => setLitTile(null), 180);
+    timers.current.push(setTimeout(() => setLitTile(null), 180));
 
     if (tile !== sequence[step]) {
       chime?.(220, 0.3);
@@ -88,7 +88,7 @@ export function SnackPattern({ onComplete, chime }) {
             className={`pattern-tile ${litTile === tile ? "lit" : ""}`}
             onClick={() => tap(tile)}
             disabled={phase !== "input"}
-            aria-label={tile}
+            aria-label={ICON_NAMES[tile]}
           >
             {I[tile]()}
           </button>
