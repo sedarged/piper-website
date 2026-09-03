@@ -72,7 +72,7 @@
 .drawer.in{transform:none}
 .dr-art{aspect-ratio:1/.9;overflow:hidden;position:relative;background:#FFE3C0}
 .dr-art img{width:100%;height:100%;object-fit:cover;object-position:top center}
-.dr-x{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:50%;background:var(--cream);
+.dr-x{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;background:var(--cream);
   display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 0 rgba(0,0,0,.13)}
 .dr-b{padding:clamp(22px,4vw,36px)}
 .chip{border-radius:18px;padding:14px 18px;margin:18px 0}
