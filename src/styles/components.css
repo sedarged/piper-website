@@ -168,7 +168,8 @@
 .fc{background:#fff;border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:8px;text-align:left;
   box-shadow:0 8px 0 rgba(42,26,46,.08);transition:transform .28s cubic-bezier(.3,1.6,.4,1),box-shadow .28s}
 .fc:hover{transform:translateY(-7px) rotate(-1deg);box-shadow:0 15px 0 rgba(42,26,46,.08)}
-.fc-soon{opacity:.72;cursor:default}
+.fc-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fc-soon{cursor:default}
 .fc-soon:hover{transform:none;box-shadow:0 8px 0 rgba(42,26,46,.08)}
 
 /* ─── mini-games ─── */

@@ -69,11 +69,13 @@ export function Free({ mark, burst, chime, showToast }) {
               </a>
             ) : (
               <div className="fc fc-soon" aria-disabled="true">
-                <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
+                <div className="fc-topline">
+                  <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
+                  <span className="pill" style={{ background: "rgba(42,26,46,.1)", color: "var(--ink60)" }}>Coming soon</span>
+                </div>
                 <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
                 <span className="eyebrow">{p.n}</span>
                 <span style={{ fontSize: 15.5, color: "var(--ink60)", lineHeight: 1.5 }}>{p.note}</span>
-                <span className="u" style={{ fontSize: 15, color: "var(--ink40)", marginTop: 4 }}>Coming soon</span>
               </div>
             )}
           </Reveal>
