@@ -53,10 +53,10 @@ export const COTTAGE_REGIONS = [
   { id: "right-flowers", label: "Right cottage flowers", svg: { tag: "path", d: "M210 252c-9-6-15 5-8 11-7 7 3 15 10 8 7 7 16-2 9-9 7-7-3-16-11-10z" }, hit: { x: 198, y: 245, w: 28, h: 30 } },
 ];
 
-function RegionShape({ region, fill }) {
+function RegionShape({ region, fill, onPaint }) {
   const Tag = region.svg.tag;
   const { tag: _tag, ...geometry } = region.svg;
-  return <Tag {...geometry} fill={fill} stroke="#43233F" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />;
+  return <Tag className="coloring-region" {...geometry} fill={fill} stroke="#43233F" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" onClick={onPaint} />;
 }
 
 function CottageLinework() {
@@ -108,7 +108,7 @@ export function ColoringPage({ onComplete, chime }) {
 
       <div className="coloring-canvas">
         <svg viewBox="0 0 320 320" className="coloring-svg" aria-hidden="true">
-          {COTTAGE_REGIONS.map((region) => <RegionShape key={region.id} region={region} fill={fills[region.id] || "#fff"} />)}
+          {COTTAGE_REGIONS.map((region) => <RegionShape key={region.id} region={region} fill={fills[region.id] || "#fff"} onPaint={() => paint(region.id)} />)}
           <CottageLinework />
         </svg>
         <div className="coloring-hitareas">
