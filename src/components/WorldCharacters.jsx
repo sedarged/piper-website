@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Reveal } from "./Reveal.jsx";
+import { Img } from "./Img.jsx";
+import { CastDrawer } from "./CastDrawer.jsx";
 
 export function WorldCharacters({ feature, className = "" }) {
+  const [selected, setSelected] = useState(null);
   const headingId = `character-atlas-${feature.title.replaceAll(" ", "-").toLowerCase()}`;
 
   return (
@@ -11,22 +15,27 @@ export function WorldCharacters({ feature, className = "" }) {
         <p className="lead on-sky-s">{feature.lead}</p>
       </Reveal>
 
-      <Reveal className="character-atlas__art">
-        <img src={feature.image} alt={feature.alt} width="1599" height="900" loading="lazy" decoding="async" />
-      </Reveal>
-
-      <div className="character-atlas__grid">
+      <div className="cast-g character-atlas__cards">
         {feature.people.map((person, index) => (
-          <Reveal className="character-atlas__person" key={person.name} delay={index * 55}>
-            <span className="character-atlas__number d" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-            <div>
-              <h3 className="d">{person.name}</h3>
-              <p className="character-atlas__role u">{person.role}</p>
-              <p className="character-atlas__note">{person.note}</p>
-            </div>
+          <Reveal key={person.key} delay={index * 55}>
+            <button className="cc" onClick={() => setSelected(index)} aria-label={`Open ${person.name}'s character profile`}>
+              <div className="cc-f"><Img src={person.img} alt={person.name} fb={person.name} /></div>
+              <h3 className="cc-n">{person.name}</h3>
+              <p className="cc-r">{person.role}</p>
+              <p className="cc-line">{person.line}</p>
+              <span className="cc-b" style={{ background: person.ink }}>{person.badge}</span>
+            </button>
           </Reveal>
         ))}
       </div>
+
+      <CastDrawer
+        index={selected}
+        onClose={() => setSelected(null)}
+        onNavigate={setSelected}
+        characters={feature.people}
+        ctaLabel={feature.ctaLabel}
+      />
     </section>
   );
 }

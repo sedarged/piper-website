@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 
 import { BOOKS, SPREADS } from "../src/data/books.js";
-import { CAST } from "../src/data/cast.js";
+import { CAST, SNACKVILLE_CHARACTERS } from "../src/data/cast.js";
 import { PLACES } from "../src/data/places.js";
 import { QUIZ } from "../src/data/quiz.js";
 import { SECTIONS } from "../src/data/sections.js";
@@ -14,7 +14,7 @@ import { CRUMBHOLLOW_PLACES } from "../src/data/crumbhollow.js";
 import { PRINTABLES } from "../src/data/printables.js";
 import { floodFill } from "../src/lib/floodFill.js";
 import { ASSET } from "../src/config.js";
-import { CRUMBHOLLOW_CAST, SANDWICH_CAST, SNACKVILLE_LEGENDS } from "../src/data/worldCharacters.js";
+import { CRUMBHOLLOW_CAST, SANDWICH_CAST } from "../src/data/worldCharacters.js";
 
 test("content identifiers remain unique", () => {
   for (const collection of [BOOKS, CAST, PLACES, TREASURES, SECTIONS]) {
@@ -59,6 +59,15 @@ test("official Snackville map exposes all twenty described locations", () => {
   }
 });
 
+test("Crumbhollow corrects the two misspelled labels baked into its source art", () => {
+  const corrections = CRUMBHOLLOW_PLACES.filter((place) => place.labelCorrection);
+  assert.deepEqual(corrections.map((place) => place.name), [
+    "Captain Woofer's House & Dock",
+    "Strong Pie-Rat's Barrel Yard",
+  ]);
+  assert.ok(corrections.every((place) => place.labelCorrection.lines.join(" ") === place.name));
+});
+
 test("the publishing showcase uses local optimised artwork", () => {
   assert.equal(BOOKS.length, 6);
   for (const book of BOOKS) {
@@ -78,22 +87,27 @@ test("the publishing showcase uses local optimised artwork", () => {
 
 test("each storyworld exposes its approved character cast", () => {
   assert.deepEqual(
-    SNACKVILLE_LEGENDS.people.map((person) => person.name),
-    ["Pepper", "Choco", "Custard Queen", "Ice Cream Robots"]
+    SNACKVILLE_CHARACTERS.map((person) => person.name),
+    ["Piper", "Croissant Kitty", "Toast Kitty", "Sandwich Kitty", "Pepper", "Choco", "Custard Queen", "Ice Cream Robots"]
   );
   assert.deepEqual(
     CRUMBHOLLOW_CAST.people.map((person) => person.name),
     ["Woofer", "Biscuit", "Grey Pie-Rat", "Strong Pie-Rat", "Pancake Pirate"]
   );
   assert.deepEqual(
-    SANDWICH_CAST.flatMap((feature) => feature.people.map((person) => person.name)),
+    SANDWICH_CAST.people.map((person) => person.name),
     ["Sir Crumples", "Queen Pickle", "Crumbly", "Wizard Brioche", "Gate Guard", "Hungry Cloud", "Mustard Boggle", "Tomato Mouse Captain", "Tomato Mice", "Sandwich Citizens"]
   );
 
-  for (const feature of [SNACKVILLE_LEGENDS, CRUMBHOLLOW_CAST, ...SANDWICH_CAST]) {
-    assert.match(feature.image, /^\/images\/characters\/worlds\/.+\.webp$/);
-    assert.ok(existsSync(new URL(`../public${feature.image}`, import.meta.url)), `${feature.title} artwork exists`);
-    assert.ok(feature.people.every((person) => person.note.length > 30), `${feature.title} has full character notes`);
+  for (const characters of [SNACKVILLE_CHARACTERS, CRUMBHOLLOW_CAST.people, SANDWICH_CAST.people]) {
+    for (const person of characters) {
+      assert.match(person.img, /^\/images\/characters\/.+\.webp$/);
+      assert.ok(existsSync(new URL(`../public${person.img}`, import.meta.url)), `${person.name} portrait exists`);
+      assert.ok(person.line.length > 30, `${person.name} has card copy`);
+      assert.ok(person.bio.length > 60, `${person.name} has a full profile`);
+      assert.ok(person.power.length > 25, `${person.name} has a power`);
+      assert.ok(person.secret.length > 20, `${person.name} has a secret`);
+    }
   }
 
   for (const key of ["piper", "croissant", "toast", "sandwich"]) {
@@ -103,6 +117,30 @@ test("each storyworld exposes its approved character cast", () => {
 
   assert.ok(existsSync(new URL("../public/images/sandwich-interactive-map.jpeg", import.meta.url)), "official Sandwich Kingdom map exists");
   assert.ok(existsSync(new URL("../public/images/worlds/sandwich-cover.webp", import.meta.url)), "official Sandwich Kingdom cover exists");
+  assert.ok(existsSync(new URL("../public/images/home/snack-squad-portal.webp", import.meta.url)), "new Snack Squad portal exists");
+  assert.ok(existsSync(new URL("../public/images/home/toast-kitty-reading.webp", import.meta.url)), "new reading Toast Kitty exists");
+});
+
+test("Crumbhollow and Sandwich Kingdom use the complete world-page structure", () => {
+  const source = readFileSync(new URL("../src/components/WorldExperience.jsx", import.meta.url), "utf8");
+  for (const section of ["world-story", "world-characters", "world-map", "world-book"]) {
+    assert.match(source, new RegExp(`id=["']${section}["']`), `${section} is present`);
+  }
+  assert.match(source, /<WorldCharacters/);
+  assert.match(source, /scrollIntoView/, "world navigation scrolls without replacing the world route hash");
+  assert.match(
+    source,
+    /<WorldMap\s+key=\{title\}/,
+    "each world remounts its map so dialogs and progress cannot leak into another world"
+  );
+});
+
+test("map dialogs escape page stacking contexts", () => {
+  for (const file of ["MapHub.jsx", "WorldMap.jsx"]) {
+    const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
+    assert.match(source, /createPortal/);
+    assert.match(source, /document\.body/);
+  }
 });
 
 test("every map location has a signature effect, and no two are alike", () => {

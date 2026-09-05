@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { PLACES } from "../data/places.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { Reveal } from "./Reveal.jsx";
@@ -116,7 +117,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
         </div>
       </Reveal>
 
-      {openPlace && (
+      {openPlace && createPortal(
         <div
           className="place-dialog-scrim"
           onMouseDown={(event) => { if (event.target === event.currentTarget) closePlace(); }}
@@ -157,7 +158,8 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
               <button className="btn b-plum" onClick={closePlace}>Back to the map</button>
             </div>
           </article>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

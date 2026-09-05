@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { useChime } from "../hooks/useChime.js";
 import { useReducedMotion } from "../hooks/useReducedMotion.js";
@@ -138,6 +139,21 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
               with the printed numbers underneath it. */}
           <div className="map-f world-map-frame" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
             <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
+            {places.filter((place) => place.labelCorrection).map((place) => (
+              <span
+                key={`${place.id}-label-correction`}
+                className="map-label-correction"
+                style={{
+                  "--label-x": `${place.labelCorrection.x}%`,
+                  "--label-y": `${place.labelCorrection.y}%`,
+                  "--label-width": `${place.labelCorrection.width}%`,
+                  "--label-height": `${place.labelCorrection.height}%`,
+                }}
+                aria-hidden="true"
+              >
+                {place.labelCorrection.lines.map((line) => <span key={line}>{line}</span>)}
+              </span>
+            ))}
             {places.map((place) => (
               <button
                 key={place.id}
@@ -185,7 +201,7 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
         </div>
       </Reveal>
 
-      {openPlace && (
+      {openPlace && createPortal(
         <div
           className="place-dialog-scrim"
           onMouseDown={(event) => { if (event.target === event.currentTarget) closePlace(); }}
@@ -213,10 +229,11 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
               <button className="btn b-plum" onClick={closePlace}>Back to the map</button>
             </div>
           </article>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {showCertificate && (
+      {showCertificate && createPortal(
         <div
           className="place-dialog-scrim"
           onMouseDown={(event) => { if (event.target === event.currentTarget) closeCertificate(); }}
@@ -241,7 +258,8 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
               <button className="btn b-plum" onClick={closeCertificate}>Keep exploring</button>
             </div>
           </article>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

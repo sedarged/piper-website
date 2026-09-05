@@ -41,8 +41,7 @@ import { WorldExperience } from "./components/WorldExperience.jsx";
 import { SANDWICH_PLACES } from "./data/sandwich.js";
 import { CRUMBHOLLOW_PLACES } from "./data/crumbhollow.js";
 import { WORLD_FX } from "./data/worldFx.js";
-import { CRUMBHOLLOW_CAST, SANDWICH_CAST, SNACKVILLE_LEGENDS } from "./data/worldCharacters.js";
-import { WorldCharacters } from "./components/WorldCharacters.jsx";
+import { CRUMBHOLLOW_CAST, SANDWICH_CAST } from "./data/worldCharacters.js";
 
 /**
  * The root component. Owns every piece of cross-section state:
@@ -449,10 +448,6 @@ function SnackvilleExperience({ onBackHome }) {
 
         <Story found={doneKeys} onFind={onFindTreasure} />
         <Cast found={doneKeys} onFind={onFindTreasure} onOpenCharacter={setCastIndex} chime={chime} />
-        <div className="wrap snackville-legends">
-          <WorldCharacters feature={SNACKVILLE_LEGENDS} />
-        </div>
-
         <Divider shape="hill" fill="rgba(232,222,255,.93)" />
         <section className="sec" id="join" style={{ background: "rgba(232,222,255,.93)" }}>
           <div className="wrap">
@@ -591,6 +586,12 @@ export default function App() {
         tagline="The floating sandwich-castle world above the clouds."
         coverSrc="/images/worlds/sandwich-cover.webp"
         coverAlt="Sandwich Kingdom cover art — a floating sandwich castle above the clouds"
+        story={{
+          eyebrow: "Inside book six",
+          heading: "A kingdom held together by belonging",
+          body: "Piper and the Snack Squad cross floating fields, mustard marshes and secret tunnels after Sandwich Kingdom's Togetherstone cracks. The mystery leads beneath the castle, where a forgotten builder is still waiting to be welcomed home.",
+          facts: [["Adventure", "A floating castle mystery"], ["Heart", "Nobody should be left out"], ["Magic", "The Togetherstone"]],
+        }}
         mapEyebrow="The official illustrated map"
         mapHeading="Choose your next stop"
         mapLead="Every numbered place holds a piece of the kingdom's story. Select a location to read its field note."
@@ -600,7 +601,12 @@ export default function App() {
         mapWidth="1536"
         mapHeight="1024"
         fx={WORLD_FX.sandwich}
-        characterFeatures={SANDWICH_CAST}
+        characterFeatures={[SANDWICH_CAST]}
+        book={{
+          cover: "/images/books/sandwich-castle.webp",
+          title: "Piper and the Sandwich Castle",
+          description: "Meet Sir Crumples, Queen Pickle, Wizard Brioche and Crumbly in the sixth illustrated Piper adventure.",
+        }}
         onBackHome={openHome}
       />
     );
@@ -615,6 +621,12 @@ export default function App() {
         tagline="The hidden Pie-Rat village beneath Snackville."
         coverSrc="/images/worlds/crumbhollow-cover.webp"
         coverAlt="Crumbhollow cover art — the hidden Pie-Rat village beneath Snackville"
+        story={{
+          eyebrow: "Beneath Snackville",
+          heading: "A secret harbour made from crumbs",
+          body: "Far below the berry-bright streets of Snackville lies Crumbhollow: a lantern-lit Pie-Rat village of tunnels, canals and biscuit docks. Piper discovers that even the smallest crumbs can point toward a much bigger truth.",
+          facts: [["Adventure", "A hidden-village rescue"], ["Crew", "Pie-Rats and pirates"], ["Home", "Lantern canals below town"]],
+        }}
         mapEyebrow="The official illustrated map"
         mapHeading="Choose your next stop"
         mapLead="Every numbered place holds a piece of the village's story. Select a location to read its field note."
@@ -625,6 +637,11 @@ export default function App() {
         mapHeight="864"
         fx={WORLD_FX.crumbhollow}
         characterFeatures={[CRUMBHOLLOW_CAST]}
+        book={{
+          cover: "/images/books/snackville-pie-rats.webp",
+          title: "Piper and the Snackville Pie-Rats",
+          description: "Sail the underground canals with Woofer, Biscuit and the Pie-Rat crew in Piper's fifth illustrated adventure.",
+        }}
         onBackHome={openHome}
       />
     );

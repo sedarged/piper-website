@@ -35,3 +35,44 @@ export const CAST = [
     secret: "He cries at happy endings. Every single time.",
   },
 ];
+
+/**
+ * Snackville's full on-page character gallery. The quiz intentionally still
+ * uses the four-member CAST above; the wider gallery also introduces the
+ * friends and rivals children meet across the Snackville books.
+ */
+export const SNACKVILLE_CHARACTERS = [
+  ...CAST,
+  {
+    key: "pepper", n: "05", name: "Pepper", role: "Pizza Dragon", img: "/images/characters/snackville/pepper.webp",
+    ink: "#D96A2B", badge: "Fiery",
+    line: "A warm-hearted dragon with a seriously crispy roar.",
+    bio: "Pepper watches over the warm mountain above Snackville. His pizza-patterned wings look fierce, but he would rather guide a lost traveller home than frighten anybody.",
+    power: "A spinning pizza-fire gust that lights dark paths without burning them.",
+    secret: "He practises tiny, quiet roars when nobody is listening.",
+  },
+  {
+    key: "choco", n: "06", name: "Choco", role: "Chocolate Dragon", img: "/images/characters/snackville/choco.webp",
+    ink: "#7A4B35", badge: "Loyal",
+    line: "Guardian of the Chocolate Volcano and keeper of its oldest paths.",
+    bio: "Choco's cocoa scales glow when the Chocolate Volcano rumbles. He knows every tunnel beneath it and never leaves a friend behind when the ground begins to shake.",
+    power: "A rich cocoa shield that cools hot stone and steadies trembling bridges.",
+    secret: "The fiercest-looking dragon in Snackville loves marshmallow tea.",
+  },
+  {
+    key: "custard-queen", n: "07", name: "Custard Queen", role: "Royal Protector", img: "/images/characters/snackville/custard-queen.webp",
+    ink: "#B7892F", badge: "Royal",
+    line: "A bold custard monarch with a kingdom-sized heart.",
+    bio: "The Custard Queen arrives with a jewelled spoon crown, a magnificent purple cape and enough confidence to fill a palace. She learns that the strongest royal order can be an act of kindness.",
+    power: "Her custard sceptre raises golden shields around anyone who needs help.",
+    secret: "She keeps every thank-you note tucked inside her crown box.",
+  },
+  {
+    key: "ice-cream-robots", n: "08", name: "Ice Cream Robots", role: "Frozen Friends", img: "/images/characters/snackville/ice-cream-robots.webp",
+    ink: "#4F86B7", badge: "Cool",
+    line: "Scoop-topped machines with blinking eyes and a friendly mission.",
+    bio: "The Ice Cream Robots wake inside the shimmering caves with frosted shells, cherry antennae and a lot to learn about Snackville. Together they turn a chilly mystery into a new friendship.",
+    power: "Perfectly timed snowflake beams that build bridges from sparkling ice.",
+    secret: "Their happiest beep sounds exactly like a tiny ice-cream van.",
+  },
+];

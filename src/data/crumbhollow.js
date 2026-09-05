@@ -43,9 +43,10 @@ export const CRUMBHOLLOW_PLACES = [
     d: "Fresh pies, biscuits and crumb-filled treats are baked here every day, making it one of the best-smelling places in the whole underground village.",
   },
   {
-    id: "captain-wooders-dock", n: 6, x: 90, y: 32, ink: C.sky,
-    name: "Captain Wooder's House & Dock", who: "Captain Wooder", kind: "Home & dock",
-    intro: "A private waterside home and dock belonging to Captain Wooder.",
+    id: "captain-woofers-dock", n: 6, x: 90, y: 32, ink: C.sky,
+    name: "Captain Woofer's House & Dock", who: "Captain Woofer", kind: "Home & dock",
+    labelCorrection: { x: 90, y: 38.2, width: 15, height: 9, lines: ["Captain Woofer's", "House & Dock"] },
+    intro: "A private waterside home and dock belonging to Captain Woofer.",
     d: "Boats can pull up directly outside, making this a useful base for planning journeys through the canals and keeping an eye on everything moving through Crumbhollow.",
   },
   {
@@ -55,10 +56,11 @@ export const CRUMBHOLLOW_PLACES = [
     d: "The Grey First Mate keeps the village supplied with everything needed to tie up boats, repair bridges and handle life on the underground waterways.",
   },
   {
-    id: "streeg-pie-rats-barrel-yard", n: 8, x: 20, y: 62, ink: C.grape,
-    name: "Streeg Pie-Rats Barrel Yard", who: "The Streeg Pie-Rats", kind: "Storage yard",
+    id: "strong-pie-rats-barrel-yard", n: 8, x: 20, y: 62, ink: C.grape,
+    name: "Strong Pie-Rat's Barrel Yard", who: "Strong Pie-Rat", kind: "Storage yard",
+    labelCorrection: { x: 20, y: 65.7, width: 15, height: 6.5, lines: ["Strong Pie-Rat's", "Barrel Yard"] },
     intro: "A crowded storage yard filled with barrels, crates and supplies arriving from every corner of Crumbhollow.",
-    d: "The Streeg Pie-Rats keep the yard organised — or at least as organised as a Pie-Rat barrel yard ever gets.",
+    d: "Strong Pie-Rat keeps the yard organised — or at least as organised as a Pie-Rat barrel yard ever gets.",
   },
   {
     id: "pancake-hat-pier", n: 9, x: 41, y: 78, ink: C.butter,
