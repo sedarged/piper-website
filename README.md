@@ -54,16 +54,22 @@ src/
 
   data/                  Pure content, no logic: character bios, quiz
                          questions, book details, map locations, treasure
-                         hunt items, free printables, nav sections, and
-                         Piper's per-section guide messages.
+                         hunt items, free printables, nav sections,
+                         Piper's per-section guide messages, and the
+                         twenty signature map effects (wow.js) plus the
+                         two lighter worlds' own flavour (worldFx.js).
 
-  hooks/                 useChime (Web Audio sound effects), useReveal
-                         (scroll-triggered fade-in), and useScrollEngine
-                         (see below — read this one before touching
-                         anything scroll-related).
+  hooks/                 useChime (Web Audio sound effects — see its
+                         header for the "voice" shape the map effects
+                         use), useBestScore (per-game personal bests),
+                         useReveal (scroll-triggered fade-in), and
+                         useScrollEngine (see below — read this one
+                         before touching anything scroll-related).
 
   styles/                tokens.css (design tokens, reset, typography,
-                         the living sky, parallax layers) and
+                         the living sky, parallax layers), wow.css (the
+                         map's twenty signature effects — read its header
+                         before touching screen reactions) and
                          components.css (everything else). tokens.js
                          exports the same palette as JS for inline SVG fills.
 ```
@@ -88,9 +94,9 @@ silently reintroduce the jank this hook exists to eliminate.
 
 ## The Explorer progress system
 
-Six hidden treasures, twenty map locations, six explored books, completing
-the quiz, and reaching nightfall — 30 actions total (see
-`data/treasures.js`, `TOTAL_ACTIONS`). Every interactive component
+Six hidden treasures, twenty map locations, six explored books, five
+studio games, completing the quiz, and reaching nightfall — 39 actions
+total (see `data/treasures.js`, `TOTAL_ACTIONS`). Every interactive component
 calls `mark(uniqueKey)` (passed down from `App.jsx`) when its action
 completes; `mark` is idempotent, so calling it twice for the same key
 is harmless. Progress is saved locally in the visitor's browser. Crossing
@@ -105,12 +111,12 @@ new, unique key from wherever that interaction lives.
 - **The five parallax landscape layers** (`components/Landscape.jsx`)
   are flat vector illustrations, not painted artwork. See
   `docs/asset-list.md`, Part 1, for generation prompts to replace them.
-- **Two of the five Activities cards** (`data/printables.js`, the
+- **Two of the seven Activities cards** (`data/printables.js`, the
   Snackville map poster and the Snack Squad badge) still have an empty
   `url` until the actual PDFs exist, and show a "coming soon" state
-  instead of a dead link. The other three cards are real playable
-  mini-games (see `components/games/`), not print-and-wait
-  placeholders. See `docs/asset-list.md`, Part 4.
+  instead of a dead link. The other five cards are real playable
+  mini-games (see `components/games/`, wired up in its `registry.js`),
+  not print-and-wait placeholders. See `docs/asset-list.md`, Part 4.
 
 ## Testing
 

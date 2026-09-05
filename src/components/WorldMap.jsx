@@ -7,7 +7,12 @@ import { Img } from "./Img.jsx";
 import { I } from "./Icons.jsx";
 import { FxLayers } from "./FxLayers.jsx";
 
-const CONFETTI_KINDS = ["berry", "star", "croix", "donut", "bean"];
+const DEFAULT_FX = {
+  confettiKinds: ["berry", "star", "croix", "donut", "bean"],
+  arrival: 720,
+  complete: 880,
+  reactions: [],
+};
 
 /**
  * A generic illustrated, numbered map — the same interaction pattern as
@@ -15,14 +20,19 @@ const CONFETTI_KINDS = ["berry", "star", "croix", "donut", "bean"];
  * scrollable index), reused for Sandwich Kingdom and Crumbhollow so a
  * new world's map doesn't need its own bespoke component.
  *
- * Unlike Snackville, these worlds don't have a "wow" screen effect per
- * location — but every *first* visit to a location still gets its own
- * small chime-and-confetti moment (see burstConfetti/pick below), and
- * finding every location pops a one-time "explored it all" certificate.
- * "Visited" state is local to this component (not persisted), since
- * these worlds aren't part of Snackville's Explorer/badge system.
+ * These worlds don't carry Snackville's twenty bespoke per-location
+ * effects, but they aren't a silent reskin of each other either: the
+ * `fx` prop (see data/worldFx.js) gives each world its own confetti
+ * mix, its own arrival and completion voices, and its own rotation of
+ * screen reactions, so the kingdom in the clouds and the burrow under
+ * the town don't respond to a tap in the same way.
+ *
+ * Every *first* visit to a location gets that moment; finding every
+ * location pops a one-time "explored it all" certificate. "Visited"
+ * state is local to this component (not persisted), since these worlds
+ * aren't part of Snackville's Explorer/badge system.
  */
-export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow, heading, lead, worldTitle }) {
+export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow, heading, lead, worldTitle, fx = DEFAULT_FX, onReact }) {
   const [selected, setSelected] = useState(places[0]);
   const [openPlace, setOpenPlace] = useState(null);
   const [visited, setVisited] = useState(() => new Set());
@@ -44,7 +54,8 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
     const bits = Array.from({ length: count }, (_, i) => ({
       id: `wc${Date.now()}-${i}-${Math.random()}`, left: Math.random() * 100,
       dur: 2.4 + Math.random() * 2.2, delay: Math.random() * 0.6,
-      size: 16 + Math.random() * 20, kind: CONFETTI_KINDS[Math.floor(Math.random() * CONFETTI_KINDS.length)],
+      size: 16 + Math.random() * 20,
+      kind: fx.confettiKinds[Math.floor(Math.random() * fx.confettiKinds.length)],
     }));
     // Capped at 60 concurrent pieces — a kid clicking through several new
     // locations in quick succession would otherwise stack an unbounded
@@ -52,17 +63,17 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
     setConfetti((prev) => [...prev, ...bits].slice(-60));
     const ids = new Set(bits.map((b) => b.id));
     setTimeout(() => setConfetti((prev) => prev.filter((b) => !ids.has(b.id))), 5400);
-  }, []);
+  }, [fx]);
 
   const closePlace = useCallback(() => {
     setOpenPlace(null);
     if (celebrationPending.current) {
       celebrationPending.current = false;
       setShowCertificate(true);
-      chime(880, 0.22);
+      chime(fx.complete);
       burstConfetti(24);
     }
-  }, [chime, burstConfetti]);
+  }, [chime, burstConfetti, fx]);
   const closeCertificate = useCallback(() => setShowCertificate(false), []);
 
   const pick = (place) => {
@@ -72,8 +83,17 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
       const next = new Set(visited);
       next.add(place.id);
       setVisited(next);
-      chime(720, 0.16);
+      chime(fx.arrival);
       burstConfetti(16);
+      // Each location keeps the same reaction every time it's opened —
+      // chosen by its position in the list, not at random — so a child
+      // re-tapping a place gets a consistent answer, while neighbouring
+      // places still respond differently from one another. The reaction
+      // itself is broadcast from the world's root element, which
+      // WorldExperience owns, so it's handed up rather than applied here.
+      if (fx.reactions.length && !reduceMotion.current) {
+        onReact?.(fx.reactions[places.indexOf(place) % fx.reactions.length]);
+      }
       // Every location visited: hold the celebration until this dialog
       // (which just opened for the location that completed the set)
       // closes, so the certificate never stacks on top of it.
@@ -92,7 +112,7 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
 
   return (
     <>
-      <FxLayers sparks={[]} wowFx={[]} confetti={confetti} flash={null} />
+      <FxLayers sparks={[]} wowFx={[]} confetti={confetti} wash={null} />
 
       <Reveal className="map-heading">
         <div>
@@ -109,20 +129,20 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
         </div>
       </Reveal>
 
-      <Reveal className="map-atlas panel">
-        <div className="map-scroll" aria-label="Scrollable illustrated map">
+      <Reveal className="map-atlas panel world-map-atlas">
+        <div className="map-scroll world-map-scroll" aria-label={`${worldTitle} illustrated map`}>
           {/* .map-f's base CSS hardcodes aspect-ratio:16/9 for Snackville's own
               1536x864 map — a world with a differently-shaped map (Sandwich Kingdom's
               is 1536x1024, i.e. 3:2) needs its own ratio here, or object-fit:
               cover crops the image and every hotspot's x/y% stops lining up
               with the printed numbers underneath it. */}
-          <div className="map-f" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
+          <div className="map-f world-map-frame" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
             <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
             {places.map((place) => (
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visited.has(place.id) ? "seen" : ""}`}
-                style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
+                style={{ "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
@@ -133,7 +153,7 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
           </div>
         </div>
 
-        <p className="map-pan-hint u">On a small screen, swipe the map sideways to see every corner.</p>
+        <p className="map-pan-hint world-map-fit-hint u">The whole map fits your screen. Tap a numbered place to explore it.</p>
 
         <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
           <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>

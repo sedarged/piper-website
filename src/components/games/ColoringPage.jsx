@@ -1,111 +1,159 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { C } from "../../styles/tokens.js";
+import { floodFill } from "../../lib/floodFill.js";
 
-const VIEWBOX = 240;
-const pct = (px) => `${(px / VIEWBOX) * 100}%`;
+const LINE_ART = "/images/games/strawberry-cottage-line-art.png";
+const CANVAS_SIZE = 720;
+const FINISH_AFTER = 6;
 
-const PALETTE = [C.strawberry, C.butter, C.mint, C.sky, C.grape, C.ember, C.cocoa, "#FFFFFF"];
-const COLOR_NAMES = ["Strawberry", "Butter", "Mint", "Sky", "Grape", "Ember", "Cocoa", "White"];
-
-/**
- * Every paintable region, as a single source of truth for both the
- * decorative SVG shape and its keyboard/tap hit-area — so the two can
- * never drift out of alignment the way two independently-authored
- * geometry lists could.
- *
- * Every hit-area is a plain axis-aligned rectangle (the shape's own
- * bounding box), even for the round berries and the triangular roof.
- * A tighter-fitting `clip-path` was tried for the roof, but clip-path
- * also clips the element's own `:focus-visible` outline (outlines
- * paint outside the border box, which is exactly what clip-path
- * removes) — so a precisely-clipped hit-area is invisible-when-focused
- * for keyboard users, the same "looks correct, silently fails keyboard
- * users" failure this component exists to avoid. A slightly generous
- * rectangular hit-area with a guaranteed-visible focus ring is the
- * better trade for a kids' colouring page.
- */
-const REGIONS = [
-  { id: "sky", label: "Sky", svg: { tag: "rect", x: 0, y: 0, width: 240, height: 150 }, hit: { x: 0, y: 0, w: 240, h: 150 } },
-  { id: "ground", label: "Ground", svg: { tag: "rect", x: 0, y: 150, width: 240, height: 90 }, hit: { x: 0, y: 150, w: 240, h: 90 } },
-  { id: "wall", label: "Cottage wall", svg: { tag: "rect", x: 70, y: 110, width: 100, height: 90 }, hit: { x: 70, y: 110, w: 100, h: 90 } },
-  { id: "roof", label: "Roof", svg: { tag: "polygon", points: "60,110 120,55 180,110" }, hit: { x: 60, y: 55, w: 120, h: 55 } },
-  { id: "door", label: "Door", svg: { tag: "rect", x: 108, y: 150, width: 24, height: 50 }, hit: { x: 108, y: 150, w: 24, h: 50 } },
-  { id: "window", label: "Window", svg: { tag: "rect", x: 142, y: 125, width: 28, height: 28 }, hit: { x: 142, y: 125, w: 28, h: 28 } },
-  { id: "berry1", label: "Berry 1", svg: { tag: "circle", cx: 38, cy: 182, r: 14 }, hit: { x: 24, y: 168, w: 28, h: 28 } },
-  { id: "berry2", label: "Berry 2", svg: { tag: "circle", cx: 58, cy: 198, r: 14 }, hit: { x: 44, y: 184, w: 28, h: 28 } },
-  { id: "berry3", label: "Berry 3", svg: { tag: "circle", cx: 200, cy: 188, r: 14 }, hit: { x: 186, y: 174, w: 28, h: 28 } },
+const PALETTE = [
+  { c: C.strawberry, name: "Strawberry" },
+  { c: C.butter, name: "Butter" },
+  { c: C.mint, name: "Mint" },
+  { c: C.sky, name: "Sky" },
+  { c: C.grape, name: "Grape" },
+  { c: C.ember, name: "Ember" },
+  { c: C.cocoa, name: "Cocoa" },
+  { c: "#F49AC1", name: "Bubblegum" },
+  { c: "#7FD8C8", name: "Seafoam" },
+  { c: "#FFFFFF", name: "White" },
 ];
 
-function RegionShape({ region, fill }) {
-  const common = { fill, stroke: "#2A1A2E", strokeWidth: 2 };
-  if (region.svg.tag === "rect") {
-    return <rect x={region.svg.x} y={region.svg.y} width={region.svg.width} height={region.svg.height} {...common} />;
-  }
-  if (region.svg.tag === "circle") {
-    return <circle cx={region.svg.cx} cy={region.svg.cy} r={region.svg.r} {...common} />;
-  }
-  return <polygon points={region.svg.points} {...common} />;
+const QUICK_AREAS = [
+  { name: "roof", x: 360, y: 224 },
+  { name: "walls", x: 360, y: 360 },
+  { name: "door", x: 360, y: 492 },
+  { name: "left window", x: 219, y: 413 },
+  { name: "right window", x: 503, y: 413 },
+  { name: "path", x: 360, y: 620 },
+];
+
+function hexToRgb(hex) {
+  const value = hex.replace("#", "");
+  return [
+    Number.parseInt(value.slice(0, 2), 16),
+    Number.parseInt(value.slice(2, 4), 16),
+    Number.parseInt(value.slice(4, 6), 16),
+  ];
 }
 
 /**
- * A click-to-fill colouring page: an original line-art scene of Piper's
- * Strawberry Cottage made of a handful of paintable regions. No canvas,
- * no flood-fill algorithm and no external artwork — picking a colour
- * and tapping a region just sets that region's fill.
- *
- * The SVG itself is purely decorative (`aria-hidden`); a transparent
- * `<button>` overlay positioned over each region does the actual
- * interaction, so every region is reachable and paintable by Tab +
- * Enter/Space with no custom keyboard handling needed. Chromium's
- * actual Tab-key traversal skips `tabindex`-only SVG shapes even
- * though they're individually `.focus()`-able, so real HTML buttons
- * are used instead of making the SVG shapes themselves focusable.
+ * The line art is drawn into a real canvas. A flood fill colours the exact
+ * enclosed area beneath the pointer, so ornate icing curls, leaves, windows
+ * and tiny garden pieces stay inside the illustrator's ink instead of using
+ * approximate rectangles or SVG masks.
  */
-export function ColoringPage({ onComplete }) {
+export function ColoringPage({ onComplete, chime }) {
+  const canvasRef = useRef(null);
+  const baseImageRef = useRef(null);
+  const historyRef = useRef([]);
   const [colorIndex, setColorIndex] = useState(0);
-  const [fills, setFills] = useState({});
+  const [fillCount, setFillCount] = useState(0);
+  const [ready, setReady] = useState(false);
 
-  const color = PALETTE[colorIndex];
-  const colorName = COLOR_NAMES[colorIndex];
-  const paint = (id) => setFills((f) => ({ ...f, [id]: color }));
-  const filledCount = Object.keys(fills).length;
-  const done = filledCount >= REGIONS.length;
+  const drawFreshPage = () => {
+    const canvas = canvasRef.current;
+    const image = baseImageRef.current;
+    if (!canvas || !image) return;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    context.fillStyle = "#FFFFFF";
+    context.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    context.drawImage(image, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  };
+
+  useEffect(() => {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = LINE_ART;
+    image.onload = () => {
+      baseImageRef.current = image;
+      drawFreshPage();
+      setReady(true);
+    };
+    return () => { image.onload = null; };
+  }, []);
+
+  const paintAt = (x, y) => {
+    if (!ready) return;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    const before = context.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    const next = new ImageData(new Uint8ClampedArray(before.data), CANVAS_SIZE, CANVAS_SIZE);
+    const painted = floodFill(next.data, CANVAS_SIZE, CANVAS_SIZE, x, y, hexToRgb(PALETTE[colorIndex].c));
+    if (painted < 20) return;
+
+    historyRef.current.push(before);
+    if (historyRef.current.length > 20) historyRef.current.shift();
+    context.putImageData(next, 0, 0);
+    setFillCount((count) => count + 1);
+    chime?.(420 + colorIndex * 46, 0.09);
+  };
+
+  const paintFromPointer = (event) => {
+    const canvas = canvasRef.current;
+    const bounds = canvas.getBoundingClientRect();
+    paintAt(
+      ((event.clientX - bounds.left) / bounds.width) * CANVAS_SIZE,
+      ((event.clientY - bounds.top) / bounds.height) * CANVAS_SIZE
+    );
+  };
+
+  const undo = () => {
+    const previous = historyRef.current.pop();
+    if (!previous) return;
+    canvasRef.current.getContext("2d", { willReadFrequently: true }).putImageData(previous, 0, 0);
+    setFillCount((count) => Math.max(0, count - 1));
+    chime?.(320, 0.1);
+  };
+
+  const clear = () => {
+    if (!fillCount) return;
+    drawFreshPage();
+    historyRef.current = [];
+    setFillCount(0);
+    chime?.(260, 0.16);
+  };
+
+  const done = fillCount >= FINISH_AFTER;
 
   return (
     <div className="coloring-game">
       <div className="coloring-palette" role="group" aria-label="Choose a colour">
-        {PALETTE.map((c, i) => (
-          <button
-            key={c} className={`swatch ${colorIndex === i ? "on" : ""}`} style={{ background: c }}
-            onClick={() => setColorIndex(i)}
-            aria-label={`Colour ${COLOR_NAMES[i]}`} aria-pressed={colorIndex === i}
-          />
+        {PALETTE.map((swatch, index) => (
+          <button key={swatch.c} className={`swatch ${colorIndex === index ? "on" : ""}`} style={{ background: swatch.c }} onClick={() => setColorIndex(index)} aria-label={`Colour ${swatch.name}`} aria-pressed={colorIndex === index} />
         ))}
       </div>
 
-      <div className="coloring-canvas">
-        <svg viewBox="0 0 240 240" className="coloring-svg" aria-hidden="true">
-          {REGIONS.map((r) => <RegionShape key={r.id} region={r} fill={fills[r.id] || "#fff"} />)}
-        </svg>
-        <div className="coloring-hitareas">
-          {REGIONS.map((r) => (
-            <button
-              key={r.id}
-              className="coloring-hit"
-              style={{ left: pct(r.hit.x), top: pct(r.hit.y), width: pct(r.hit.w), height: pct(r.hit.h) }}
-              onClick={() => paint(r.id)}
-              aria-label={`${r.label}, currently ${fills[r.id] ? "painted" : "unpainted"}. Paint it ${colorName}.`}
-            />
-          ))}
-        </div>
+      <div className="coloring-canvas coloring-canvas--illustrated">
+        <canvas
+          ref={canvasRef}
+          className="coloring-paint-canvas"
+          width={CANVAS_SIZE}
+          height={CANVAS_SIZE}
+          onPointerDown={paintFromPointer}
+          role="img"
+          aria-label="Professional line drawing of Piper's Strawberry Cottage. Choose a colour and tap an enclosed area to fill it."
+        />
+        {!ready && <span className="coloring-loading">Preparing your colouring page…</span>}
       </div>
 
-      <p className="coloring-hint u">
-        Pick a colour, then tap a shape to paint it. {filledCount}/{REGIONS.length} coloured.
+      <div className="coloring-quick" role="group" aria-label="Keyboard-friendly quick paint areas">
+        <span>Quick paint:</span>
+        {QUICK_AREAS.map((area) => (
+          <button key={area.name} className="coloring-quick__button" onClick={() => paintAt(area.x, area.y)}>
+            {area.name}
+          </button>
+        ))}
+      </div>
+
+      <p className="coloring-hint u" aria-live="polite">
+        Choose a colour, then tap any enclosed detail. {Math.min(fillCount, FINISH_AFTER)}/{FINISH_AFTER} fills to finish.
       </p>
-      <button className="btn b-straw" disabled={!done} onClick={onComplete}>
-        {done ? "Finish my picture!" : "Keep colouring…"}
-      </button>
+      <div className="game-actions">
+        <button className="btn b-ghost btn-sm" onClick={undo} disabled={!fillCount}>↩ Undo</button>
+        <button className="btn b-ghost btn-sm" onClick={clear} disabled={!fillCount}>Start over</button>
+        <button className="btn b-straw" disabled={!done} onClick={onComplete}>{done ? "Finish my cottage!" : "Keep colouring…"}</button>
+      </div>
     </div>
   );
 }

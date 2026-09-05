@@ -6,6 +6,8 @@ import { SECTIONS } from "./data/sections.js";
 import { TREASURES, BADGES, TOTAL_ACTIONS } from "./data/treasures.js";
 import { PLACES } from "./data/places.js";
 import { GUIDE_MESSAGES } from "./data/guide.js";
+import { WOW_FX } from "./data/wow.js";
+import { broadcastReaction } from "./lib/reaction.js";
 
 import { useChime } from "./hooks/useChime.js";
 import { useReducedMotion } from "./hooks/useReducedMotion.js";
@@ -34,130 +36,13 @@ import { PiperGuide } from "./components/PiperGuide.jsx";
 import { Toast } from "./components/Toast.jsx";
 import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
+import { SoundToggle } from "./components/SoundToggle.jsx";
 import { WorldExperience } from "./components/WorldExperience.jsx";
 import { SANDWICH_PLACES } from "./data/sandwich.js";
 import { CRUMBHOLLOW_PLACES } from "./data/crumbhollow.js";
-
-/**
- * One entry per map location, keyed by its own `id` (see data/places.js)
- * — every one of the 20 stops has its own bespoke reaction, not a shared
- * template recoloured. Each entry picks its own combination of:
- *   - `shake`: null | "hard" (the volcano's rumble) | "soft" (a gentle
- *     wobble) | "bounce" (a springy scale-pulse) | "thud" (one sharp bump)
- *   - `particles`: a `kind` (its own CSS class + keyframe family — falling,
- *     rising, bouncing, drifting sideways, a staggered ground trail, a
- *     radial spark shower, an expanding smoke ring, or a scattered flicker)
- *     plus a `count`
- *   - `rings` / `streaks`: alternatives to particles for an alarm-style
- *     pulse or a fast motion-blur streak
- *   - `flashTint`: a brief full-screen tint ("gold", "green", or "dark"
- *     for a vignette peek)
- *   - `confettiBurst`: reuses the existing multicolour confetti system
- * so that Dragon Cave's sleepy smoke rings, say, share no visual DNA with
- * Chocolate Volcano's rumble-and-drip, even though they're neighbours.
- */
-const WOW_FX = {
-  cottage: {
-    shake: null, pitch: 760, dur: 0.22, particles: { kind: "heart", count: 10, life: 2200 },
-    toastTitle: "Ding dong!", toastBody: "The cottage bell rang all through the garden.",
-    guide: "Piper says the bell means someone's welcome for tea.",
-  },
-  "berry-patch": {
-    shake: "soft", pitch: 520, dur: 0.22, particles: { kind: "berry", count: 14, life: 2400 },
-    toastTitle: "Berry shower!", toastBody: "The berry bush let go of everything it was holding.",
-    guide: "Piper says that happens when you tickle the roots.",
-  },
-  hq: {
-    shake: null, pitch: 300, dur: 0.3, rings: { count: 3, color: "#6F9C7E" }, flashTint: "green",
-    toastTitle: "Alert!", toastBody: "The golden S is glowing — Snackville needs a hero.",
-    guide: "That's the signal. Something's about to happen.",
-  },
-  square: {
-    shake: null, pitch: 640, dur: 0.3, confettiBurst: 40, flashTint: "gold",
-    toastTitle: "Piñata!", toastBody: "Candy Path Square just got a lot more colourful.",
-    guide: "Somebody's going to be sweeping confetti for a week.",
-  },
-  fountain: {
-    shake: null, pitch: 230, dur: 0.28, particles: { kind: "fountain", count: 14, life: 1900 },
-    toastTitle: "Splash!", toastBody: "The fountain overflowed with warm chocolate.",
-    guide: "Careful — it's warmer than it looks.",
-  },
-  "sweet-treats-street": {
-    shake: null, pitch: 500, dur: 0.2, particles: { kind: "aroma", count: 10, life: 2600 },
-    toastTitle: "Mmm, cinnamon!", toastBody: "The bakery bell brought the whole street outside.",
-    guide: "Follow your nose. It never lies on this street.",
-  },
-  "cupcake-cart": {
-    shake: null, pitch: 880, dur: 0.16, particles: { kind: "trailstar", count: 9, life: 2600 },
-    toastTitle: "Ding ding!", toastBody: "The cart rattled past, leaving sugar stars behind.",
-    guide: "Its wheels always leave a trail like that.",
-  },
-  "croissant-house": {
-    shake: null, pitch: 1100, dur: 0.12, streaks: { count: 1, image: "croissant" },
-    toastTitle: "Whoosh!", toastBody: "Croissant Kitty just zoomed past the weather vane.",
-    guide: "Blink and you'll miss her. She's the fastest in Snackville.",
-  },
-  "sandwich-fort": {
-    shake: "thud", pitch: 150, dur: 0.3, particles: { kind: "brick", count: 8, life: 1900 },
-    toastTitle: "Thud!", toastBody: "The drawbridge slammed shut, safe and sound.",
-    guide: "Sandwich Kitty built it strong enough for twelve kittens.",
-  },
-  workshop: {
-    shake: "soft", pitch: 950, dur: 0.14, particles: { kind: "spark", count: 18, life: 900 },
-    toastTitle: "Ping!", toastBody: "Toast Kitty's invention sparked to life.",
-    guide: "That's usually a good sign. Usually.",
-  },
-  "donut-park": {
-    shake: "soft", pitch: 300, dur: 0.24, particles: { kind: "donut", count: 10, life: 2400 },
-    toastTitle: "Donut rain!", toastBody: "The whole tree let go at once. Breakfast, sorted.",
-    guide: "Croissant Kitty is already down there catching them.",
-  },
-  "jellybean-hill": {
-    shake: "soft", pitch: 460, dur: 0.2, particles: { kind: "jellybean", count: 16, life: 2400 },
-    toastTitle: "Jellybeans everywhere!", toastBody: "The barrel rolled a little too far downhill.",
-    guide: "Blue ones bounce highest, according to Piper.",
-  },
-  "croissant-bridge": {
-    shake: null, pitch: 700, dur: 0.18, streaks: { count: 3, image: "bridge" },
-    toastTitle: "Ding!", toastBody: "Someone just set a new crossing record.",
-    guide: "The bell only rings for the fastest paws.",
-  },
-  "cloud-bridge": {
-    shake: "bounce", pitch: 400, dur: 0.24, particles: { kind: "cloud", count: 10, life: 2400 },
-    toastTitle: "Boing!", toastBody: "The whipped-cream clouds bounced you right up.",
-    guide: "Soft, bouncy, and always pointing home.",
-  },
-  volcano: {
-    shake: "hard", pitch: 170, dur: 0.36, particles: { kind: "chocolate", count: 12, life: 2400 },
-    toastTitle: "Bless you!", toastBody: "The Chocolate Dragon sneezed. That happens a lot.",
-    guide: "He does that. He's not cross — he's just dusty.",
-  },
-  "hidden-cave": {
-    shake: null, pitch: 900, dur: 0.12, particles: { kind: "glint", count: 6, life: 1300 }, flashTint: "dark",
-    toastTitle: "Shh...", toastBody: "Something glinted in the shadows of the cave.",
-    guide: "Toast Kitty says bring a torch next time.",
-  },
-  "dragon-cave": {
-    shake: "hard", pitch: 130, dur: 0.4, particles: { kind: "smoke", count: 8, life: 2200 },
-    toastTitle: "Roooar... *sniff*", toastBody: "The dragon stirred in his sleep, puffing smoke rings.",
-    guide: "He's not awake yet. Just dreaming, probably.",
-  },
-  "chocolate-river": {
-    shake: null, pitch: 260, dur: 0.2, particles: { kind: "boat", count: 5, life: 3200 },
-    toastTitle: "Ripple!", toastBody: "A marshmallow boat drifted safely down the river.",
-    guide: "Never race a marshmallow boat after lunchtime.",
-  },
-  "landing-site": {
-    shake: null, pitch: 1046, dur: 0.18, particles: { kind: "footprint", count: 7, life: 2800 },
-    toastTitle: "Beep boop!", toastBody: "Tiny footprints sparkled in the dust for a moment.",
-    guide: "The custard aliens might be closer than you think.",
-  },
-  "ice-cream-caves": {
-    shake: null, pitch: 900, dur: 0.3, particles: { kind: "frost", count: 14, life: 2400 },
-    toastTitle: "The caves echo back!", toastBody: "Something sparkly answered from deep inside.",
-    guide: "Toast Kitty thinks it's the door he's been looking for.",
-  },
-};
+import { WORLD_FX } from "./data/worldFx.js";
+import { CRUMBHOLLOW_CAST, SANDWICH_CAST, SNACKVILLE_LEGENDS } from "./data/worldCharacters.js";
+import { WorldCharacters } from "./components/WorldCharacters.jsx";
 
 /**
  * The root component. Owns every piece of cross-section state:
@@ -188,10 +73,10 @@ function SnackvilleExperience({ onBackHome }) {
   const [wowFx, setWowFx] = useState([]);
   const [wowRings, setWowRings] = useState([]);
   const [wowStreaks, setWowStreaks] = useState([]);
+  const [speedLines, setSpeedLines] = useState([]);
   const [confetti, setConfetti] = useState([]);
   const [toast, setToast] = useState(null);
-  const [shakeKind, setShakeKind] = useState(null);
-  const [flash, setFlash] = useState(null);
+  const [wash, setWash] = useState(null);
   const [celebration, setCelebration] = useState(null);
   const [guideVisible, setGuideVisible] = useState(true);
   const [guideMessage, setGuideMessage] = useState(null);
@@ -199,6 +84,11 @@ function SnackvilleExperience({ onBackHome }) {
   const chime = useChime();
   const keyBuffer = useRef("");
   const reduceMotion = useReducedMotion();
+  // Held so a second location tapped mid-effect cancels the first one's
+  // pending clear instead of cutting its own reaction short.
+  const reactionTimer = useRef(null);
+  const washTimer = useRef(null);
+
 
   // refs the scroll engine writes to directly, bypassing React state
   const rootRef = useRef(null);
@@ -316,39 +206,61 @@ function SnackvilleExperience({ onBackHome }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [chime, burst, showToast]);
 
+  /**
+   * Plays one map location's signature effect (see data/wow.js).
+   *
+   * Each of the four channels below is independent, so a location's
+   * identity comes from its own combination of them rather than from a
+   * shared template: the screen reaction, its particles' trajectory,
+   * an optional colour wash, and a synthesised voice.
+   */
   const onWow = useCallback((place) => {
     const fx = WOW_FX[place.id];
     if (!fx) return;
 
-    chime(fx.pitch, fx.dur);
-    if (fx.shake) {
-      setShakeKind(fx.shake);
-      setTimeout(() => setShakeKind(null), 660);
-    }
+    chime(fx.sound);
+
+    if (reactionTimer.current) clearTimeout(reactionTimer.current);
+    reactionTimer.current = broadcastReaction(rootRef.current, fx.reaction);
+
     if (!reduceMotion.current) {
       if (fx.particles) {
-        const count = fx.particles.count;
-        // A few particle kinds need extra per-item fields beyond the
-        // default (left/dist/delay): "glint" scatters vertically too,
-        // "spark" flies outward in a random direction, and the two
-        // ground-trail kinds walk left-to-right in sequence instead of
-        // all appearing across random positions at once.
+        const { kind, count } = fx.particles;
+        // Most kinds only need a horizontal start and a travel distance.
+        // Four want more than that, because their motion is defined by
+        // where they come *from*, not just how far they go:
+        //   glint     scatters over the whole screen, not just its width
+        //   spark     flies outward on its own radial vector
+        //   chocolate is thrown up and sideways by the eruption
+        //   frost     grows inward from whichever edge it started on
+        // and three walk across the screen in sequence rather than
+        // appearing all at once.
         const items = Array.from({ length: count }, (_, i) => {
           const item = {
-            id: `w${Date.now()}-${i}-${Math.random()}`, kind: fx.particles.kind,
+            id: `w${Date.now()}-${i}-${Math.random()}`, kind,
             left: Math.random() * 100, dist: 70 + Math.random() * 200, delay: Math.random() * 0.3,
           };
-          if (fx.particles.kind === "glint") {
-            item.top = Math.random() * 70;
-          }
-          if (fx.particles.kind === "spark") {
+          if (kind === "glint") item.top = Math.random() * 70;
+          if (kind === "spark") {
             const angle = Math.random() * Math.PI * 2;
             const mag = 80 + Math.random() * 140;
             item.dx = Math.cos(angle) * mag;
             item.dy = Math.sin(angle) * mag;
           }
-          if (fx.particles.kind === "trailstar" || fx.particles.kind === "footprint") {
-            item.left = (i / Math.max(count - 1, 1)) * 90 + 5;
+          if (kind === "chocolate") {
+            item.dx = (Math.random() * 2 - 1) * 220;
+            item.dist = 180 + Math.random() * 220;
+          }
+          if (kind === "frost") {
+            // Start off one of the four edges and grow toward the middle.
+            const fromSide = Math.random() < 0.5;
+            item.top = Math.random() * 100;
+            item.dx = fromSide ? (Math.random() < 0.5 ? -220 : 220) : (Math.random() * 2 - 1) * 90;
+            item.dy = fromSide ? (Math.random() * 2 - 1) * 90 : (Math.random() < 0.5 ? -200 : 200);
+            item.delay = Math.random() * 0.6;
+          }
+          if (kind === "trailstar" || kind === "footprint" || kind === "jellybean") {
+            item.left = (i / Math.max(count - 1, 1)) * 88 + 4;
             item.delay = i * 0.12;
           }
           return item;
@@ -361,29 +273,50 @@ function SnackvilleExperience({ onBackHome }) {
         const ids = new Set(items.map((it) => it.id));
         setTimeout(() => setWowFx((prev) => prev.filter((it) => !ids.has(it.id))), fx.particles.life || 2400);
       }
+
       if (fx.rings) {
         const items = Array.from({ length: fx.rings.count }, (_, i) => ({
-          id: `r${Date.now()}-${i}`, color: fx.rings.color, delay: i * 0.28,
+          id: `r${Date.now()}-${i}`, color: fx.rings.color, delay: i * 0.22,
         }));
         setWowRings((prev) => [...prev, ...items]);
         const ids = new Set(items.map((it) => it.id));
-        setTimeout(() => setWowRings((prev) => prev.filter((it) => !ids.has(it.id))), 1600);
+        setTimeout(() => setWowRings((prev) => prev.filter((it) => !ids.has(it.id))), 2000);
       }
+
       if (fx.streaks) {
         const items = Array.from({ length: fx.streaks.count }, (_, i) => ({
-          id: `t${Date.now()}-${i}`, top: 20 + Math.random() * 55, delay: i * 0.09, image: fx.streaks.image,
+          id: `t${Date.now()}-${i}`, top: 20 + Math.random() * 55, delay: i * 0.12, image: fx.streaks.image,
         }));
         setWowStreaks((prev) => [...prev, ...items]);
         const ids = new Set(items.map((it) => it.id));
-        setTimeout(() => setWowStreaks((prev) => prev.filter((it) => !ids.has(it.id))), 900);
+        setTimeout(() => setWowStreaks((prev) => prev.filter((it) => !ids.has(it.id))), 1400);
       }
+
+      if (fx.speedLines) {
+        const items = Array.from({ length: fx.speedLines.count }, (_, i) => ({
+          id: `l${Date.now()}-${i}`, top: 8 + Math.random() * 84,
+          delay: Math.random() * 0.16, opacity: 0.35 + Math.random() * 0.5,
+        }));
+        setSpeedLines((prev) => [...prev, ...items]);
+        const ids = new Set(items.map((it) => it.id));
+        setTimeout(() => setSpeedLines((prev) => prev.filter((it) => !ids.has(it.id))), 900);
+      }
+
       if (fx.confettiBurst) burst(fx.confettiBurst);
-      if (fx.flashTint) {
-        setFlash(fx.flashTint);
-        const flashLife = fx.flashTint === "dark" ? 900 : 320;
-        setTimeout(() => setFlash((current) => (current === fx.flashTint ? null : current)), flashLife);
-      }
     }
+
+    // The wash is the one channel that still plays under reduced motion:
+    // wow.css swaps it for a brief, still opacity fade so the tap is
+    // still visibly acknowledged without anything travelling.
+    if (fx.wash) {
+      setWash(fx.wash.kind);
+      if (washTimer.current) clearTimeout(washTimer.current);
+      washTimer.current = setTimeout(
+        () => setWash((current) => (current === fx.wash.kind ? null : current)),
+        fx.wash.life
+      );
+    }
+
     showToast(fx.toastTitle, fx.toastBody);
     // The guide bubble normally auto-fades via the scroll/section effect
     // below, but that effect only re-runs when `active`/`guideVisible`
@@ -460,18 +393,16 @@ function SnackvilleExperience({ onBackHome }) {
     id: i, l: Math.random() * 100, t: Math.random() * 70, s: Math.random() * 2.6 + 0.8, d: Math.random() * 4,
   })), []);
 
+  // The map's screen reactions are broadcast from this root as a
+  // `data-reaction` attribute written directly by broadcastReaction()
+  // above — the root itself must never be transformed, because it
+  // contains every `position: fixed` layer on the page (the nav, the
+  // sky, the toast, the particle overlay) and a transformed ancestor
+  // makes all of them resolve against the full-height root instead of
+  // the viewport. Each participating layer picks the attribute up and
+  // animates itself — see the RX-TARGETS rule in styles/wow.css.
   return (
-    <div
-      ref={rootRef}
-      className={
-        shakeKind === "hard" ? "shaker"
-        : shakeKind === "soft" ? "wobble"
-        : shakeKind === "bounce" ? "bump"
-        : shakeKind === "thud" ? "thud"
-        : ""
-      }
-      data-night="0"
-    >
+    <div ref={rootRef} data-night="0">
       <a className="skip-link" href="#story">Skip to the story</a>
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
@@ -518,6 +449,9 @@ function SnackvilleExperience({ onBackHome }) {
 
         <Story found={doneKeys} onFind={onFindTreasure} />
         <Cast found={doneKeys} onFind={onFindTreasure} onOpenCharacter={setCastIndex} chime={chime} />
+        <div className="wrap snackville-legends">
+          <WorldCharacters feature={SNACKVILLE_LEGENDS} />
+        </div>
 
         <Divider shape="hill" fill="rgba(232,222,255,.93)" />
         <section className="sec" id="join" style={{ background: "rgba(232,222,255,.93)" }}>
@@ -561,7 +495,17 @@ function SnackvilleExperience({ onBackHome }) {
 
       <CastDrawer index={castIndex} onClose={closeDrawer} onNavigate={setCastIndex} />
 
-      <FxLayers sparks={sparks} wowFx={wowFx} wowRings={wowRings} wowStreaks={wowStreaks} confetti={confetti} flash={flash} />
+      <FxLayers
+        sparks={sparks}
+        wowFx={wowFx}
+        wowRings={wowRings}
+        wowStreaks={wowStreaks}
+        speedLines={speedLines}
+        confetti={confetti}
+        wash={wash}
+      />
+
+      <SoundToggle className="sound-toggle--snackville" />
 
       {!celebration && (
         <ExplorerRing
@@ -648,13 +592,15 @@ export default function App() {
         coverSrc="/images/worlds/sandwich-cover.webp"
         coverAlt="Sandwich Kingdom cover art — a floating sandwich castle above the clouds"
         mapEyebrow="The official illustrated map"
-        mapHeading="Choose your next Sandwich Kingdom stop"
+        mapHeading="Choose your next stop"
         mapLead="Every numbered place holds a piece of the kingdom's story. Select a location to read its field note."
         places={SANDWICH_PLACES}
         mapSrc="/images/sandwich-interactive-map.jpeg"
         mapAlt="Illustrated map of Sandwich Kingdom with fourteen numbered locations"
         mapWidth="1536"
         mapHeight="1024"
+        fx={WORLD_FX.sandwich}
+        characterFeatures={SANDWICH_CAST}
         onBackHome={openHome}
       />
     );
@@ -670,13 +616,15 @@ export default function App() {
         coverSrc="/images/worlds/crumbhollow-cover.webp"
         coverAlt="Crumbhollow cover art — the hidden Pie-Rat village beneath Snackville"
         mapEyebrow="The official illustrated map"
-        mapHeading="Choose your next Crumbhollow stop"
+        mapHeading="Choose your next stop"
         mapLead="Every numbered place holds a piece of the village's story. Select a location to read its field note."
         places={CRUMBHOLLOW_PLACES}
         mapSrc="/images/crumbhollow-interactive-map.jpeg"
         mapAlt="Illustrated map of Crumbhollow with twelve numbered locations"
         mapWidth="1536"
         mapHeight="864"
+        fx={WORLD_FX.crumbhollow}
+        characterFeatures={[CRUMBHOLLOW_CAST]}
         onBackHome={openHome}
       />
     );

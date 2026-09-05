@@ -2,6 +2,28 @@
 
 All notable changes to the Piper website are documented here.
 
+## [1.6.0] — 2026-09-05
+
+### Fixed
+
+- Fixed the screen-shake effects tearing the page apart: the shake was a transform on the page root, which contains every `position: fixed` layer, so mid-effect the fixed nav sat 2076px above the viewport and the sky stretched to 13787px tall. Reactions are now broadcast as a `data-reaction` attribute that each participating layer picks up and animates itself.
+- Fixed every mini-game dialog and the worlds' "explored everything" certificate rendering with no background at all — page text showed straight through them. `.place-dialog`'s background mixes `--place-accent` into a gradient, and only the map's field notes ever set it; an undefined custom property invalidates the whole declaration.
+- Fixed "Choose your next Sandwich Kingdom stop" wrapping into a five-line tower that pushed the map a full screen down the page.
+
+### Changed
+
+- Rebuilt the Snackville map's twenty signature effects so no two are alike. Each location now has its own screen reaction, its own particle trajectory, its own colour wash and its own synthesised voice — previously four locations shared one "rise" animation, two shared "fall", and every location was the same sine ping at a different pitch. `tests/content.test.js` now asserts the uniqueness so it can't quietly collapse again.
+- Gave Sandwich Kingdom and Crumbhollow their own confetti mixes, arrival and completion voices and per-location screen reactions, so the two lighter worlds no longer respond to a tap identically.
+- Reworked all four existing mini-games: personal bests remembered between visits, a difficulty ramp in Whack-a-Snack plus chillies to avoid and streak bonuses, two board sizes and a real 3D card flip in Memory, a speed ramp and a progress row in Pattern, and a richer nineteen-region scene with undo and start-over in the colouring page.
+- Replaced the colouring game's generic triangular-roof house with a detailed, keyboard-accessible Strawberry Cottage matching the approved artwork: strawberry-shaped walls, icing roof, leafy crown, round attic window, heart door, berry garden and winding biscuit path.
+- Restored the living sky as a four-stage dawn-to-day-to-dusk-to-night journey while preserving the approved dark cinematic palette.
+
+### Added
+
+- Added a fifth mini-game, Berry Catch — the only continuous-control game in the set, playable by drag, arrow keys or on-screen buttons.
+- Added a sound toggle covering every sound on the site, remembered between visits.
+- Added an "Open the map" action to the Sandwich Kingdom and Crumbhollow heroes.
+
 ## [1.5.0] — 2026-08-24
 
 ### Fixed and improved

@@ -73,7 +73,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
-                style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
+                style={{ "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
