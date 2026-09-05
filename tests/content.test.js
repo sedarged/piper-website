@@ -13,6 +13,8 @@ import { SANDWICH_PLACES } from "../src/data/sandwich.js";
 import { CRUMBHOLLOW_PLACES } from "../src/data/crumbhollow.js";
 import { PRINTABLES } from "../src/data/printables.js";
 import { floodFill } from "../src/lib/floodFill.js";
+import { ASSET } from "../src/config.js";
+import { CRUMBHOLLOW_CAST, SANDWICH_CAST, SNACKVILLE_LEGENDS } from "../src/data/worldCharacters.js";
 
 test("content identifiers remain unique", () => {
   for (const collection of [BOOKS, CAST, PLACES, TREASURES, SECTIONS]) {
@@ -72,6 +74,35 @@ test("the publishing showcase uses local optimised artwork", () => {
     assert.ok(existsSync(new URL(`../public${spread.img}`, import.meta.url)), `page ${spread.page} exists`);
     assert.ok(spread.t.length > 20);
   }
+});
+
+test("each storyworld exposes its approved character cast", () => {
+  assert.deepEqual(
+    SNACKVILLE_LEGENDS.people.map((person) => person.name),
+    ["Pepper", "Choco", "Custard Queen", "Ice Cream Robots"]
+  );
+  assert.deepEqual(
+    CRUMBHOLLOW_CAST.people.map((person) => person.name),
+    ["Woofer", "Biscuit", "Grey Pie-Rat", "Strong Pie-Rat", "Pancake Pirate"]
+  );
+  assert.deepEqual(
+    SANDWICH_CAST.flatMap((feature) => feature.people.map((person) => person.name)),
+    ["Sir Crumples", "Queen Pickle", "Crumbly", "Wizard Brioche", "Gate Guard", "Hungry Cloud", "Mustard Boggle", "Tomato Mouse Captain", "Tomato Mice", "Sandwich Citizens"]
+  );
+
+  for (const feature of [SNACKVILLE_LEGENDS, CRUMBHOLLOW_CAST, ...SANDWICH_CAST]) {
+    assert.match(feature.image, /^\/images\/characters\/worlds\/.+\.webp$/);
+    assert.ok(existsSync(new URL(`../public${feature.image}`, import.meta.url)), `${feature.title} artwork exists`);
+    assert.ok(feature.people.every((person) => person.note.length > 30), `${feature.title} has full character notes`);
+  }
+
+  for (const key of ["piper", "croissant", "toast", "sandwich"]) {
+    assert.match(ASSET[key], /^\/images\/characters\/snack-squad\/.+\.webp$/);
+    assert.ok(existsSync(new URL(`../public${ASSET[key]}`, import.meta.url)), `${key} approved reference exists`);
+  }
+
+  assert.ok(existsSync(new URL("../public/images/sandwich-interactive-map.jpeg", import.meta.url)), "official Sandwich Kingdom map exists");
+  assert.ok(existsSync(new URL("../public/images/worlds/sandwich-cover.webp", import.meta.url)), "official Sandwich Kingdom cover exists");
 });
 
 test("every map location has a signature effect, and no two are alike", () => {

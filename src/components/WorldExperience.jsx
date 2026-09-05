@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react";
 import { WorldMap } from "./WorldMap.jsx";
 import { SoundToggle } from "./SoundToggle.jsx";
+import { WorldCharacters } from "./WorldCharacters.jsx";
 import { broadcastReaction } from "../lib/reaction.js";
 
 /**
@@ -19,7 +20,7 @@ import { broadcastReaction } from "../lib/reaction.js";
  * App.jsx — see the note in styles/wow.css for why the reaction is an
  * attribute on a root rather than a transform on a wrapper.
  */
-export function WorldExperience({ worldClass, brandLabel, title, tagline, coverSrc, coverAlt, mapEyebrow, mapHeading, mapLead, places, mapSrc, mapAlt, mapWidth, mapHeight, fx, onBackHome }) {
+export function WorldExperience({ worldClass, brandLabel, title, tagline, coverSrc, coverAlt, mapEyebrow, mapHeading, mapLead, places, mapSrc, mapAlt, mapWidth, mapHeight, fx, characterFeatures = [], onBackHome }) {
   const rootRef = useRef(null);
   const reactionTimer = useRef(null);
 
@@ -54,6 +55,12 @@ export function WorldExperience({ worldClass, brandLabel, title, tagline, coverS
             </div>
           )}
         </section>
+
+        {characterFeatures.map((feature) => (
+          <div className="world-experience__characters wrap" key={feature.title}>
+            <WorldCharacters feature={feature} />
+          </div>
+        ))}
 
         <div id="world-map" className="world-experience__map">
           <WorldMap

@@ -41,6 +41,8 @@ import { WorldExperience } from "./components/WorldExperience.jsx";
 import { SANDWICH_PLACES } from "./data/sandwich.js";
 import { CRUMBHOLLOW_PLACES } from "./data/crumbhollow.js";
 import { WORLD_FX } from "./data/worldFx.js";
+import { CRUMBHOLLOW_CAST, SANDWICH_CAST, SNACKVILLE_LEGENDS } from "./data/worldCharacters.js";
+import { WorldCharacters } from "./components/WorldCharacters.jsx";
 
 /**
  * The root component. Owns every piece of cross-section state:
@@ -447,6 +449,9 @@ function SnackvilleExperience({ onBackHome }) {
 
         <Story found={doneKeys} onFind={onFindTreasure} />
         <Cast found={doneKeys} onFind={onFindTreasure} onOpenCharacter={setCastIndex} chime={chime} />
+        <div className="wrap snackville-legends">
+          <WorldCharacters feature={SNACKVILLE_LEGENDS} />
+        </div>
 
         <Divider shape="hill" fill="rgba(232,222,255,.93)" />
         <section className="sec" id="join" style={{ background: "rgba(232,222,255,.93)" }}>
@@ -595,6 +600,7 @@ export default function App() {
         mapWidth="1536"
         mapHeight="1024"
         fx={WORLD_FX.sandwich}
+        characterFeatures={SANDWICH_CAST}
         onBackHome={openHome}
       />
     );
@@ -618,6 +624,7 @@ export default function App() {
         mapWidth="1536"
         mapHeight="864"
         fx={WORLD_FX.crumbhollow}
+        characterFeatures={[CRUMBHOLLOW_CAST]}
         onBackHome={openHome}
       />
     );
