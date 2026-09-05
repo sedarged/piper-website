@@ -21,6 +21,9 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
   const [selected, setSelected] = useState(PLACES[0]);
   const [openPlace, setOpenPlace] = useState(null);
   const dialogRef = useRef(null);
+  const mapScrollRef = useRef(null);
+  const [mapZoom, setMapZoom] = useState(1);
+  const [fitMap, setFitMap] = useState(false);
   const seenCount = PLACES.filter((place) => visitedPlaceIds.has(place.id)).length;
 
   const closePlace = useCallback(() => setOpenPlace(null), []);
@@ -36,6 +39,19 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
     const unvisited = PLACES.filter((p) => !visitedPlaceIds.has(p.id));
     const pool = unvisited.length ? unvisited : PLACES;
     pick(pool[Math.floor(Math.random() * pool.length)]);
+  };
+
+  const changeZoom = (nextZoom) => {
+    const scroller = mapScrollRef.current;
+    const centre = scroller && scroller.scrollWidth
+      ? (scroller.scrollLeft + scroller.clientWidth / 2) / scroller.scrollWidth
+      : .5;
+    setFitMap(false);
+    setMapZoom(nextZoom);
+    requestAnimationFrame(() => {
+      if (!scroller) return;
+      scroller.scrollLeft = centre * scroller.scrollWidth - scroller.clientWidth / 2;
+    });
   };
 
   useDialogTrap(dialogRef, closePlace, openPlace);
@@ -61,8 +77,20 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
       </Reveal>
 
       <Reveal className="map-atlas panel">
-        <div className="map-scroll" aria-label="Scrollable illustrated map">
-          <div className="map-f">
+        <div className="map-viewbar">
+          <div>
+            <span className="eyebrow">Map view</span>
+            <strong>{fitMap ? "Fit to screen" : `${Math.round(mapZoom * 100)}% detail`}</strong>
+          </div>
+          <div className="map-zoom-controls" role="group" aria-label="Map zoom controls">
+            <button type="button" onClick={() => changeZoom(Math.max(.75, mapZoom - .25))} disabled={!fitMap && mapZoom <= .75} aria-label="Zoom map out">−</button>
+            <button type="button" className={fitMap ? "on" : ""} onClick={() => setFitMap((value) => !value)}>{fitMap ? "Actual size" : "Fit map"}</button>
+            <button type="button" onClick={() => changeZoom(Math.min(1.5, mapZoom + .25))} disabled={!fitMap && mapZoom >= 1.5} aria-label="Zoom map in">+</button>
+          </div>
+        </div>
+
+        <div ref={mapScrollRef} className="map-scroll" aria-label="Scrollable illustrated map">
+          <div className={`map-f ${fitMap ? "map-f--fit" : ""}`} style={{ width: fitMap ? "100%" : `${1536 * mapZoom}px` }}>
             <Img
               src={MAP_SRC}
               alt="Illustrated map of Snackville with twenty numbered locations"
@@ -74,18 +102,24 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
-                style={{ "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink }}
+                style={{
+                  "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink,
+                  "--marker-shift": place.x > 82 ? "-19px" : "19px",
+                  "--marker-angle": place.x > 82 ? "-135deg" : "-45deg",
+                }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
               >
+                <span className="map-hotspot__leader" aria-hidden="true" />
+                <span className="map-hotspot__marker" aria-hidden="true">{place.n}</span>
                 <span className="sr-only">Open {place.name}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <p className="map-pan-hint u">On a small screen, swipe the map sideways to see every shore.</p>
+        <p className="map-pan-hint u">Drag or swipe to travel across the enlarged map. Use Fit map whenever you want the complete view.</p>
 
         <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
           <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>

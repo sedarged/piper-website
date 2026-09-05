@@ -38,6 +38,7 @@ import { BadgeCelebration } from "./components/BadgeCelebration.jsx";
 import { UniverseHome } from "./components/UniverseHome.jsx";
 import { SoundToggle } from "./components/SoundToggle.jsx";
 import { WorldExperience } from "./components/WorldExperience.jsx";
+import { LivingWorldBackdrop } from "./components/LivingWorldBackdrop.jsx";
 import { SANDWICH_PLACES } from "./data/sandwich.js";
 import { CRUMBHOLLOW_PLACES } from "./data/crumbhollow.js";
 import { WORLD_FX } from "./data/worldFx.js";
@@ -401,8 +402,9 @@ function SnackvilleExperience({ onBackHome }) {
   // the viewport. Each participating layer picks the attribute up and
   // animates itself — see the RX-TARGETS rule in styles/wow.css.
   return (
-    <div ref={rootRef} data-night="0">
+    <div ref={rootRef} className="snackville-experience" data-night="0">
       <a className="skip-link" href="#story">Skip to the story</a>
+      <LivingWorldBackdrop src="/images/worlds/snackville-cover.webp" variant="snackville" />
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
           See hooks/useScrollEngine.js. ═══ */}
