@@ -131,3 +131,26 @@ test("every studio game card maps to a real game", () => {
     assert.ok(print.url === "" || /^https?:\/\//.test(print.url), `${print.id} is a real link or empty`);
   }
 });
+
+test("the colouring game is Piper's Strawberry Cottage", () => {
+  const source = readFileSync(new URL("../src/components/games/ColoringPage.jsx", import.meta.url), "utf8");
+  const landmarks = [
+    "Strawberry cottage walls",
+    "Strawberry icing roof",
+    "Left roof leaf",
+    "Centre roof leaf",
+    "Right roof leaf",
+    "Round attic window",
+    "Arched front door",
+    "Heart on the door",
+    "Winding biscuit path",
+    "Left garden strawberries",
+    "Right garden strawberries",
+  ];
+
+  for (const landmark of landmarks) {
+    assert.match(source, new RegExp(landmark), `${landmark} remains in the line art`);
+  }
+  assert.ok((source.match(/\{ id: /g) || []).length >= 20, "the cottage has a detailed set of paintable regions");
+  assert.match(source, /viewBox="0 0 320 320"/, "the complete cottage fits its square canvas");
+});

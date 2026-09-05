@@ -82,17 +82,29 @@ body::before {
   box-shadow: 0 0 0 6px rgba(7, 17, 38, 0.88);
 }
 
-.sky { opacity: 0.33; }
-.sky-dawn,
-.sky-day,
-.sky-dusk,
-.sky-night {
-  background:
-    radial-gradient(circle at 70% 12%, rgba(90, 121, 181, 0.32), transparent 30%),
-    linear-gradient(180deg, var(--night-900), var(--night-950));
+/* Snackville keeps the cinematic palette while its sky follows the journey.
+   Layer opacity belongs to useScrollEngine; never override it here. */
+.sky { opacity: 1; }
+.sky-dawn {
+  background: radial-gradient(ellipse at 78% 18%, #563648 0%, transparent 62%),
+    linear-gradient(180deg, #111a31, #211526 65%, #070d1c);
 }
-.stars { opacity: 0.55 !important; }
-.sunmoon { display: none; }
+.sky-day {
+  background: radial-gradient(ellipse at 78% 18%, #304969 0%, transparent 62%),
+    linear-gradient(180deg, #101e36, #172b42 65%, #080f20);
+}
+.sky-dusk {
+  background: radial-gradient(ellipse at 78% 28%, #63354a 0%, transparent 62%),
+    linear-gradient(180deg, #21172f, #322036 65%, #0c1021);
+}
+.sky-night {
+  background: radial-gradient(ellipse at 78% 28%, #1b294a 0%, transparent 62%),
+    linear-gradient(180deg, #071126, #0c1530 65%, #030917);
+}
+.sunmoon { display: block; opacity: .32; width: clamp(44px, 6vw, 76px); height: clamp(44px, 6vw, 76px); }
+@media (prefers-reduced-motion: reduce) {
+  .sky-l, .stars, .sunmoon { transition: none; }
+}
 .land { opacity: 0.08 !important; filter: saturate(0) sepia(.4); }
 
 .page { overflow-x: clip; overflow-y: visible; }

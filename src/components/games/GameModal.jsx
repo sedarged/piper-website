@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { createPortal } from "react-dom";
 import { useDialogTrap } from "../../hooks/useDialogTrap.js";
 
 /** The "you won" action every mini-game ends on — shared so the three
@@ -39,7 +40,9 @@ export function GameModal({ title, eyebrow, onClose, children }) {
   const dialogRef = useRef(null);
   useDialogTrap(dialogRef, onClose, true);
 
-  return (
+  // Escape the page stacking context so navigation and the Explorer ring
+  // cannot cover game controls, particularly on narrow screens.
+  return createPortal(
     <div className="place-dialog-scrim" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <article ref={dialogRef} className="place-dialog game-dialog" role="dialog" aria-modal="true" aria-labelledby="game-dialog-title">
         <div className="place-dialog-topline">
@@ -49,6 +52,7 @@ export function GameModal({ title, eyebrow, onClose, children }) {
         <h3 id="game-dialog-title" className="d" style={{ marginTop: 12 }}>{title}</h3>
         <div className="game-body">{children}</div>
       </article>
-    </div>
+    </div>,
+    document.body
   );
 }

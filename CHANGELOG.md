@@ -15,6 +15,8 @@ All notable changes to the Piper website are documented here.
 - Rebuilt the Snackville map's twenty signature effects so no two are alike. Each location now has its own screen reaction, its own particle trajectory, its own colour wash and its own synthesised voice — previously four locations shared one "rise" animation, two shared "fall", and every location was the same sine ping at a different pitch. `tests/content.test.js` now asserts the uniqueness so it can't quietly collapse again.
 - Gave Sandwich Kingdom and Crumbhollow their own confetti mixes, arrival and completion voices and per-location screen reactions, so the two lighter worlds no longer respond to a tap identically.
 - Reworked all four existing mini-games: personal bests remembered between visits, a difficulty ramp in Whack-a-Snack plus chillies to avoid and streak bonuses, two board sizes and a real 3D card flip in Memory, a speed ramp and a progress row in Pattern, and a richer nineteen-region scene with undo and start-over in the colouring page.
+- Replaced the colouring game's generic triangular-roof house with a detailed, keyboard-accessible Strawberry Cottage matching the approved artwork: strawberry-shaped walls, icing roof, leafy crown, round attic window, heart door, berry garden and winding biscuit path.
+- Restored the living sky as a four-stage dawn-to-day-to-dusk-to-night journey while preserving the approved dark cinematic palette.
 
 ### Added
 

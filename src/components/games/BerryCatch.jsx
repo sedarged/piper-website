@@ -54,6 +54,7 @@ export function BerryCatch({ onComplete, chime }) {
   const basketRef = useRef(null);
   const basketX = useRef(50);
   const dropsRef = useRef([]);
+  const dropNodes = useRef(new Map());
   const frameRef = useRef(null);
   const lastFrame = useRef(0);
   const spawnAccumulator = useRef(0);
@@ -77,6 +78,7 @@ export function BerryCatch({ onComplete, chime }) {
     elapsed.current = 0;
     spawnAccumulator.current = 0;
     lastFrame.current = 0;
+    heldDirection.current = 0;
     setBasket(50);
     setRunning(true);
   };
@@ -87,11 +89,16 @@ export function BerryCatch({ onComplete, chime }) {
     if (!running) return undefined;
 
     const tick = (now) => {
-      const dt = lastFrame.current ? Math.min((now - lastFrame.current) / 1000, 0.05) : 0;
+      const delta = lastFrame.current ? Math.max(0, (now - lastFrame.current) / 1000) : 0;
+      const dt = Math.min(delta, 0.05);
       lastFrame.current = now;
-      elapsed.current += dt;
+      // Keep the round at 30 real seconds even when frames are slow.
+      // Physics stays bounded; hiding the tab resets the clock below.
+      elapsed.current += document.hidden ? 0 : delta;
 
       if (elapsed.current >= ROUND_SECONDS) {
+        heldDirection.current = 0;
+        setTimeLeft(0);
         setRunning(false);
         setFinished(true);
         return;
@@ -108,7 +115,9 @@ export function BerryCatch({ onComplete, chime }) {
       const progress = elapsed.current / ROUND_SECONDS;
       const spawnEvery = 0.9 - progress * 0.42;
       spawnAccumulator.current += dt;
+      let rosterChanged = false;
       if (spawnAccumulator.current >= spawnEvery) {
+        rosterChanged = true;
         spawnAccumulator.current = 0;
         const drop = pickDrop();
         dropsRef.current.push({
@@ -127,17 +136,23 @@ export function BerryCatch({ onComplete, chime }) {
         const spec = DROPS.find((d) => d.kind === drop.kind);
         const overBasket = Math.abs(drop.x - basketX.current) < BASKET_WIDTH / 2 + 3;
         if (drop.y >= CATCH_LINE && drop.y <= CATCH_LINE + 12 && overBasket) {
+          rosterChanged = true;
           caught += spec.points;
           chime?.(spec.pitch, spec.points > 0 ? 0.1 : 0.2);
           continue;
         }
-        if (drop.y < 108) survivors.push(drop);
+        if (drop.y < 108) {
+          survivors.push(drop);
+          const node = dropNodes.current.get(drop.id);
+          if (node) node.style.top = `${drop.y}%`;
+        } else rosterChanged = true;
       }
       dropsRef.current = survivors;
       // Score is real state — it's read by the status line and the
       // record check — but the positions above are not.
       if (caught) setScore((s) => Math.max(0, s + caught));
-      setDrops([...survivors]);
+      // React only owns the roster; positions are painted through refs.
+      if (rosterChanged) setDrops([...survivors]);
 
       frameRef.current = requestAnimationFrame(tick);
     };
@@ -166,9 +181,17 @@ export function BerryCatch({ onComplete, chime }) {
       if (event.key === "ArrowLeft" && heldDirection.current === -1) heldDirection.current = 0;
       if (event.key === "ArrowRight" && heldDirection.current === 1) heldDirection.current = 0;
     };
+    const releaseControls = () => {
+      heldDirection.current = 0;
+      lastFrame.current = 0;
+    };
+    window.addEventListener("blur", releaseControls);
+    document.addEventListener("visibilitychange", releaseControls);
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     return () => {
+      window.removeEventListener("blur", releaseControls);
+      document.removeEventListener("visibilitychange", releaseControls);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
@@ -207,12 +230,19 @@ export function BerryCatch({ onComplete, chime }) {
         ref={areaRef}
         className="catch-area"
         onPointerMove={trackPointer}
-        onPointerDown={trackPointer}
+        onPointerDown={(event) => {
+          event.currentTarget.setPointerCapture(event.pointerId);
+          trackPointer(event);
+        }}
         aria-hidden="true"
       >
         {drops.map((drop) => (
           <span
             key={drop.id}
+            ref={(node) => {
+              if (node) dropNodes.current.set(drop.id, node);
+              else dropNodes.current.delete(drop.id);
+            }}
             className={`catch-drop catch-drop--${drop.kind} ${reduceMotion.current ? "is-still" : ""}`}
             style={{ left: `${drop.x}%`, top: `${drop.y}%` }}
           >

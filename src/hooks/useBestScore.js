@@ -19,7 +19,7 @@ import { useCallback, useState } from "react";
 export function useBestScore(gameId, { higherIsBetter = true } = {}) {
   const key = `piper:v1:best:${gameId}`;
 
-  const [best, setBest] = useState(() => {
+  const readBest = () => {
     try {
       const stored = window.localStorage.getItem(key);
       if (stored === null) return null;
@@ -28,13 +28,21 @@ export function useBestScore(gameId, { higherIsBetter = true } = {}) {
     } catch (_error) {
       return null;
     }
-  });
+  };
+  const [record, setRecord] = useState(() => ({ key, best: readBest() }));
+  // A mounted Memory game changes storage keys when its difficulty changes.
+  // Read that key immediately, before a render can submit against the old best.
+  let best = record.best;
+  if (record.key !== key) {
+    best = readBest();
+    setRecord({ key, best });
+  }
 
   const submit = useCallback((score) => {
     if (!Number.isFinite(score)) return false;
     const isRecord = best === null || (higherIsBetter ? score > best : score < best);
     if (!isRecord) return false;
-    setBest(score);
+    setRecord({ key, best: score });
     try {
       window.localStorage.setItem(key, String(score));
     } catch (_error) {
