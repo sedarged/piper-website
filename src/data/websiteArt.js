@@ -3,9 +3,9 @@ import { ASSET, drive } from "../config.js";
 /**
  * Semantic artwork registry for the website.
  *
- * Every entry resolves to one complete high-quality image. Do not put sprite
- * sheets, contact sheets or crop atlases here. Keeping the mapping in one file
- * also makes later master-art upgrades a one-line change per character/world.
+ * Every entry resolves to one complete high-quality image. Keeping this mapping
+ * in one place makes later master-art upgrades a one-line change per character
+ * or world while components stay presentation-only.
  */
 export const WEBSITE_ART = {
   characters: {
