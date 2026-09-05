@@ -199,13 +199,14 @@
 .swatch{width:44px;height:44px;border-radius:50%;border:3px solid rgba(42,26,46,.15);
   transition:transform .2s cubic-bezier(.3,1.6,.5,1),border-color .2s;flex:none}
 .swatch.on{transform:scale(1.18);border-color:var(--plum)}
-.coloring-canvas{position:relative;width:100%;max-width:340px}
+.coloring-canvas{position:relative;width:100%;max-width:min(400px,54vh);background:#fff;border:1px solid rgba(90,21,59,.16);border-radius:14px;overflow:hidden;box-shadow:inset 0 0 28px rgba(90,21,59,.04)}
 .coloring-svg{display:block;width:100%;height:auto;border-radius:14px;overflow:hidden}
 .coloring-svg *{transition:fill .18s}
-.coloring-region{cursor:crosshair}
-.coloring-region:hover{filter:brightness(.96)}
-.cottage-linework{pointer-events:none}
-.coloring-hitareas{position:absolute;inset:0;pointer-events:none}
+.coloring-fills{position:relative;z-index:1}
+.coloring-region{cursor:crosshair;stroke:none}
+.coloring-region:hover{filter:brightness(.94)}
+.coloring-line-art{position:absolute;inset:0;z-index:2;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.coloring-hitareas{position:absolute;inset:0;z-index:3;pointer-events:none}
 .coloring-hit{position:absolute;background:transparent;border:none;padding:0;margin:0;pointer-events:none}
 .coloring-hit:focus-visible{outline:3px solid var(--plum);outline-offset:2px;z-index:1}
 .coloring-hint{color:var(--ink60);font-size:14px;text-align:center}

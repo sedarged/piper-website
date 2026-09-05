@@ -3,6 +3,7 @@ import { C } from "../../styles/tokens.js";
 
 const VIEWBOX = 320;
 const pct = (px) => `${(px / VIEWBOX) * 100}%`;
+const LINE_ART = "/images/games/strawberry-cottage-line-art.png";
 
 const PALETTE = [
   { c: C.strawberry, name: "Strawberry" },
@@ -18,59 +19,35 @@ const PALETTE = [
 ];
 
 /**
- * Paintable pieces of Piper's real Strawberry Cottage. The silhouette and
- * details follow the approved artwork: a plump strawberry-shaped house,
- * leafy crown, dripping pink icing, round attic window, arched front door,
- * flower garden and winding biscuit path.
- *
- * Each piece owns both its SVG geometry and a generous rectangular HTML
- * hit-area. Keeping the buttons as real HTML makes every colourable part
- * reachable with Tab + Enter/Space and gives it a dependable focus ring.
+ * Broad, child-friendly paint regions sit beneath the professionally drawn
+ * transparent line-art. Their inset silhouettes keep colour inside the ink,
+ * while the illustration above supplies the organic edges and small detail.
  */
 export const COTTAGE_REGIONS = [
-  { id: "sky", label: "Sky", svg: { tag: "rect", x: 0, y: 0, width: 320, height: 218 }, hit: { x: 0, y: 0, w: 320, h: 48 } },
-  { id: "hills", label: "Strawberry hills", svg: { tag: "path", d: "M0 193c35-30 66-35 97-16 28 17 49 14 79-12 40-35 94-27 144 14v46H0z" }, hit: { x: 0, y: 165, w: 320, h: 44 } },
-  { id: "ground", label: "Garden lawn", svg: { tag: "path", d: "M0 207c48-10 91-7 128 4 47 13 101 11 192-9v118H0z" }, hit: { x: 0, y: 286, w: 320, h: 34 } },
-  { id: "path", label: "Winding biscuit path", svg: { tag: "path", d: "M137 320c-4-20 2-36 23-50 15-10 19-22 10-38l36-5c13 25 4 45-24 61-14 8-18 19-12 32z" }, hit: { x: 132, y: 232, w: 74, h: 88 } },
-  { id: "cottage", label: "Strawberry cottage walls", svg: { tag: "path", d: "M82 128C84 86 116 61 158 61c43 0 76 25 80 67l15 93c5 34-18 57-54 58h-82c-36-1-59-24-54-58z" }, hit: { x: 67, y: 111, w: 181, h: 168 } },
-  { id: "icing", label: "Strawberry icing roof", svg: { tag: "path", d: "M82 132C83 91 116 65 158 65c43 0 75 26 80 67-9 7-18 9-28 3-8-5-15-2-19 7-5 12-18 13-25 1-7-13-20-12-28 0-7 11-20 10-25-2-4-10-12-13-20-7-4 3-8 3-11-2z" }, hit: { x: 82, y: 70, w: 156, h: 72 } },
-  { id: "leaf-left", label: "Left roof leaf", svg: { tag: "path", d: "M158 67c-23-2-45-14-57-38 27-5 49 4 62 29z" }, hit: { x: 100, y: 24, w: 62, h: 43 } },
-  { id: "leaf-centre", label: "Centre roof leaf", svg: { tag: "path", d: "M157 65c-9-24-5-47 10-64 18 17 21 40 5 66z" }, hit: { x: 148, y: 0, w: 38, h: 67 } },
-  { id: "leaf-right", label: "Right roof leaf", svg: { tag: "path", d: "M169 66c12-26 34-38 62-35-9 25-28 38-57 40z" }, hit: { x: 170, y: 27, w: 62, h: 44 } },
-  { id: "attic-window", label: "Round attic window", svg: { tag: "circle", cx: 160, cy: 102, r: 23 }, hit: { x: 137, y: 79, w: 46, h: 46 } },
-  { id: "left-window", label: "Left cottage window", svg: { tag: "rect", x: 91, y: 174, width: 39, height: 42, rx: 16 }, hit: { x: 88, y: 170, w: 45, h: 49 } },
-  { id: "right-window", label: "Right cottage window", svg: { tag: "rect", x: 190, y: 174, width: 39, height: 42, rx: 16 }, hit: { x: 187, y: 170, w: 45, h: 49 } },
-  { id: "left-shutter", label: "Left strawberry shutter", svg: { tag: "path", d: "M87 174h12v42H87c-7-12-7-30 0-42z" }, hit: { x: 81, y: 170, w: 20, h: 49 } },
-  { id: "right-shutter", label: "Right strawberry shutter", svg: { tag: "path", d: "M221 174h12c7 12 7 30 0 42h-12z" }, hit: { x: 220, y: 170, w: 20, h: 49 } },
-  { id: "door", label: "Arched front door", svg: { tag: "path", d: "M139 270v-58c0-28 42-28 42 0v58z" }, hit: { x: 136, y: 192, w: 48, h: 78 } },
-  { id: "door-heart", label: "Heart on the door", svg: { tag: "path", d: "M160 232c-12-8-18-16-12-22 5-5 10-1 12 3 2-4 7-8 12-3 6 6 0 14-12 22z" }, hit: { x: 145, y: 204, w: 30, h: 30 } },
-  { id: "step", label: "Front doorstep", svg: { tag: "path", d: "M129 270h62l8 13h-78z" }, hit: { x: 120, y: 268, w: 80, h: 18 } },
-  { id: "left-bush", label: "Left berry bush", svg: { tag: "path", d: "M18 253c-10-12-3-30 11-31-1-17 21-24 31-11 12-10 31 0 27 16 15 3 18 23 5 32H25z" }, hit: { x: 13, y: 204, w: 78, h: 56 } },
-  { id: "right-bush", label: "Right berry bush", svg: { tag: "path", d: "M230 258c-11-11-6-28 8-32-2-15 18-23 29-12 10-13 31-4 29 12 17 4 19 23 5 32z" }, hit: { x: 226, y: 207, w: 77, h: 52 } },
-  { id: "left-berries", label: "Left garden strawberries", svg: { tag: "path", d: "M34 229c-6 0-10 5-8 11 2 6 8 11 8 11s7-5 8-11c2-6-2-11-8-11zm28 6c-6 0-10 5-8 11 2 6 8 11 8 11s7-5 8-11c2-6-2-11-8-11z" }, hit: { x: 23, y: 226, w: 50, h: 34 } },
-  { id: "right-berries", label: "Right garden strawberries", svg: { tag: "path", d: "M250 231c-6 0-10 5-8 11 2 6 8 11 8 11s7-5 8-11c2-6-2-11-8-11zm27-4c-6 0-10 5-8 11 2 6 8 11 8 11s7-5 8-11c2-6-2-11-8-11z" }, hit: { x: 239, y: 223, w: 51, h: 33 } },
-  { id: "left-flowers", label: "Left cottage flowers", svg: { tag: "path", d: "M105 259c-9-6-15 5-8 11-7 7 3 15 10 8 7 7 16-2 9-9 7-7-3-16-11-10z" }, hit: { x: 93, y: 252, w: 28, h: 30 } },
-  { id: "right-flowers", label: "Right cottage flowers", svg: { tag: "path", d: "M210 252c-9-6-15 5-8 11-7 7 3 15 10 8 7 7 16-2 9-9 7-7-3-16-11-10z" }, hit: { x: 198, y: 245, w: 28, h: 30 } },
+  { id: "roof", label: "Strawberry icing roof", svg: { tag: "path", d: "M76 137C75 90 111 67 160 67s84 25 85 70c-12 0-11 14-22 14-12 0-11-15-23-15s-11 17-23 17-11-15-23-15-12 15-24 15-11-17-23-17-11 15-22 15-10-14-19-14z" }, hit: { x: 72, y: 73, w: 176, h: 78 } },
+  { id: "walls", label: "Strawberry cottage walls", svg: { tag: "path", d: "M73 137h174l7 71c4 34-16 55-49 57H112c-33-2-51-23-47-57z" }, hit: { x: 68, y: 145, w: 184, h: 120 } },
+  { id: "leaf-left", label: "Left roof leaf", svg: { tag: "path", d: "M158 68c-24-1-47-12-61-35 30-4 51 7 66 30z" }, hit: { x: 96, y: 28, w: 68, h: 43 } },
+  { id: "leaf-centre", label: "Centre roof leaf", svg: { tag: "path", d: "M158 67c-12-27-6-51 7-65 18 18 21 42 5 66z" }, hit: { x: 146, y: 0, w: 42, h: 69 } },
+  { id: "leaf-right", label: "Right roof leaf", svg: { tag: "path", d: "M168 67c14-27 36-38 64-33-13 25-34 36-61 37z" }, hit: { x: 169, y: 28, w: 65, h: 43 } },
+  { id: "attic-window", label: "Round attic window", svg: { tag: "circle", cx: 160, cy: 105, r: 21 }, hit: { x: 138, y: 82, w: 44, h: 46 } },
+  { id: "porch", label: "Flower porch canopy", svg: { tag: "path", d: "M126 178c4-21 17-32 34-32s31 11 35 32c-8-1-8 8-16 8s-8-8-16-8-8 8-17 8-8-8-20-8z" }, hit: { x: 126, y: 145, w: 70, h: 42 } },
+  { id: "left-window", label: "Left cottage window", svg: { tag: "rect", x: 82, y: 175, width: 43, height: 39, rx: 15 }, hit: { x: 80, y: 172, w: 47, h: 45 } },
+  { id: "right-window", label: "Right cottage window", svg: { tag: "rect", x: 195, y: 175, width: 43, height: 39, rx: 15 }, hit: { x: 193, y: 172, w: 47, h: 45 } },
+  { id: "left-shutters", label: "Left strawberry shutters", svg: { tag: "path", d: "M71 174h12v42H71zm55 0h12v42h-12z" }, hit: { x: 69, y: 171, w: 70, h: 47 } },
+  { id: "right-shutters", label: "Right strawberry shutters", svg: { tag: "path", d: "M182 174h12v42h-12zm56 0h12v42h-12z" }, hit: { x: 181, y: 171, w: 70, h: 47 } },
+  { id: "door", label: "Arched front door", svg: { tag: "path", d: "M137 260v-57c0-29 46-29 46 0v57z" }, hit: { x: 134, y: 184, w: 52, h: 78 } },
+  { id: "door-heart", label: "Heart on the door", svg: { tag: "path", d: "M160 228c-14-10-20-19-13-26 6-6 12-1 13 4 2-5 8-10 14-4 7 7 0 16-14 26z" }, hit: { x: 145, y: 199, w: 32, h: 32 } },
+  { id: "left-garden", label: "Left strawberry garden", svg: { tag: "path", d: "M4 246c8-21 25-32 45-27 8-19 38-21 49-2 25-10 49 9 44 36 6 11 3 25-7 37H18c-17-10-22-25-14-44z" }, hit: { x: 5, y: 215, w: 133, h: 76 } },
+  { id: "right-garden", label: "Right strawberry garden", svg: { tag: "path", d: "M181 253c-5-27 19-46 44-36 11-19 41-17 49 2 20-5 37 6 45 27 8 19 3 34-14 44H188c-10-12-13-26-7-37z" }, hit: { x: 182, y: 215, w: 133, h: 76 } },
+  { id: "left-lamp", label: "Left garden lamp", svg: { tag: "path", d: "M18 244h12v-46c0-15 28-15 28 0v30H46v-30c0-4-4-7-8-7s-8 3-8 7v46z" }, hit: { x: 16, y: 187, w: 45, h: 61 } },
+  { id: "right-lamp", label: "Right garden lamp", svg: { tag: "path", d: "M290 244h12v-46c0-15-28-15-28 0v30h12v-30c0-4 4-7 8-7s8 3 8 7v46z" }, hit: { x: 271, y: 187, w: 33, h: 61 } },
+  { id: "path", label: "Winding biscuit path", svg: { tag: "path", d: "M100 320c14-15 28-26 49-36 16-8 19-16 10-25h42c9 15 1 29-17 39-13 7-20 14-23 22z" }, hit: { x: 98, y: 261, w: 106, h: 59 } },
 ];
 
 function RegionShape({ region, fill, onPaint }) {
   const Tag = region.svg.tag;
   const { tag: _tag, ...geometry } = region.svg;
-  return <Tag className="coloring-region" {...geometry} fill={fill} stroke="#43233F" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" onClick={onPaint} />;
-}
-
-function CottageLinework() {
-  return (
-    <g className="cottage-linework" fill="none" stroke="#43233F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M149 102h22M160 91v22M107 175v40M91 195h39M213 175v40M190 195h39" />
-      <path d="M151 63l-20-26m39 27 35-25m-38 24 2-45" />
-      <path d="M104 252v-13m106 13v-14m-98 21 5 9m85-9-5 9" />
-      <path d="M145 151c8 5 22 5 30 0M151 163c6 3 14 3 19 0" opacity=".55" />
-      <path d="M101 150l3 3m21-9 3 3m61 3 3 3m21-9 3 3M91 233l3 3m124-2 3 3m-105-4 3 3m78 1 3 3" opacity=".55" />
-      <circle cx="172" cy="242" r="2.4" fill="#43233F" />
-      <path d="M151 291c7 4 16 4 23 0m-28 13c11 5 24 5 35 0" opacity=".55" />
-    </g>
-  );
+  return <Tag className="coloring-region" {...geometry} fill={fill} onClick={onPaint} />;
 }
 
 export function ColoringPage({ onComplete, chime }) {
@@ -85,12 +62,12 @@ export function ColoringPage({ onComplete, chime }) {
   const paint = (id) => {
     if (fills[id] === color) return;
     chime?.(420 + colorIndex * 46, 0.09);
-    setHistory((h) => [...h, { id, to: color }]);
+    setHistory((items) => [...items, { id, to: color }]);
   };
   const undo = () => {
     if (!history.length) return;
     chime?.(320, 0.1);
-    setHistory((h) => h.slice(0, -1));
+    setHistory((items) => items.slice(0, -1));
   };
   const clear = () => {
     if (!history.length) return;
@@ -101,16 +78,16 @@ export function ColoringPage({ onComplete, chime }) {
   return (
     <div className="coloring-game">
       <div className="coloring-palette" role="group" aria-label="Choose a colour">
-        {PALETTE.map((swatch, i) => (
-          <button key={swatch.c} className={`swatch ${colorIndex === i ? "on" : ""}`} style={{ background: swatch.c }} onClick={() => setColorIndex(i)} aria-label={`Colour ${swatch.name}`} aria-pressed={colorIndex === i} />
+        {PALETTE.map((swatch, index) => (
+          <button key={swatch.c} className={`swatch ${colorIndex === index ? "on" : ""}`} style={{ background: swatch.c }} onClick={() => setColorIndex(index)} aria-label={`Colour ${swatch.name}`} aria-pressed={colorIndex === index} />
         ))}
       </div>
 
-      <div className="coloring-canvas">
-        <svg viewBox="0 0 320 320" className="coloring-svg" aria-hidden="true">
+      <div className="coloring-canvas coloring-canvas--illustrated">
+        <svg viewBox="0 0 320 320" className="coloring-svg coloring-fills" aria-hidden="true">
           {COTTAGE_REGIONS.map((region) => <RegionShape key={region.id} region={region} fill={fills[region.id] || "#fff"} onPaint={() => paint(region.id)} />)}
-          <CottageLinework />
         </svg>
+        <img className="coloring-line-art" src={LINE_ART} alt="" aria-hidden="true" draggable="false" />
         <div className="coloring-hitareas">
           {COTTAGE_REGIONS.map((region) => (
             <button key={region.id} className="coloring-hit" style={{ left: pct(region.hit.x), top: pct(region.hit.y), width: pct(region.hit.w), height: pct(region.hit.h) }} onClick={() => paint(region.id)} aria-label={`${region.label}, currently ${fills[region.id] ? "painted" : "unpainted"}. Paint it ${colorName}.`} />

@@ -144,13 +144,16 @@ test("the colouring game is Piper's Strawberry Cottage", () => {
     "Arched front door",
     "Heart on the door",
     "Winding biscuit path",
-    "Left garden strawberries",
-    "Right garden strawberries",
+    "Left strawberry garden",
+    "Right strawberry garden",
+    "Left garden lamp",
+    "Right garden lamp",
   ];
 
   for (const landmark of landmarks) {
     assert.match(source, new RegExp(landmark), `${landmark} remains in the line art`);
   }
-  assert.ok((source.match(/\{ id: /g) || []).length >= 20, "the cottage has a detailed set of paintable regions");
+  assert.ok((source.match(/\{ id: /g) || []).length >= 18, "the cottage has a detailed set of paintable regions");
   assert.match(source, /viewBox="0 0 320 320"/, "the complete cottage fits its square canvas");
+  assert.ok(existsSync(new URL("../public/images/games/strawberry-cottage-line-art.png", import.meta.url)), "the professional cottage line art exists");
 });
