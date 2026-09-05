@@ -1,5 +1,5 @@
-import { drive, ASSET } from "../config.js";
-import { Img } from "./Img.jsx";
+import { WEBSITE_ART } from "../data/websiteArt.js";
+import { ArtImage } from "./ArtImage.jsx";
 
 /**
  * Piper's floating guide avatar, bottom-right. Tapping her replays the
@@ -12,7 +12,7 @@ export function PiperGuide({ message, onTap, onDismiss }) {
     <div className="guide">
       <div style={{ position: "relative" }}>
         <button className="guide-av" onClick={onTap} aria-label="Piper says something">
-          <Img src={drive(ASSET.piper, 300)} alt="Piper" fb="P" />
+          <ArtImage art={WEBSITE_ART.characters.piper} alt="Piper" decoding="async" />
         </button>
         <button className="guide-x" onClick={onDismiss} aria-label="Hide Piper">✕</button>
       </div>
