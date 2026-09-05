@@ -1,6 +1,8 @@
 import { useCallback, useRef, useState } from "react";
 import { BOOKS } from "../data/books.js";
+import { WEBSITE_ART } from "../data/websiteArt.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
+import { ArtImage } from "./ArtImage.jsx";
 import { ParentEmailForm } from "./ParentEmailForm.jsx";
 
 const NAV_ITEMS = [
@@ -17,14 +19,6 @@ const PARENT_FACTS = [
   ["Publisher", "Wallace-Siedlarz Productions"],
 ];
 
-function ReferenceCrop({ crop, className = "", alt = "" }) {
-  return (
-    <span className={`universe-crop ${className}`} style={{ "--crop-x": crop.x, "--crop-y": crop.y, "--crop-w": crop.w, "--crop-h": crop.h }}>
-      <img src="/images/worlds-homepage-reference.webp" alt={alt} />
-    </span>
-  );
-}
-
 function WorldCard({ type, title, description, status, onClick, coverSrc }) {
   const active = type === "available";
   return (
@@ -36,7 +30,7 @@ function WorldCard({ type, title, description, status, onClick, coverSrc }) {
         disabled={!active}
       >
         <span className="world-card-cover">
-          <img src={coverSrc} alt={`${title}. ${description} ${status}.`} />
+          <img src={coverSrc} alt={`${title}. ${description} ${status}.`} loading="lazy" decoding="async" />
         </span>
       </button>
     </article>
@@ -103,7 +97,9 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
 
           <button className="universe-portal" onClick={onEnterSnackville} aria-label="Enter the world of Snackville">
             <span className="universe-portal__halo" aria-hidden="true" />
-            <ReferenceCrop crop={{ x: 278, y: 88, w: 648, h: 612 }} className="universe-portal__art" alt="Piper and the Snack Squad entering Snackville" />
+            <span className="universe-portal__art universe-portal__art--full">
+              <ArtImage art={WEBSITE_ART.worlds.snackville} alt="Piper's illustrated world of Snackville" loading="eager" fetchpriority="high" decoding="async" />
+            </span>
             <span className="universe-portal__ring" aria-hidden="true" />
           </button>
         </section>
@@ -179,7 +175,9 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
                 )}
               </div>
             </div>
-            <ReferenceCrop crop={{ x: 724, y: 1380, w: 186, h: 218 }} className="story-list__character" alt="Toast Kitty reading a book" />
+            <span className="story-list__character story-list__character--full" aria-label="Toast Kitty">
+              <ArtImage art={WEBSITE_ART.characters.toastReading} alt="Toast Kitty" loading="lazy" decoding="async" />
+            </span>
           </div>
 
           <div className="universe-library" aria-labelledby="universe-library-title">
@@ -191,7 +189,7 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
             <div className="universe-library__shelf">
               {BOOKS.map((book) => (
                 <button key={book.id} className="universe-library__book" onClick={onEnterSnackville} aria-label={`Explore ${book.title}`}>
-                  <img src={book.img} alt={`${book.title} cover`} />
+                  <img src={book.img} alt={`${book.title} cover`} loading="lazy" decoding="async" />
                   <span>{book.num}</span>
                   <strong>{book.title.replace("Piper and the ", "")}</strong>
                 </button>

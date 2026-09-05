@@ -1,4 +1,6 @@
 import { ASSET, AMAZON_URL } from "../config.js";
+import { SQUAD_ART } from "../data/websiteArt.js";
+import { ArtImage } from "./ArtImage.jsx";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { Treasure } from "./Treasure.jsx";
@@ -16,7 +18,7 @@ const WORLDS = [
     kicker: "Four very special kittens",
     title: "Meet the Snack Squad",
     copy: "Get to know Piper, Croissant Kitty, Toast Kitty and Sandwich Kitty.",
-    image: "/images/inside/custard-page-31.webp",
+    kind: "squad",
   },
   {
     id: "books",
@@ -33,6 +35,18 @@ const WORLDS = [
     image: "/images/inside/custard-page-17.webp",
   },
 ];
+
+function SquadCollage() {
+  return (
+    <span className="world-squad-collage" aria-label="Piper, Croissant Kitty, Toast Kitty and Sandwich Kitty">
+      {SQUAD_ART.map((art, index) => (
+        <span className={`world-squad-collage__member world-squad-collage__member--${index + 1}`} key={art.alt}>
+          <ArtImage art={art} alt="" loading="lazy" decoding="async" />
+        </span>
+      ))}
+    </span>
+  );
+}
 
 /**
  * The first screen after the magical reveal. It establishes the series,
@@ -112,8 +126,8 @@ export function Hero({ found, onFind }) {
                 onClick={() => goTo(world.id)}
                 aria-label={`${world.title}: ${world.copy}`}
               >
-                <span className="world-image">
-                  <Img src={world.image} alt="" fb={world.title} />
+                <span className={`world-image ${world.kind === "squad" ? "world-image--squad" : ""}`}>
+                  {world.kind === "squad" ? <SquadCollage /> : <Img src={world.image} alt="" fb={world.title} />}
                 </span>
                 <span className="world-number" aria-hidden="true">0{index + 1}</span>
                 <span className="world-copy">

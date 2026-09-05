@@ -1,8 +1,9 @@
 import { useRef } from "react";
-import { drive, AMAZON_URL } from "../config.js";
+import { AMAZON_URL } from "../config.js";
 import { CAST } from "../data/cast.js";
+import { WEBSITE_ART } from "../data/websiteArt.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
-import { Img } from "./Img.jsx";
+import { ArtImage } from "./ArtImage.jsx";
 
 /**
  * The slide-in panel showing a character's full bio, power, and secret.
@@ -30,7 +31,7 @@ export function CastDrawer({ index, onClose, onNavigate }) {
         {character && (
           <>
             <div className="dr-art" style={{ background: character.ink }}>
-              <Img src={drive(character.img, 800)} alt={character.name} fb={character.name} />
+              <ArtImage art={WEBSITE_ART.characters[character.key]} alt={character.name} decoding="async" />
               <button className="dr-x" onClick={onClose} aria-label="Close">✕</button>
             </div>
 
