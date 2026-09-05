@@ -1,13 +1,8 @@
-name: Build
+name: Check
 
-# Runs on every push and pull request. This alone catches a large class
-# of "works on my machine" problems — a broken import, a typo in a
-# component name, a CSS file that got left out of main.jsx — before
-# they ever reach main.
-#
-# This is deliberately minimal. See docs/top-tier-plan.md, item 6/7, for
-# what a fuller pipeline (lint, unit tests, E2E, preview deploys) would
-# add on top of this once the project has a test suite to run.
+# Required pull-request quality gate. The repository has lint, unit/content
+# tests and a production build, so CI runs the same `npm run check` command
+# contributors use locally instead of validating compilation only.
 
 on:
   push:
@@ -16,15 +11,15 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "npm"
 
       - run: npm ci
-      - run: npm run build
+      - run: npm run check
