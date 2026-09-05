@@ -1,7 +1,7 @@
-import { drive } from "../config.js";
+import { WEBSITE_ART } from "../data/websiteArt.js";
 import { CAST } from "../data/cast.js";
+import { ArtImage } from "./ArtImage.jsx";
 import { Reveal } from "./Reveal.jsx";
-import { Img } from "./Img.jsx";
 import { Treasure } from "./Treasure.jsx";
 
 /**
@@ -27,7 +27,7 @@ export function Cast({ found, onFind, onOpenCharacter, chime }) {
         {CAST.map((c, i) => (
           <Reveal key={c.key} delay={i * 80}>
             <button className="cc" onClick={() => { onOpenCharacter(i); chime(680, 0.12); }}>
-              <div className="cc-f"><Img src={drive(c.img, 600)} alt={c.name} fb={c.name} /></div>
+              <div className="cc-f"><ArtImage art={WEBSITE_ART.characters[c.key]} alt={c.name} loading="lazy" decoding="async" /></div>
               <h3 className="cc-n">{c.name}</h3>
               <p className="cc-r">{c.role}</p>
               <p className="cc-line">{c.line}</p>
