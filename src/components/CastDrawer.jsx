@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { drive, AMAZON_URL } from "../config.js";
-import { CAST } from "../data/cast.js";
+import { SNACKVILLE_CHARACTERS } from "../data/cast.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { Img } from "./Img.jsx";
 
@@ -14,14 +14,14 @@ import { Img } from "./Img.jsx";
  * the page scroll behind it is a common source of "why is my page
  * jumping" bug reports) — see useDialogTrap for the shared mechanics.
  */
-export function CastDrawer({ index, onClose, onNavigate }) {
+export function CastDrawer({ index, onClose, onNavigate, characters = SNACKVILLE_CHARACTERS, ctaLabel = "Read the Piper books →" }) {
   const open = index !== null;
-  const character = open ? CAST[index] : null;
+  const character = open ? characters[index] : null;
   const drawerRef = useRef(null);
 
   useDialogTrap(drawerRef, onClose, open);
 
-  const next = open ? CAST[(index + 1) % CAST.length] : null;
+  const next = open ? characters[(index + 1) % characters.length] : null;
 
   return (
     <>
@@ -51,11 +51,11 @@ export function CastDrawer({ index, onClose, onNavigate }) {
               </div>
 
               <a className="btn b-straw" href={AMAZON_URL} target="_blank" rel="noreferrer" style={{ marginTop: 6 }}>
-                Read book one →
+                {ctaLabel}
               </a>
 
               <button
-                onClick={() => onNavigate((index + 1) % CAST.length)}
+                onClick={() => onNavigate((index + 1) % characters.length)}
                 style={{
                   display: "flex", justifyContent: "space-between", width: "100%", alignItems: "center",
                   marginTop: 26, paddingTop: 18, borderTop: "2px solid rgba(42,26,46,.1)", textAlign: "left",

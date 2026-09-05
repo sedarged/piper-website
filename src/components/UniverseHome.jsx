@@ -17,14 +17,6 @@ const PARENT_FACTS = [
   ["Publisher", "Wallace-Siedlarz Productions"],
 ];
 
-function ReferenceCrop({ crop, className = "", alt = "" }) {
-  return (
-    <span className={`universe-crop ${className}`} style={{ "--crop-x": crop.x, "--crop-y": crop.y, "--crop-w": crop.w, "--crop-h": crop.h }}>
-      <img src="/images/worlds-homepage-reference.webp" alt={alt} />
-    </span>
-  );
-}
-
 function WorldCard({ type, title, description, status, onClick, coverSrc }) {
   const active = type === "available";
   return (
@@ -103,7 +95,9 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
 
           <button className="universe-portal" onClick={onEnterSnackville} aria-label="Enter the world of Snackville">
             <span className="universe-portal__halo" aria-hidden="true" />
-            <ReferenceCrop crop={{ x: 278, y: 88, w: 648, h: 612 }} className="universe-portal__art" alt="Piper and the Snack Squad entering Snackville" />
+            <span className="universe-portal__art">
+              <img src="/images/home/snack-squad-portal.webp" alt="Piper, Croissant Kitty, Toast Kitty and Sandwich Kitty entering Snackville" />
+            </span>
             <span className="universe-portal__ring" aria-hidden="true" />
           </button>
         </section>
@@ -179,7 +173,9 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
                 )}
               </div>
             </div>
-            <ReferenceCrop crop={{ x: 724, y: 1380, w: 186, h: 218 }} className="story-list__character" alt="Toast Kitty reading a book" />
+            <span className="story-list__character">
+              <img src="/images/home/toast-kitty-reading.webp" alt="Toast Kitty reading a red storybook" loading="lazy" decoding="async" />
+            </span>
           </div>
 
           <div className="universe-library" aria-labelledby="universe-library-title">

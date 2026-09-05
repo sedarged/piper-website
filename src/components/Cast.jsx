@@ -1,11 +1,11 @@
 import { drive } from "../config.js";
-import { CAST } from "../data/cast.js";
+import { SNACKVILLE_CHARACTERS } from "../data/cast.js";
 import { Reveal } from "./Reveal.jsx";
 import { Img } from "./Img.jsx";
 import { Treasure } from "./Treasure.jsx";
 
 /**
- * The "cast" section — a four-up grid of character cards. Tapping one
+ * The Snackville cast section. Tapping one
  * opens the CastDrawer (rendered by App.jsx, kept as a sibling rather
  * than nested here so it can slide in above everything). Contains
  * treasure #3 ("star").
@@ -24,7 +24,7 @@ export function Cast({ found, onFind, onOpenCharacter, chime }) {
       </Reveal>
 
       <div className="cast-g">
-        {CAST.map((c, i) => (
+        {SNACKVILLE_CHARACTERS.map((c, i) => (
           <Reveal key={c.key} delay={i * 80}>
             <button className="cc" onClick={() => { onOpenCharacter(i); chime(680, 0.12); }}>
               <div className="cc-f"><Img src={drive(c.img, 600)} alt={c.name} fb={c.name} /></div>

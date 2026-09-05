@@ -11,7 +11,7 @@ export const BOOKS = [
   {
     id: 2, num: "Book two", title: "Piper and the Chocolate Volcano", img: ASSET.book2,
     status: "Coming soon", live: false, front: C.cocoa,
-    blurb: "Chocolate Mountain is rumbling. Inside it lives a dragon who isn't wicked — only lonely, and prone to sneezing. Piper works out that the answer isn't a battle. It's an invitation.",
+    blurb: "Chocolate Volcano is rumbling. Inside it lives a dragon who isn't wicked — only lonely, and prone to sneezing. Piper works out that the answer isn't a battle. It's an invitation.",
     meta: ["Ages 3–7", "36 pages", "In production", "2026"],
   },
   {

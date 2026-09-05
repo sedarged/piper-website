@@ -1,4 +1,4 @@
-const WORDS = ["Snackville", "Strawberry magic", "The Snack Squad", "Biscuit roofs", "Donut trees", "Chocolate Mountain"];
+const WORDS = ["Snackville", "Strawberry magic", "The Snack Squad", "Biscuit roofs", "Donut trees", "Chocolate Volcano"];
 
 /**
  * The infinite scrolling marquee band between the hero and the story

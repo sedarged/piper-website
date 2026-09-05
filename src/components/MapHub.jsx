@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { PLACES } from "../data/places.js";
 import { useDialogTrap } from "../hooks/useDialogTrap.js";
 import { Reveal } from "./Reveal.jsx";
@@ -73,7 +74,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
-                style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
+                style={{ "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
@@ -116,7 +117,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
         </div>
       </Reveal>
 
-      {openPlace && (
+      {openPlace && createPortal(
         <div
           className="place-dialog-scrim"
           onMouseDown={(event) => { if (event.target === event.currentTarget) closePlace(); }}
@@ -157,7 +158,8 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
               <button className="btn b-plum" onClick={closePlace}>Back to the map</button>
             </div>
           </article>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

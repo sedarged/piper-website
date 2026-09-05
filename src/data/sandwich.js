@@ -5,9 +5,9 @@ import { C } from "../styles/tokens.js";
  * floating sandwich-castle world above the clouds). Coordinates are
  * percentages measured against the 1536 × 1024 map artwork.
  *
- * Unlike Snackville's map, these locations don't carry a "wow" screen
- * effect yet — selecting one opens an accessible field-note dialog with
- * its story, same interaction pattern as Snackville (WorldMap.jsx).
+ * Selecting one opens an accessible field-note dialog and plays the
+ * Sandwich Kingdom sound, particles and location-stable screen reaction
+ * configured in worldFx.js.
  */
 export const SANDWICH_PLACES = [
   {

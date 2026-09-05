@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { skyAtProgress } from "../lib/sky.js";
 
 /**
  * ARCHITECTURE NOTE — read this before touching scroll behaviour.
@@ -44,7 +45,6 @@ export function useScrollEngine({ landRefs, skyRefs, sunmoonRef, rootRef, onNigh
     // equals one viewport width — this guarantees the layer can never
     // run out of runway and show a gap, no matter how long the page is.
     const depth = [0.14, 0.30, 0.50, 0.74, 1.0];
-    const seg = (v, a, b) => Math.max(0, Math.min(1, (v - a) / (b - a)));
 
     const apply = () => {
       running = false;
@@ -60,10 +60,7 @@ export function useScrollEngine({ landRefs, skyRefs, sunmoonRef, rootRef, onNigh
       }
 
       // sky phases: dawn -> day -> dusk -> night, each a 0..1 opacity
-      const dawn = 1 - seg(p, 0.04, 0.20);
-      const day = seg(p, 0.04, 0.20) * (1 - seg(p, 0.50, 0.66));
-      const dusk = seg(p, 0.50, 0.66) * (1 - seg(p, 0.80, 0.92));
-      const night = seg(p, 0.80, 0.92);
+      const { dawn, day, dusk, night } = skyAtProgress(p);
       if (skyRefs.dawn.current) skyRefs.dawn.current.style.opacity = dawn;
       if (skyRefs.day.current) skyRefs.day.current.style.opacity = day;
       if (skyRefs.dusk.current) skyRefs.dusk.current.style.opacity = dusk;
@@ -74,7 +71,7 @@ export function useScrollEngine({ landRefs, skyRefs, sunmoonRef, rootRef, onNigh
       const nightOn = night > 0.5;
       if (sunmoonRef.current) {
         const el = sunmoonRef.current;
-        el.style.top = `${12 + Math.sin(p * Math.PI) * -6 + p * 22}vh`;
+        el.style.top = `${reduceMotion.current ? 12 : 12 + Math.sin(p * Math.PI) * -6 + p * 22}vh`;
         el.style.background = nightOn
           ? "radial-gradient(circle at 38% 34%, #FFF6E9, #E8D9B8)"
           : `radial-gradient(circle at 38% 34%, #FFF3B0, ${dusk > 0.4 ? "#FF9A4D" : "#FFD447"})`;
@@ -101,9 +98,11 @@ export function useScrollEngine({ landRefs, skyRefs, sunmoonRef, rootRef, onNigh
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     onScroll(); // set correct initial state without waiting for the first scroll event
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(raf);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
