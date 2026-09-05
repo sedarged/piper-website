@@ -10,6 +10,7 @@ import { SECTIONS } from "../src/data/sections.js";
 import { BADGES, TREASURES, TOTAL_ACTIONS } from "../src/data/treasures.js";
 import { WOW_FX } from "../src/data/wow.js";
 import { PRINTABLES } from "../src/data/printables.js";
+import { floodFill } from "../src/lib/floodFill.js";
 
 test("content identifiers remain unique", () => {
   for (const collection of [BOOKS, CAST, PLACES, TREASURES, SECTIONS]) {
@@ -134,26 +135,25 @@ test("every studio game card maps to a real game", () => {
 
 test("the colouring game is Piper's Strawberry Cottage", () => {
   const source = readFileSync(new URL("../src/components/games/ColoringPage.jsx", import.meta.url), "utf8");
-  const landmarks = [
-    "Strawberry cottage walls",
-    "Strawberry icing roof",
-    "Left roof leaf",
-    "Centre roof leaf",
-    "Right roof leaf",
-    "Round attic window",
-    "Arched front door",
-    "Heart on the door",
-    "Winding biscuit path",
-    "Left strawberry garden",
-    "Right strawberry garden",
-    "Left garden lamp",
-    "Right garden lamp",
-  ];
-
-  for (const landmark of landmarks) {
-    assert.match(source, new RegExp(landmark), `${landmark} remains in the line art`);
-  }
-  assert.ok((source.match(/\{ id: /g) || []).length >= 18, "the cottage has a detailed set of paintable regions");
-  assert.match(source, /viewBox="0 0 320 320"/, "the complete cottage fits its square canvas");
+  assert.match(source, /<canvas/, "the game paints the professional artwork directly");
+  assert.match(source, /floodFill/, "taps fill exact enclosed illustration areas");
+  assert.match(source, /Quick paint:/, "keyboard users have named paint controls");
   assert.ok(existsSync(new URL("../public/images/games/strawberry-cottage-line-art.png", import.meta.url)), "the professional cottage line art exists");
+});
+
+test("colour fill cannot cross the cottage ink boundary", () => {
+  const width = 5;
+  const height = 5;
+  const pixels = new Uint8ClampedArray(width * height * 4).fill(255);
+  for (let y = 0; y < height; y += 1) {
+    const offset = (y * width + 2) * 4;
+    pixels[offset] = 90;
+    pixels[offset + 1] = 21;
+    pixels[offset + 2] = 59;
+  }
+
+  assert.equal(floodFill(pixels, width, height, 0, 0, [244, 154, 193]), 10);
+  assert.deepEqual([...pixels.slice(0, 4)], [244, 154, 193, 255], "the selected side is coloured");
+  assert.deepEqual([...pixels.slice(2 * 4, 3 * 4)], [90, 21, 59, 255], "the ink stays intact");
+  assert.deepEqual([...pixels.slice(4 * 4, 5 * 4)], [255, 255, 255, 255], "the other side stays white");
 });
