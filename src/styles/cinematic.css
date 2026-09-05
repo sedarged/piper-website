@@ -672,6 +672,10 @@ a { -webkit-tap-highlight-color: transparent; }
 .map-hotspot {
   position: absolute;
   z-index: 3;
+  /* Keep the whole touch target inside a responsive map, including
+     locations printed close to an illustration edge. */
+  left: clamp(24px, var(--hotspot-x), calc(100% - 24px));
+  top: clamp(24px, var(--hotspot-y), calc(100% - 24px));
   width: 48px;
   height: 48px;
   translate: -50% -50%;

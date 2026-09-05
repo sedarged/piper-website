@@ -9,6 +9,8 @@ import { QUIZ } from "../src/data/quiz.js";
 import { SECTIONS } from "../src/data/sections.js";
 import { BADGES, TREASURES, TOTAL_ACTIONS } from "../src/data/treasures.js";
 import { WOW_FX } from "../src/data/wow.js";
+import { SANDWICH_PLACES } from "../src/data/sandwich.js";
+import { CRUMBHOLLOW_PLACES } from "../src/data/crumbhollow.js";
 import { PRINTABLES } from "../src/data/printables.js";
 import { floodFill } from "../src/lib/floodFill.js";
 
@@ -35,9 +37,11 @@ test("explorer total matches every tracked action", () => {
 });
 
 test("map coordinates stay inside the illustration", () => {
-  for (const place of PLACES) {
-    assert.ok(place.x >= 0 && place.x <= 100, `${place.id} x coordinate`);
-    assert.ok(place.y >= 0 && place.y <= 100, `${place.id} y coordinate`);
+  for (const collection of [PLACES, SANDWICH_PLACES, CRUMBHOLLOW_PLACES]) {
+    for (const place of collection) {
+      assert.ok(place.x >= 0 && place.x <= 100, `${place.id} x coordinate`);
+      assert.ok(place.y >= 0 && place.y <= 100, `${place.id} y coordinate`);
+    }
   }
 });
 
@@ -95,6 +99,9 @@ test("every map location has a signature effect, and no two are alike", () => {
 
   const voices = ids.map((id) => JSON.stringify(WOW_FX[id].sound));
   assert.equal(new Set(voices).size, voices.length, "no two locations share a sound");
+
+  const stories = ids.map((id) => `${WOW_FX[id].toastTitle}|${WOW_FX[id].toastBody}|${WOW_FX[id].guide}`);
+  assert.equal(new Set(stories).size, stories.length, "no two locations share the same story response");
 
   for (const id of ids) {
     const fx = WOW_FX[id];

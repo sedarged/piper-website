@@ -129,20 +129,20 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
         </div>
       </Reveal>
 
-      <Reveal className="map-atlas panel">
-        <div className="map-scroll" aria-label="Scrollable illustrated map">
+      <Reveal className="map-atlas panel world-map-atlas">
+        <div className="map-scroll world-map-scroll" aria-label={`${worldTitle} illustrated map`}>
           {/* .map-f's base CSS hardcodes aspect-ratio:16/9 for Snackville's own
               1536x864 map — a world with a differently-shaped map (Sandwich Kingdom's
               is 1536x1024, i.e. 3:2) needs its own ratio here, or object-fit:
               cover crops the image and every hotspot's x/y% stops lining up
               with the printed numbers underneath it. */}
-          <div className="map-f" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
+          <div className="map-f world-map-frame" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
             <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
             {places.map((place) => (
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visited.has(place.id) ? "seen" : ""}`}
-                style={{ left: `${place.x}%`, top: `${place.y}%`, "--hotspot-accent": place.ink }}
+                style={{ "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
@@ -153,7 +153,7 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
           </div>
         </div>
 
-        <p className="map-pan-hint u">On a small screen, swipe the map sideways to see every corner.</p>
+        <p className="map-pan-hint world-map-fit-hint u">The whole map fits your screen. Tap a numbered place to explore it.</p>
 
         <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
           <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>
