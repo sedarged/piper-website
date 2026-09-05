@@ -1,0 +1,83 @@
+/* Artwork-quality guardrails.
+   Complete character/world masters are shown as images, never as regions of a
+   composite crop sheet. Character anatomy is protected with contain-fitting. */
+
+.universe-portal__art--full {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+.universe-portal__art--full > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.story-list__character--full {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1.08;
+  overflow: hidden;
+  border-radius: 48% 48% 18px 18px;
+  background: radial-gradient(circle at 50% 42%, #fff, #f5dfbd 72%);
+}
+.story-list__character--full > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.cc-f,
+.dr-art {
+  background: linear-gradient(180deg, #fff5e5, #f3dcc0) !important;
+}
+.cc-f img,
+.dr-art img,
+.guide-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+}
+
+.world-image--squad {
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #fff4df, #efc8bd 66%, #bf7082);
+}
+.world-squad-collage {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  isolation: isolate;
+}
+.world-squad-collage__member {
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  filter: drop-shadow(0 10px 12px rgba(68,31,25,.2));
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.world-squad-collage__member img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center bottom !important;
+}
+.world-squad-collage__member--1 { z-index:4; width:40%; height:76%; left:30%; bottom:4%; }
+.world-squad-collage__member--2 { z-index:3; width:34%; height:62%; left:1%; bottom:5%; transform:rotate(-3deg); }
+.world-squad-collage__member--3 { z-index:2; width:30%; height:57%; left:53%; bottom:2%; }
+.world-squad-collage__member--4 { z-index:3; width:34%; height:62%; right:0; bottom:6%; transform:rotate(3deg); }
+.world-card:hover .world-squad-collage__member--1 { transform:translateY(-4px) scale(1.02); }
+.world-card:hover .world-squad-collage__member--2 { transform:rotate(-2deg) translateY(-3px) scale(1.02); }
+.world-card:hover .world-squad-collage__member--3 { transform:translateY(-3px) scale(1.02); }
+.world-card:hover .world-squad-collage__member--4 { transform:rotate(2deg) translateY(-3px) scale(1.02); }
+
+@media (max-width: 620px) {
+  .story-list__character--full { width: min(72%, 250px); margin-inline: auto; }
+}
