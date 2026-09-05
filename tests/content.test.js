@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 import { BOOKS, SPREADS } from "../src/data/books.js";
 import { CAST } from "../src/data/cast.js";
@@ -8,6 +8,8 @@ import { PLACES } from "../src/data/places.js";
 import { QUIZ } from "../src/data/quiz.js";
 import { SECTIONS } from "../src/data/sections.js";
 import { BADGES, TREASURES, TOTAL_ACTIONS } from "../src/data/treasures.js";
+import { WOW_FX } from "../src/data/wow.js";
+import { PRINTABLES } from "../src/data/printables.js";
 
 test("content identifiers remain unique", () => {
   for (const collection of [BOOKS, CAST, PLACES, TREASURES, SECTIONS]) {
@@ -26,8 +28,8 @@ test("quiz answers only target existing characters", () => {
 });
 
 test("explorer total matches every tracked action", () => {
-  // +2 for the quiz and nightfall, +4 for the Snackville studio games.
-  assert.equal(TOTAL_ACTIONS, TREASURES.length + PLACES.length + BOOKS.length + 2 + 4);
+  // +2 for the quiz and nightfall, +5 for the Snackville studio games.
+  assert.equal(TOTAL_ACTIONS, TREASURES.length + PLACES.length + BOOKS.length + 2 + 5);
   assert.equal(BADGES.at(-1).at, TOTAL_ACTIONS);
 });
 
@@ -64,5 +66,68 @@ test("the publishing showcase uses local optimised artwork", () => {
     assert.match(spread.img, /^\/images\/inside\/.+\.webp$/);
     assert.ok(existsSync(new URL(`../public${spread.img}`, import.meta.url)), `page ${spread.page} exists`);
     assert.ok(spread.t.length > 20);
+  }
+});
+
+test("every map location has a signature effect, and no two are alike", () => {
+  const ids = PLACES.filter((place) => place.wow).map((place) => place.id);
+  assert.equal(ids.length, PLACES.length, "every location is marked wow");
+
+  for (const id of ids) {
+    assert.ok(WOW_FX[id], `${id} has an effect`);
+  }
+  assert.deepEqual(
+    Object.keys(WOW_FX).sort(),
+    [...ids].sort(),
+    "the effect table and the map have exactly the same locations"
+  );
+
+  // The point of the table: a location's identity is its own combination
+  // of screen reaction, particle motion and sound. Any of these three
+  // collapsing into a shared value is the "one template, twenty
+  // recolours" failure the rewrite existed to remove.
+  const reactions = ids.map((id) => WOW_FX[id].reaction);
+  assert.equal(new Set(reactions).size, reactions.length, "no two locations share a screen reaction");
+
+  const particleKinds = ids.map((id) => WOW_FX[id].particles?.kind).filter(Boolean);
+  assert.equal(new Set(particleKinds).size, particleKinds.length, "no two locations share a particle kind");
+
+  const voices = ids.map((id) => JSON.stringify(WOW_FX[id].sound));
+  assert.equal(new Set(voices).size, voices.length, "no two locations share a sound");
+
+  for (const id of ids) {
+    const fx = WOW_FX[id];
+    assert.ok(fx.signature.length > 20, `${id} documents what it should feel like`);
+    assert.ok(fx.toastTitle && fx.toastBody && fx.guide, `${id} has its copy`);
+    // Every location must actually *do* something visible beyond the
+    // reaction — particles, rings, a streak or confetti.
+    assert.ok(
+      fx.particles || fx.rings || fx.streaks || fx.confettiBurst,
+      `${id} has a visual mechanic`
+    );
+    assert.ok(Array.isArray(fx.sound.notes) && fx.sound.notes.length > 0, `${id} has audible notes`);
+  }
+});
+
+test("every studio game card maps to a real game", () => {
+  const games = PRINTABLES.filter((p) => p.kind === "game");
+  assert.equal(games.length, 5);
+
+  // A card whose id has no component fails silently at runtime — the
+  // child taps it and nothing opens — so the registry is checked here.
+  // It's read as source text rather than imported because it pulls in
+  // .jsx, which node:test can't load without a transform step; the
+  // point is only to catch a game added to the data file and forgotten
+  // in the registry, and reading the file catches exactly that.
+  const registry = readFileSync(new URL("../src/components/games/registry.js", import.meta.url), "utf8");
+  for (const game of games) {
+    assert.match(registry, new RegExp(`\\b${game.id}:`), `${game.id} is wired up in the game registry`);
+    assert.ok(game.note.length > 20, `${game.name} explains itself`);
+  }
+
+  // Cards that aren't games must be honest about it rather than
+  // rendering a dead download link.
+  for (const print of PRINTABLES.filter((p) => p.kind === "print")) {
+    assert.ok(print.url === "" || /^https?:\/\//.test(print.url), `${print.id} is a real link or empty`);
   }
 });

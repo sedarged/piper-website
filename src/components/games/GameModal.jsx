@@ -14,6 +14,22 @@ export function GameRetryButton({ onRetry, label }) {
 }
 
 /**
+ * The personal-best strip every scored game shows above its board (see
+ * hooks/useBestScore.js). Renders nothing at all before a first score
+ * exists, so a child's very first go isn't opened with an empty
+ * scoreboard and a dash where their record should be.
+ */
+export function GameScoreboard({ best, bestLabel, suffix = "" }) {
+  if (best === null || best === undefined) return null;
+  return (
+    <p className="game-best u">
+      <span className="game-best__label">{bestLabel}</span>
+      <span className="game-best__value">{best}{suffix}</span>
+    </p>
+  );
+}
+
+/**
  * Shared dialog shell for the Snackville studio mini-games. Reuses the
  * same accessible dialog behaviour as the map's place-dialog (see
  * useDialogTrap) and its `.place-dialog` visuals, so a game feels like

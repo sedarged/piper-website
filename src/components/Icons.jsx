@@ -52,6 +52,21 @@ export const I = {
       <path d="M12 6c3.1 0 5.2 2.3 5.2 5.2" stroke="#C8956A" strokeWidth="1.8" fill="none" strokeLinecap="round" />
     </svg>
   ),
+  chilli: (c = "#C7332F") => (
+    <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
+      <path d="M15.5 5.4c1.9.6 3.6 2.6 3.6 5.4 0 4.6-3.6 8.4-7.6 8.4-3 0-5.6-1.9-5.6-4.2 0-1.6 1.3-2.4 2.7-2.1 2.2.5 4.4-.6 5.4-2.7.7-1.5.7-3.3 1.5-4.8z" fill={c} />
+      <path d="M14.6 6.2c-.5-1.6.2-3 1.7-3.6.3 1.1.1 2.1-.5 2.9" fill={C.mintD} />
+      <path d="M9.4 13.8c1.1.3 2.3.1 3.3-.5" stroke="#fff" strokeWidth="1.3" strokeLinecap="round" fill="none" opacity=".55" />
+    </svg>
+  ),
+  basket: (c = C.cocoa) => (
+    <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
+      <path d="M3 9h18l-2.2 10.4a2 2 0 01-2 1.6H7.2a2 2 0 01-2-1.6z" fill={c} />
+      <path d="M7 5.5C8.6 3 15.4 3 17 5.5" stroke={c} strokeWidth="2" fill="none" strokeLinecap="round" />
+      <path d="M3 9h18" stroke="#F0C9A0" strokeWidth="2.4" strokeLinecap="round" />
+      <path d="M9 11.5l.8 7M15 11.5l-.8 7" stroke="#F0C9A0" strokeWidth="1.3" strokeLinecap="round" opacity=".7" />
+    </svg>
+  ),
   crayon: () => (
     <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
       <path d="M6 21h4l8.4-14.6-3.6-2L6 19z" fill={C.strawberry} />
@@ -81,4 +96,4 @@ export const TI = { berry: I.berry, croix: I.croix, star: I.star, bean: I.bean, 
 export const ICON_NAMES = { berry: "Strawberry", croix: "Croissant", star: "Star", bean: "Jellybean", donut: "Donut", scale: "Dragon scale" };
 
 /** Free-printables icon lookup, keyed by printable id (see data/printables.js). */
-export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, pattern: I.star, map: I.mapic, badge: I.badgeic };
+export const FI = { colour: I.crayon, memory: I.bean, whack: I.donut, pattern: I.star, catch: I.basket, map: I.mapic, badge: I.badgeic };

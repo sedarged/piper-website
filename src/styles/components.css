@@ -173,47 +173,115 @@
 .fc-soon:hover{transform:none;box-shadow:0 8px 0 rgba(42,26,46,.08)}
 
 /* ─── mini-games ─── */
-.game-dialog{max-width:640px}
+/* ─── the Snackville studio mini-games ───────────────────────────────
+   Five games, each asking for something different (see data/printables.js).
+   The shared furniture — the scoreboard strip, the record banner, the
+   action row and the difficulty chips — is styled once here so a new
+   game doesn't have to reinvent it. */
+.game-dialog{max-width:660px}
 .game-body{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.game-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
+.game-best{display:inline-flex;align-items:center;gap:9px;padding:6px 14px;border-radius:100px;
+  background:rgba(42,26,46,.06);font-size:13px;color:var(--ink60)}
+.game-best__label{text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;font-weight:700}
+.game-best__value{font-weight:700;color:var(--plum);font-size:14.5px}
+.game-record{color:var(--straw);font-weight:700;font-size:15px;text-align:center;
+  animation:recordIn .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes recordIn{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:none}}
+.game-levels{display:flex;gap:8px;justify-content:center}
+.game-level{padding:7px 16px;border-radius:100px;font-family:var(--u);font-weight:700;font-size:13px;
+  background:rgba(42,26,46,.06);color:var(--ink60);transition:background .2s,color .2s,transform .2s}
+.game-level.on{background:var(--plum);color:var(--cream);transform:scale(1.04)}
 
+/* colouring */
 .coloring-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
-.coloring-palette{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.coloring-palette{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:400px}
 .swatch{width:44px;height:44px;border-radius:50%;border:3px solid rgba(42,26,46,.15);
-  transition:transform .18s,border-color .18s}
+  transition:transform .2s cubic-bezier(.3,1.6,.5,1),border-color .2s;flex:none}
 .swatch.on{transform:scale(1.18);border-color:var(--plum)}
-.coloring-canvas{position:relative;width:100%;max-width:320px}
-.coloring-svg{display:block;width:100%;height:auto}
-.coloring-svg *{transition:fill .15s}
+.coloring-canvas{position:relative;width:100%;max-width:340px}
+.coloring-svg{display:block;width:100%;height:auto;border-radius:14px;overflow:hidden}
+.coloring-svg *{transition:fill .18s}
 .coloring-hitareas{position:absolute;inset:0}
 .coloring-hit{position:absolute;background:transparent;border:none;padding:0;margin:0;cursor:pointer}
 .coloring-hit:focus-visible{outline:3px solid var(--plum);outline-offset:2px;z-index:1}
 .coloring-hint{color:var(--ink60);font-size:14px;text-align:center}
 
+/* memory */
 .memory-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 .memory-status{color:var(--ink60);font-size:14px}
-.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:340px}
-.memory-card{aspect-ratio:1;border-radius:14px;background:var(--plum);box-shadow:0 5px 0 rgba(42,26,46,.18);
-  display:flex;align-items:center;justify-content:center;transition:transform .18s;padding:8px}
-.memory-card:not(:disabled):hover{transform:translateY(-2px)}
-.memory-card.up{background:#fff;box-shadow:inset 0 0 0 3px rgba(42,26,46,.08)}
-.memory-card-face{width:100%;height:100%}
+.memory-grid{display:grid;gap:9px;width:100%;max-width:340px}
+.memory-grid--tricky{grid-template-columns:repeat(4,1fr)}
+.memory-grid--easy{grid-template-columns:repeat(4,1fr);max-width:280px}
+/* The card is the flip container; .memory-card-inner is what turns, with
+   a face on each side — so the flip is one continuous motion instead of
+   the front vanishing and the back appearing in its place. */
+.memory-card{aspect-ratio:1;border-radius:14px;perspective:640px;background:none;padding:0}
+.memory-card-inner{position:relative;display:block;width:100%;height:100%;
+  transition:transform .42s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.memory-card.up .memory-card-inner{transform:rotateY(180deg)}
+.memory-card-back,.memory-card-face{position:absolute;inset:0;border-radius:14px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;padding:11px}
+.memory-card-back{background:var(--plum);box-shadow:0 5px 0 rgba(42,26,46,.18);
+  background-image:radial-gradient(circle at 50% 50%,rgba(216,170,88,.32) 0 22%,transparent 23%)}
+.memory-card-face{background:#fff;box-shadow:inset 0 0 0 3px rgba(42,26,46,.08);transform:rotateY(180deg)}
+.memory-card:not(:disabled):hover .memory-card-inner{transform:translateY(-3px)}
+.memory-card.matched .memory-card-face{box-shadow:inset 0 0 0 3px rgba(111,156,126,.6);background:#F1FBF4}
+.memory-card-face svg{width:100%;height:100%}
 
-.whack-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
-.whack-status{color:var(--ink60);font-size:14px}
-.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:300px}
+/* whack-a-snack */
+.whack-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;
+  border-radius:16px;transition:box-shadow .25s}
+.whack-game.is-hit{box-shadow:0 0 0 4px rgba(111,156,126,.32)}
+.whack-game.is-bonus{box-shadow:0 0 0 5px rgba(216,170,88,.55)}
+.whack-game.is-miss{box-shadow:0 0 0 4px rgba(199,51,47,.42)}
+.whack-status{color:var(--ink60);font-size:14px;text-align:center;min-height:20px}
+.whack-timer{width:100%;max-width:300px;height:8px;border-radius:100px;background:rgba(42,26,46,.1);overflow:hidden}
+.whack-timer span{display:block;height:100%;border-radius:100px;background:var(--straw);transition:width 1s linear}
+.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:300px}
 .whack-cell{aspect-ratio:1;border-radius:16px;border:2px solid rgba(42,26,46,.12);background:rgba(42,26,46,.06);
-  display:flex;align-items:center;justify-content:center;transition:transform .12s,background .12s,border-color .12s;padding:10px}
+  padding:11px;transition:transform .16s cubic-bezier(.3,1.7,.5,1),background .16s,border-color .16s}
 .whack-cell.up{border-color:transparent;background:#FFE3C0;transform:scale(1.06)}
-.whack-icon{width:100%;height:100%}
+.whack-cell.up.is-chilli{background:#FFD7D2}
+.whack-icon{width:100%;height:100%;display:block;animation:whackPop .22s cubic-bezier(.3,1.8,.5,1)}
+@keyframes whackPop{0%{transform:scale(.3) translateY(14px)}100%{transform:none}}
 
+/* piper's pattern */
 .pattern-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
-.pattern-status{color:var(--ink60);font-size:14px;min-height:20px}
-.pattern-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:300px}
+.pattern-status{color:var(--ink60);font-size:14px;min-height:20px;text-align:center}
+.pattern-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:300px}
 .pattern-tile{aspect-ratio:1;border-radius:16px;background:rgba(42,26,46,.06);display:flex;
-  align-items:center;justify-content:center;padding:14px;transition:transform .12s,background .12s,box-shadow .12s}
+  align-items:center;justify-content:center;padding:13px;transition:transform .16s,background .16s,box-shadow .16s}
 .pattern-tile:not(:disabled):hover{transform:translateY(-2px)}
 .pattern-tile:disabled{cursor:default}
 .pattern-tile.lit{background:#fff;transform:scale(1.08);box-shadow:0 0 0 3px rgba(155,107,255,.35)}
+.pattern-tile.wrong{background:#FFE2DE;box-shadow:0 0 0 3px rgba(199,51,47,.5);animation:tileWrong .4s ease}
+@keyframes tileWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.pattern-progress{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:280px}
+.pattern-pip{width:9px;height:9px;border-radius:50%;background:rgba(42,26,46,.16);transition:background .2s,transform .2s}
+.pattern-pip.on{background:var(--straw);transform:scale(1.25)}
+
+/* berry catch */
+.catch-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.catch-status{color:var(--ink60);font-size:14px;text-align:center;min-height:20px}
+.catch-area{position:relative;width:100%;max-width:340px;aspect-ratio:3/4;border-radius:18px;overflow:hidden;
+  background:linear-gradient(180deg,#DCEEFB,#F6E9D2 78%,#E3D2B4);touch-action:none;cursor:grab;
+  box-shadow:inset 0 0 0 2px rgba(42,26,46,.1)}
+.catch-drop{position:absolute;width:30px;height:30px;margin-left:-15px;pointer-events:none;
+  animation:catchSpin 1.8s linear infinite}
+.catch-drop.is-still{animation:none}
+@keyframes catchSpin{to{transform:rotate(360deg)}}
+.catch-basket{position:absolute;bottom:6%;width:22%;margin-left:-11%;pointer-events:none;
+  filter:drop-shadow(0 4px 6px rgba(42,26,46,.28))}
+.catch-controls{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap}
+.catch-hint{color:var(--ink40);font-size:13px}
+
+@media (prefers-reduced-motion:reduce){
+  .memory-card-inner,.whack-icon,.game-record,.catch-drop{animation:none;transition:none}
+  .memory-card.up .memory-card-inner{transform:none}
+  .memory-card-back{display:none}
+  .memory-card-face{transform:none}
+}
 
 /* ─── explorer ring ─── */
 .ring{position:fixed;left:14px;bottom:14px;z-index:340;background:rgba(255,246,233,.94);
@@ -244,111 +312,11 @@
   color:var(--cream);font-size:12px;display:flex;align-items:center;justify-content:center;pointer-events:auto}
 
 /* ─── fx ─── */
-.shaker{animation:shk .65s cubic-bezier(.36,.07,.19,.97)}
-@keyframes shk{10%,90%{transform:translate3d(-3px,0,0)}20%,80%{transform:translate3d(5px,0,0)}
-  30%,50%,70%{transform:translate3d(-9px,0,0)}40%,60%{transform:translate3d(9px,0,0)}}
-.wobble{animation:wbl .6s ease-in-out}
-@keyframes wbl{0%,100%{transform:rotate(0)}25%{transform:rotate(-1.1deg)}50%{transform:rotate(0)}75%{transform:rotate(1.1deg)}}
-.bump{animation:bnc .5s ease-in-out}
-@keyframes bnc{0%,100%{transform:scale(1)}30%{transform:scale(1.035)}55%{transform:scale(.985)}80%{transform:scale(1.01)}}
-.thud{animation:thd .4s ease-out}
-@keyframes thd{0%{transform:translateY(0)}25%{transform:translateY(7px)}55%{transform:translateY(-2px)}100%{transform:translateY(0)}}
-
-/* map "wow" particles — one shared base, one animation per `kind` (see
-   WOW_FX in App.jsx and FxLayers.jsx) so every location's effect feels
-   different without needing its own state/render logic, while every
-   *location* still gets its own combination of kind + colour + motion. */
-.wow-fx{position:fixed;top:0;z-index:420;width:18px;pointer-events:none;
-  background-size:contain;background-repeat:no-repeat;background-position:center}
-
-/* falling */
-.wow-chocolate{width:36px;height:36px;background-image:url(/images/fx/chocolate.webp);
-  animation:fallDrop 1.9s cubic-bezier(.3,.1,.4,1) forwards}
-.wow-berry{width:26px;height:26px;background-image:url(/images/fx/berry.webp);
-  animation:berryFall 1.8s cubic-bezier(.3,.1,.4,1) forwards}
-.wow-donut{width:30px;height:30px;background-image:url(/images/fx/donut.webp);
-  animation:donutFall 2.1s ease-in forwards}
-.wow-brick{width:26px;height:29px;background-image:url(/images/fx/brick.webp);
-  animation:fallDrop 1.5s ease-in forwards}
-@keyframes fallDrop{0%{transform:translateY(0) scale(.7);opacity:0}12%{opacity:1;transform:translateY(6px) scale(1)}
-  100%{transform:translateY(var(--dist)) scale(.85);opacity:0}}
-@keyframes berryFall{0%{transform:translate(0,0);opacity:1}100%{transform:translate(14px,var(--dist));opacity:0}}
-@keyframes donutFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(var(--dist)) rotate(340deg);opacity:0}}
-
-/* bouncing */
-.wow-jellybean{width:24px;height:24px;animation:beanBounce 1.9s cubic-bezier(.3,.1,.4,1) forwards}
-.wow-jellybean:nth-child(3n){background-image:url(/images/fx/jellybean-2.webp)}
-.wow-jellybean:nth-child(3n+1){background-image:url(/images/fx/jellybean-1.webp)}
-.wow-jellybean:nth-child(3n+2){background-image:url(/images/fx/jellybean-3.webp)}
-@keyframes beanBounce{0%{transform:translateY(0);opacity:1}30%{transform:translateY(var(--dist))}
-  45%{transform:translateY(calc(var(--dist)*.7))}60%{transform:translateY(var(--dist));opacity:1}
-  75%{transform:translateY(calc(var(--dist)*.85))}100%{transform:translateY(var(--dist));opacity:0}}
-
-/* rising */
-.wow-frost{top:auto;bottom:0;width:26px;height:26px;background-image:url(/images/fx/frost.webp);
-  animation:frostRise 2.1s ease-out forwards}
-.wow-fountain{top:auto;bottom:0;width:26px;height:26px;background-image:url(/images/fx/fountain.webp);
-  animation:frostRise 1.7s ease-out forwards}
-.wow-heart{top:auto;bottom:0;width:24px;height:24px;background-image:url(/images/fx/heart.webp);
-  animation:frostRise 2s ease-out forwards}
-.wow-cloud{top:auto;bottom:0;width:34px;height:34px;background-image:url(/images/fx/cloud.webp);
-  animation:frostRise 2.1s ease-out forwards}
-@keyframes frostRise{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(calc(var(--dist) * -1));opacity:0}}
-
-/* drifting sideways, mid-screen */
-.wow-aroma{top:38%;width:32px;height:32px;background-image:url(/images/fx/aroma.webp);
-  opacity:.9;animation:driftX 2.3s ease-in-out forwards}
-.wow-boat{top:55%;width:34px;height:34px;background-image:url(/images/fx/boat.webp);
-  animation:driftX 2.9s linear forwards}
-@keyframes driftX{0%{transform:translateX(-60px);opacity:0}15%{opacity:1}85%{opacity:1}
-  100%{transform:translateX(var(--dist));opacity:0}}
-
-/* a staggered ground trail, left to right along the bottom */
-.wow-trailstar{top:auto;bottom:5%;width:22px;height:22px;background-image:url(/images/fx/trailstar.webp);
-  animation:trailFade 1.6s ease-out forwards}
-.wow-footprint{top:auto;bottom:4%;width:20px;height:20px;background-image:url(/images/fx/footprint.webp);
-  opacity:.9;animation:trailFade 1.8s ease-out forwards}
-@keyframes trailFade{0%{opacity:0;transform:translateY(6px) scale(.6)}30%{opacity:1;transform:translateY(0) scale(1)}
-  75%{opacity:1}100%{opacity:0}}
-
-/* a radial spark shower from a central point */
-.wow-spark{top:42%;width:22px;height:22px;background-image:url(/images/fx/spark.webp);
-  animation:sparkOut .7s ease-out forwards}
-@keyframes sparkOut{0%{transform:translate(0,0) scale(1);opacity:1}
-  100%{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
-
-/* an expanding, fading smoke puff */
-.wow-smoke{top:20%;width:44px;height:44px;background-image:url(/images/fx/smoke.webp);
-  animation:smokePuff 2s ease-out forwards}
-@keyframes smokePuff{0%{transform:translateY(0) scale(.35);opacity:.85}100%{transform:translateY(-70px) scale(2);opacity:0}}
-
-/* scattered flicker, used with the "dark" flash vignette */
-.wow-glint{width:20px;height:20px;background-image:url(/images/fx/glint.webp);
-  animation:glintFlicker 1.1s ease-in-out forwards}
-@keyframes glintFlicker{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.1)}
-  65%{opacity:.35}100%{opacity:0;transform:scale(.7)}}
-
-/* an alarm-style expanding ring, centred on screen */
-.wow-ring{position:fixed;left:50%;top:45%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
-  border:4px solid var(--ring-color,#6F9C7E);pointer-events:none;z-index:415;animation:ringExpand 1.1s ease-out forwards}
-@keyframes ringExpand{0%{transform:scale(0);opacity:.9}100%{transform:scale(46);opacity:0}}
-
-/* a fast motion-blur speed-streak crossing the screen, illustrated per location */
-.wow-streak{position:fixed;top:0;left:50%;width:min(92vw,760px);height:min(61vw,507px);margin-left:calc(min(92vw,760px) / -2);
-  pointer-events:none;z-index:415;background-size:contain;background-repeat:no-repeat;background-position:center;
-  animation:streakAcross .7s ease-in forwards}
-.wow-streak-croissant{background-image:url(/images/fx/streak-croissant.webp)}
-.wow-streak-bridge{background-image:url(/images/fx/streak-bridge.webp)}
-@keyframes streakAcross{0%{transform:translateX(-60vw) scale(.9);opacity:0}15%{opacity:1}80%{opacity:1}
-  100%{transform:translateX(60vw) scale(1.05);opacity:0}}
-
-.wow-flash{position:fixed;inset:0;z-index:410;pointer-events:none;animation:wowFlash .32s ease-out forwards}
-.wow-flash-gold{background:radial-gradient(circle,rgba(255,247,232,.9),rgba(216,170,88,.35))}
-.wow-flash-green{background:radial-gradient(circle,rgba(230,255,240,.85),rgba(111,156,126,.4))}
-.wow-flash-dark{background:radial-gradient(circle,transparent 15%,rgba(3,9,23,.82) 100%);
-  animation:wowFlashDark .9s ease-in-out forwards}
-@keyframes wowFlash{0%{opacity:1}100%{opacity:0}}
-@keyframes wowFlashDark{0%{opacity:0}30%{opacity:1}70%{opacity:1}100%{opacity:0}}
+/* The Snackville map's twenty signature effects — the screen reactions,
+   the per-location particle trajectories and the colour washes — now
+   live in their own sheet, styles/wow.css. What stays here is the FX
+   that isn't map-specific: the cursor/treasure sparkle, confetti, the
+   treasure pickups, the toast and the badge celebration. */
 .spark{position:fixed;pointer-events:none;z-index:430;animation:spO .85s ease-out forwards}
 @keyframes spO{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.2) rotate(140deg) translateY(18px)}}
 .conf{position:fixed;top:-26px;z-index:820;pointer-events:none;animation:fall linear forwards}
@@ -429,4 +397,22 @@
   body *{visibility:hidden}
   .mcard,.mcard *{visibility:visible}
   .mcard{position:absolute;left:0;top:0;width:100%;box-shadow:none}
+}
+
+/* ─── sound toggle ───────────────────────────────────────────────────
+   One control for every sound on the site (see lib/sound.js). Docked
+   bottom-right inside Snackville, above the Explorer ring; inline in
+   the top bar on the lighter world pages, where there's no ring. */
+.sound-toggle{display:inline-flex;align-items:center;justify-content:center;
+  width:46px;height:46px;border-radius:50%;border:1px solid var(--gold-hairline,rgba(216,170,88,.46));
+  background:rgba(3,9,23,.72);color:var(--gold-bright,#F3D08A);
+  transition:border-color .2s,color .2s,transform .2s,background .2s}
+.sound-toggle:hover{border-color:var(--gold-bright,#F3D08A);transform:scale(1.06)}
+.sound-toggle.is-muted{color:rgba(247,236,215,.5);background:rgba(3,9,23,.85)}
+.sound-toggle__icon{width:22px;height:22px;display:block}
+.sound-toggle--snackville{position:fixed;right:18px;bottom:96px;z-index:640;
+  box-shadow:0 10px 30px rgba(3,9,23,.5)}
+.sound-toggle--bar{flex:none}
+@media (max-width:640px){
+  .sound-toggle--snackville{bottom:88px;right:14px;width:42px;height:42px}
 }
