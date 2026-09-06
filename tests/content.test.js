@@ -102,7 +102,9 @@ test("each storyworld exposes its approved character cast", () => {
   for (const characters of [SNACKVILLE_CHARACTERS, CRUMBHOLLOW_CAST.people, SANDWICH_CAST.people]) {
     for (const person of characters) {
       assert.match(person.img, /^\/images\/characters\/.+\.webp$/);
-      assert.ok(existsSync(new URL(`../public${person.img}`, import.meta.url)), `${person.name} portrait exists`);
+      const portraitUrl = new URL(`../public${person.img}`, import.meta.url);
+      assert.ok(existsSync(portraitUrl), `${person.name} portrait exists`);
+      assert.ok(readFileSync(portraitUrl).includes(Buffer.from("ALPH")), `${person.name} portrait has real alpha transparency`);
       assert.ok(person.line.length > 30, `${person.name} has card copy`);
       assert.ok(person.bio.length > 60, `${person.name} has a full profile`);
       assert.ok(person.power.length > 25, `${person.name} has a power`);
@@ -141,6 +143,16 @@ test("map dialogs escape page stacking contexts", () => {
     assert.match(source, /createPortal/);
     assert.match(source, /document\.body/);
   }
+});
+
+test("map hotspots use the numbers printed in the original artwork", () => {
+  for (const file of ["MapHub.jsx", "WorldMap.jsx"]) {
+    const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
+    assert.doesNotMatch(source, /map-hotspot__marker/, `${file} does not paint duplicate location numbers`);
+    assert.doesNotMatch(source, /map-hotspot__leader/, `${file} does not draw extra marker leaders`);
+  }
+  const worldMap = readFileSync(new URL("../src/components/WorldMap.jsx", import.meta.url), "utf8");
+  assert.doesNotMatch(worldMap, /map-label-correction/, "Crumbhollow keeps the original illustration free of pasted label panels");
 });
 
 test("every map location has a signature effect, and no two are alike", () => {

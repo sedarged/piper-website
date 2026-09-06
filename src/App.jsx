@@ -404,7 +404,7 @@ function SnackvilleExperience({ onBackHome }) {
   return (
     <div ref={rootRef} className="snackville-experience" data-night="0">
       <a className="skip-link" href="#story">Skip to the story</a>
-      <LivingWorldBackdrop src="/images/worlds/snackville-cover.webp" variant="snackville" />
+      <LivingWorldBackdrop src="/images/worlds/snackville-environment.webp" variant="snackville" />
       {/* ═══ SKY — opacity written directly via ref in the scroll rAF loop,
           never through React state, so scrolling never re-renders the tree.
           See hooks/useScrollEngine.js. ═══ */}
@@ -582,11 +582,13 @@ export default function App() {
   if (view === "sandwich") {
     return (
       <WorldExperience
+        key="sandwich"
         worldClass="world-experience--sandwich"
         brandLabel="Wallace-Siedlarz Productions"
         title="Sandwich Kingdom"
         tagline="The floating sandwich-castle world above the clouds."
         coverSrc="/images/worlds/sandwich-cover.webp"
+        backgroundSrc="/images/worlds/sandwich-environment.webp"
         coverAlt="Sandwich Kingdom cover art — a floating sandwich castle above the clouds"
         story={{
           eyebrow: "Inside book six",
@@ -617,11 +619,13 @@ export default function App() {
   if (view === "crumbhollow") {
     return (
       <WorldExperience
+        key="crumbhollow"
         worldClass="world-experience--crumbhollow"
         brandLabel="Wallace-Siedlarz Productions"
         title="Crumbhollow"
         tagline="The hidden Pie-Rat village beneath Snackville."
         coverSrc="/images/worlds/crumbhollow-cover.webp"
+        backgroundSrc="/images/worlds/crumbhollow-environment.webp"
         coverAlt="Crumbhollow cover art — the hidden Pie-Rat village beneath Snackville"
         story={{
           eyebrow: "Beneath Snackville",

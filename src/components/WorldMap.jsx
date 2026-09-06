@@ -172,37 +172,17 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
             style={{ aspectRatio: `${mapWidth} / ${mapHeight}`, width: fitMap ? "100%" : `${Number(mapWidth) * mapZoom}px` }}
           >
             <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
-            {places.filter((place) => place.labelCorrection).map((place) => (
-              <span
-                key={`${place.id}-label-correction`}
-                className="map-label-correction"
-                style={{
-                  "--label-x": `${place.labelCorrection.x}%`,
-                  "--label-y": `${place.labelCorrection.y}%`,
-                  "--label-width": `${place.labelCorrection.width}%`,
-                  "--label-height": `${place.labelCorrection.height}%`,
-                }}
-                aria-hidden="true"
-              >
-                {place.labelCorrection.lines.map((line) => <span key={line}>{line}</span>)}
-              </span>
-            ))}
             {places.map((place) => (
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visited.has(place.id) ? "seen" : ""}`}
                 style={{
                   "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink,
-                  "--marker-shift": place.x > 82 ? "-19px" : "19px",
-                  "--marker-fit-shift": place.x > 82 ? "-12px" : "12px",
-                  "--marker-angle": place.x > 82 ? "-135deg" : "-45deg",
                 }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
               >
-                <span className="map-hotspot__leader" aria-hidden="true" />
-                <span className="map-hotspot__marker" aria-hidden="true">{place.n}</span>
                 <span className="sr-only">Open {place.name}</span>
               </button>
             ))}

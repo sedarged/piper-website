@@ -42,27 +42,53 @@
   height: 110%;
   object-fit: cover;
   object-position: center;
-  filter: saturate(1.05) brightness(.48) contrast(1.04);
-  animation: livingWorldDrift 28s ease-in-out infinite alternate;
+  filter: saturate(1.04) brightness(.56) contrast(1.04);
+  animation: livingWorldDrift 42s ease-in-out infinite alternate;
 }
-.living-world__veil { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,8,18,.1), rgba(3,8,18,.66) 58%, rgba(3,8,18,.9)); }
-.living-world__glow,
-.living-world__drift { position: absolute; border-radius: 50%; filter: blur(22px); opacity: .38; pointer-events: none; }
-.living-world__glow { width: 30vw; height: 30vw; min-width: 240px; min-height: 240px; animation: livingGlow 9s ease-in-out infinite alternate; }
-.living-world__glow--one { left: 8%; top: 14%; }
-.living-world__glow--two { right: 4%; top: 48%; animation-delay: -4s; }
-.living-world__drift { width: 42vw; height: 8vw; min-height: 80px; filter: blur(30px); animation: livingDrift 18s linear infinite alternate; }
-.living-world__drift--one { left: -8%; top: 34%; }
-.living-world__drift--two { right: -10%; top: 68%; animation-delay: -8s; }
-.living-world--snackville .living-world__glow { background: rgba(255,113,143,.28); }
-.living-world--snackville .living-world__drift { background: rgba(255,221,167,.12); }
-.living-world--sandwich .living-world__glow { background: rgba(193,143,255,.28); }
-.living-world--sandwich .living-world__drift { background: rgba(255,242,218,.16); }
-.living-world--crumbhollow .living-world__glow { background: rgba(255,161,61,.26); }
-.living-world--crumbhollow .living-world__drift { height: 3px; min-height: 3px; border-radius: 0; background: rgba(63,211,205,.3); filter: blur(8px); }
-@keyframes livingWorldDrift { from { transform: scale(1.01) translate3d(-1.2%, -.5%, 0); } to { transform: scale(1.08) translate3d(1.2%, 1%, 0); } }
-@keyframes livingGlow { from { opacity: .22; transform: scale(.86); } to { opacity: .5; transform: scale(1.12); } }
-@keyframes livingDrift { from { transform: translate3d(-4%, 0, 0); opacity: .14; } to { transform: translate3d(6%, 0, 0); opacity: .42; } }
+.living-world__veil { position: absolute; inset: 0; z-index: 3; background: linear-gradient(180deg, rgba(3,8,18,.12), rgba(3,8,18,.57) 54%, rgba(3,8,18,.88)); }
+.living-world__atmosphere {
+  position: absolute;
+  inset: -12%;
+  z-index: 4;
+  opacity: .2;
+  background: linear-gradient(108deg, transparent 28%, rgba(255,244,214,.2) 46%, transparent 64%);
+  mix-blend-mode: screen;
+  animation: livingLight 24s ease-in-out infinite alternate;
+}
+.living-world__actors { position: absolute; inset: 0; z-index: 2; overflow: hidden; }
+.living-world__actor {
+  position: absolute;
+  display: block;
+  width: clamp(92px, 10vw, 170px);
+  height: auto;
+  opacity: 0;
+  filter: saturate(.92) brightness(.72) drop-shadow(0 12px 18px rgba(0,0,0,.48));
+  will-change: transform, opacity;
+}
+.living-world__actor--fly-left { top: 16%; right: -22%; width: clamp(130px,15vw,240px); animation: worldFlyLeft 34s linear infinite; animation-delay: -6s; }
+.living-world__actor--fly-left-late { top: 34%; right: -22%; width: clamp(112px,12vw,200px); animation: worldFlyLeft 41s linear infinite; animation-delay: -25s; }
+.living-world__actor--walk-right { bottom: 5%; left: -16%; animation: worldWalkRight 37s linear infinite; animation-delay: -9s; }
+.living-world__actor--walk-left { bottom: 7%; right: -16%; animation: worldWalkLeft 43s linear infinite; animation-delay: -28s; }
+@keyframes livingWorldDrift { from { transform: scale(1.015) translate3d(-.5%, -.25%, 0); } to { transform: scale(1.045) translate3d(.65%, .45%, 0); } }
+@keyframes livingLight { from { transform: translate3d(-8%,0,0); opacity: .1; } to { transform: translate3d(8%,0,0); opacity: .24; } }
+@keyframes worldFlyLeft {
+  0%,12% { transform: translate3d(0,0,0) rotate(-2deg); opacity: 0; }
+  16% { opacity: .62; }
+  40% { opacity: .62; }
+  46%,100% { transform: translate3d(-135vw,-9vh,0) rotate(3deg); opacity: 0; }
+}
+@keyframes worldWalkRight {
+  0%,15% { transform: translate3d(0,0,0); opacity: 0; }
+  19% { opacity: .56; }
+  45% { opacity: .56; }
+  51%,100% { transform: translate3d(132vw,0,0); opacity: 0; }
+}
+@keyframes worldWalkLeft {
+  0%,18% { transform: translate3d(0,0,0); opacity: 0; }
+  22% { opacity: .54; }
+  48% { opacity: .54; }
+  54%,100% { transform: translate3d(-132vw,0,0); opacity: 0; }
+}
 
 .snackville-experience { position: relative; isolation: isolate; }
 .snackville-experience .living-world { z-index: 0; opacity: .28; }
@@ -295,8 +321,12 @@
     height: min(100svh, 900px);
   }
   .living-world > img,
-  .living-world__glow,
-  .living-world__drift { animation: none; }
+  .living-world__atmosphere { animation: none; }
+  .living-world__actor { width: 82px; filter: saturate(.9) brightness(.66) drop-shadow(0 8px 12px rgba(0,0,0,.45)); }
+  .living-world__actor--secondary { display: none; }
+  .living-world__actor--fly-left { top: 24%; width: 118px; animation-duration: 38s; }
+  .living-world__actor--walk-left,
+  .living-world__actor--walk-right { bottom: 4%; animation-duration: 42s; }
   .world-experience__bar {
     position: relative;
     flex-wrap: wrap;
@@ -378,8 +408,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .living-world > img,
-  .living-world__glow,
-  .living-world__drift { animation: none; }
+  .living-world__atmosphere,
+  .living-world__actor { animation: none; }
+  .living-world__actor { display: none; }
 }
 
 @media (max-width: 390px) {

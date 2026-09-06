@@ -19,7 +19,7 @@ import { AMAZON_URL } from "../config.js";
  * App.jsx — see the note in styles/wow.css for why the reaction is an
  * attribute on a root rather than a transform on a wrapper.
  */
-export function WorldExperience({ worldClass, brandLabel, title, tagline, coverSrc, coverAlt, story, mapEyebrow, mapHeading, mapLead, places, mapSrc, mapAlt, mapWidth, mapHeight, fx, characterFeatures = [], book, onBackHome }) {
+export function WorldExperience({ worldClass, brandLabel, title, tagline, coverSrc, backgroundSrc, coverAlt, story, mapEyebrow, mapHeading, mapLead, places, mapSrc, mapAlt, mapWidth, mapHeight, fx, characterFeatures = [], book, onBackHome }) {
   const rootRef = useRef(null);
   const reactionTimer = useRef(null);
 
@@ -35,7 +35,7 @@ export function WorldExperience({ worldClass, brandLabel, title, tagline, coverS
 
   return (
     <div ref={rootRef} className={`world-experience ${worldClass}`}>
-      <LivingWorldBackdrop src={coverSrc} variant={worldClass.includes("crumbhollow") ? "crumbhollow" : "sandwich"} />
+      <LivingWorldBackdrop src={backgroundSrc || coverSrc} variant={worldClass.includes("crumbhollow") ? "crumbhollow" : "sandwich"} />
       <a className="skip-link" href="#world-map" onClick={(event) => jumpTo(event, "world-map")}>Skip to the map</a>
       <header className="world-experience__bar">
         <button className="world-experience__brand" onClick={onBackHome}>

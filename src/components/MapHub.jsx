@@ -106,16 +106,11 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visitedPlaceIds.has(place.id) ? "seen" : ""} ${place.wow ? "wow-spot" : ""}`}
                 style={{
                   "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink,
-                  "--marker-shift": place.x > 82 ? "-19px" : "19px",
-                  "--marker-fit-shift": place.x > 82 ? "-12px" : "12px",
-                  "--marker-angle": place.x > 82 ? "-135deg" : "-45deg",
                 }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
               >
-                <span className="map-hotspot__leader" aria-hidden="true" />
-                <span className="map-hotspot__marker" aria-hidden="true">{place.n}</span>
                 <span className="sr-only">Open {place.name}</span>
               </button>
             ))}
