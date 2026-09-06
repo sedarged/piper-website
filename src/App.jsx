@@ -29,7 +29,6 @@ import { Quote } from "./components/Quote.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { Treasure } from "./components/Treasure.jsx";
 import { Divider } from "./components/Divider.jsx";
-import { Land } from "./components/Landscape.jsx";
 import { FxLayers } from "./components/FxLayers.jsx";
 import { ExplorerRing } from "./components/ExplorerRing.jsx";
 import { PiperGuide } from "./components/PiperGuide.jsx";
@@ -425,18 +424,6 @@ function SnackvilleExperience({ onBackHome }) {
         aria-hidden="true"
         style={{ top: "12vh", background: "radial-gradient(circle at 38% 34%, #FFF3B0, #FFD447)", boxShadow: "0 0 80px rgba(255,200,60,.65)" }}
       />
-
-      {/* ═══ LANDSCAPE ═══ */}
-      {[Land.clouds, Land.sugar, Land.mountain, Land.town, Land.grass].map((layer, i) => (
-        <div
-          key={i}
-          className={`land land-${i}`}
-          ref={(el) => { landRefs.current[i] = el; }}
-          style={i === 0 ? { top: "7vh", bottom: "auto", opacity: 0.85 } : { bottom: 0, top: "auto", opacity: 1 }}
-        >
-          {layer}
-        </div>
-      ))}
 
       <div className="site-shell">
       <Nav active={active} onNavigate={setActive} onHome={onBackHome} />
