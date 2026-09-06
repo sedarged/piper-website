@@ -13,17 +13,19 @@ markers, leader lines, labels or replacement map art.
 | --- | --- | --- | --- |
 | AQ-01 | Sandwich Kingdom portraits looked as though they were pasted onto pale reference cards. | Replaced `.character-atlas__cards .cc-f { background:#fff8ea }` with a restrained translucent world-light gradient. | Desktop and iPhone character cards render against the world background; regression test added. |
 | AQ-02 | Sandwich Kitty’s published Snackville portrait showed cat ears, which conflicts with the character canon. | Added a dedicated no-ear, alpha-transparent canonical portrait and pointed `ASSET.sandwich` at it; original source remains untouched. | iPhone 390 profile drawer visually checked: the bread/sandwich hood has a continuous rounded silhouette and no ears. |
+| AQ-03 | Custard Queen was incorrectly described as a benevolent “Royal Protector”, contradicting the Custard Alien Invasion story. | Reframed her card and profile as the mischievous antagonist; preserved child-safe language and the existing approved portrait. | Regression test asserts the antagonist copy and excludes the former protector language. |
+| AQ-04 | The official Snackville environment was still overlaid with legacy generic SVG scenery. | Removed the mounted SVG landscape layers; the supplied Snackville environment remains the sole scenic artwork, with its established subtle actors. | Regression test rejects any mounted legacy landscape layer. |
 
 ## Verified interaction inventory
 
 | Surface | Desktop | iPhone 375 | iPhone 390 |
 | --- | --- | --- | --- |
-| Home, worlds, primary navigation and footer | Pass | Pass | Pass |
-| Snackville: 8 cast profiles, quiz member card, 20 map hotspots | Pass | — | Map/dialog pass |
-| Snackville Studio: Cottage, Memory, Whack-a-Snack, Pattern, Berry Catch | Pass: launch, one playable control and close each | — | — |
-| Sandwich Kingdom: 10 profiles and 14 map hotspots | Pass | Hero/characters previously retested; no page overflow | — |
-| Crumbhollow: 5 profiles and 12 map hotspots | Pass | Map opens at 75%; dialog overlays navigation; no page overflow | — |
-| Mobile navigation and overlays | — | Menu/dialog pass | Menu, profile drawer and map dialog pass |
+| Home, worlds, primary navigation and footer | World cards, navigation, book call-to-action and footer return pass | Menu and world chooser pass; no page overflow | Menu and world chooser pass; no page overflow |
+| Snackville: 8 cast profiles, quiz member card, 20 map hotspots | 8/8 profile cycle, completed quiz card and 20/20 field notes pass; no overflow | Cottage field note and game overlays pass; no page overflow | 8 cast cards, 20 hotspots, Piper profile and map dialog pass; no page overflow |
+| Snackville Studio: Cottage, Memory, Whack-a-Snack, Pattern, Berry Catch | All 5 launch, expose their playable starting state and close cleanly | All 5 launch, expose their playable starting state and close cleanly | Overlay interaction and closure pass |
+| Sandwich Kingdom: 10 profiles and 14 map hotspots | 10/10 profile cycle and 14/14 field notes pass; official map and internal-only pan retained | 10 cards, map pan and Cheese Road field note pass; no page overflow | 10 cards, Crumbly's Cave dialog and official background pass; no page overflow |
+| Crumbhollow: 5 profiles and 12 map hotspots | 5/5 profile cycle and 12/12 field notes pass; official map and internal-only pan retained | 12 hotspots, Shiving Basket Market dialog and internal-only map pan pass; no page overflow | 5 cards, 12 hotspots, Woofer profile and Discovery Ledge dialog pass; no page overflow |
+| Mobile navigation and overlays | Character drawers, map dialogs and game overlays close without covering navigation | Menu, Snackville games and map dialog pass | Menu, profile drawer and map dialog pass |
 
 ### Hotspot procedure
 
@@ -34,7 +36,7 @@ caused by clicking through a dialog during its exit transition.
 
 ## Automated final gate
 
-- `npm run check`: pass (lint, 23 tests, production build).
+- `npm run check`: pass (lint, 25 tests, production build).
 - `git diff --check`: pass.
 - `world character cut-outs are not placed on copied-paper rectangles`: pass.
 - Character WEBPs: verified to carry an alpha channel, including the new
@@ -42,5 +44,7 @@ caused by clicking through a dialog during its exit transition.
 
 ## Release decision
 
-Ready for a review PR after the temporary mobile QA wrapper is removed and the
-same automated gate is repeated. No deployment or merge is part of this audit.
+Ready for the final automated gate and source-control review. The browser
+regression was completed before commit: desktop plus iPhone 375 and 390 were
+checked across the three worlds, menus, maps, dialogs, profiles, books, quiz,
+games and footers.
