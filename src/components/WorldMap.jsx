@@ -41,6 +41,14 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
   const [showCertificate, setShowCertificate] = useState(false);
   const dialogRef = useRef(null);
   const certRef = useRef(null);
+  const mapScrollRef = useRef(null);
+  const [mapZoom, setMapZoom] = useState(() => (
+    typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches ? .75 : 1
+  ));
+  // Keep printed names readable on a phone. Fit-to-screen compressed a
+  // 1536px illustrated map into roughly 330px and defeated the point of
+  // placing the invisible touch targets on the map's own numbers.
+  const [fitMap, setFitMap] = useState(false);
   const reduceMotion = useReducedMotion();
   // Whether every location has been visited, and the certificate for it
   // hasn't been shown yet — checked (and, once true, immediately
@@ -108,6 +116,19 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
     pick(pool[Math.floor(Math.random() * pool.length)]);
   };
 
+  const changeZoom = (nextZoom) => {
+    const scroller = mapScrollRef.current;
+    const centre = scroller && scroller.scrollWidth
+      ? (scroller.scrollLeft + scroller.clientWidth / 2) / scroller.scrollWidth
+      : .5;
+    setFitMap(false);
+    setMapZoom(nextZoom);
+    requestAnimationFrame(() => {
+      if (!scroller) return;
+      scroller.scrollLeft = centre * scroller.scrollWidth - scroller.clientWidth / 2;
+    });
+  };
+
   useDialogTrap(dialogRef, closePlace, openPlace);
   useDialogTrap(certRef, closeCertificate, showCertificate);
 
@@ -131,34 +152,36 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
       </Reveal>
 
       <Reveal className="map-atlas panel world-map-atlas">
-        <div className="map-scroll world-map-scroll" aria-label={`${worldTitle} illustrated map`}>
+        <div className="map-viewbar">
+          <div>
+            <span className="eyebrow">Map view</span>
+            <strong>{fitMap ? "Fit to screen" : `${Math.round(mapZoom * 100)}% detail`}</strong>
+          </div>
+          <div className="map-zoom-controls" role="group" aria-label="Map zoom controls">
+            <button type="button" onClick={() => changeZoom(Math.max(.75, mapZoom - .25))} disabled={!fitMap && mapZoom <= .75} aria-label="Zoom map out">−</button>
+            <button type="button" className={fitMap ? "on" : ""} onClick={() => setFitMap((value) => !value)}>{fitMap ? "Actual size" : "Fit map"}</button>
+            <button type="button" onClick={() => changeZoom(Math.min(1.5, mapZoom + .25))} disabled={!fitMap && mapZoom >= 1.5} aria-label="Zoom map in">+</button>
+          </div>
+        </div>
+
+        <div ref={mapScrollRef} className="map-scroll world-map-scroll" aria-label={`${worldTitle} illustrated map`}>
           {/* .map-f's base CSS hardcodes aspect-ratio:16/9 for Snackville's own
               1536x864 map — a world with a differently-shaped map (Sandwich Kingdom's
               is 1536x1024, i.e. 3:2) needs its own ratio here, or object-fit:
               cover crops the image and every hotspot's x/y% stops lining up
               with the printed numbers underneath it. */}
-          <div className="map-f world-map-frame" style={{ aspectRatio: `${mapWidth} / ${mapHeight}` }}>
+          <div
+            className={`map-f world-map-frame ${fitMap ? "map-f--fit" : ""}`}
+            style={{ aspectRatio: `${mapWidth} / ${mapHeight}`, width: fitMap ? "100%" : `${Number(mapWidth) * mapZoom}px` }}
+          >
             <Img src={mapSrc} alt={mapAlt} fb="World map" width={mapWidth} height={mapHeight} />
-            {places.filter((place) => place.labelCorrection).map((place) => (
-              <span
-                key={`${place.id}-label-correction`}
-                className="map-label-correction"
-                style={{
-                  "--label-x": `${place.labelCorrection.x}%`,
-                  "--label-y": `${place.labelCorrection.y}%`,
-                  "--label-width": `${place.labelCorrection.width}%`,
-                  "--label-height": `${place.labelCorrection.height}%`,
-                }}
-                aria-hidden="true"
-              >
-                {place.labelCorrection.lines.map((line) => <span key={line}>{line}</span>)}
-              </span>
-            ))}
             {places.map((place) => (
               <button
                 key={place.id}
                 className={`map-hotspot ${selected.id === place.id ? "on" : ""} ${visited.has(place.id) ? "seen" : ""}`}
-                style={{ "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink }}
+                style={{
+                  "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink,
+                }}
                 onClick={() => pick(place)}
                 aria-label={`Location ${place.n}: ${place.name}`}
                 aria-haspopup="dialog"
@@ -169,7 +192,9 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
           </div>
         </div>
 
-        <p className="map-pan-hint world-map-fit-hint u">The whole map fits your screen. Tap a numbered place to explore it.</p>
+        <p className="map-pan-hint u">{fitMap
+          ? "Tap a numbered point to open its field note. Choose Actual size to read the illustrated labels closely."
+          : "Drag or swipe to travel across the enlarged map. Use Fit map whenever you want the complete view."}</p>
 
         <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
           <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>

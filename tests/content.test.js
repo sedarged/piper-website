@@ -15,6 +15,7 @@ import { PRINTABLES } from "../src/data/printables.js";
 import { floodFill } from "../src/lib/floodFill.js";
 import { ASSET } from "../src/config.js";
 import { CRUMBHOLLOW_CAST, SANDWICH_CAST } from "../src/data/worldCharacters.js";
+import { WORLD_FX } from "../src/data/worldFx.js";
 
 test("content identifiers remain unique", () => {
   for (const collection of [BOOKS, CAST, PLACES, TREASURES, SECTIONS]) {
@@ -102,7 +103,9 @@ test("each storyworld exposes its approved character cast", () => {
   for (const characters of [SNACKVILLE_CHARACTERS, CRUMBHOLLOW_CAST.people, SANDWICH_CAST.people]) {
     for (const person of characters) {
       assert.match(person.img, /^\/images\/characters\/.+\.webp$/);
-      assert.ok(existsSync(new URL(`../public${person.img}`, import.meta.url)), `${person.name} portrait exists`);
+      const portraitUrl = new URL(`../public${person.img}`, import.meta.url);
+      assert.ok(existsSync(portraitUrl), `${person.name} portrait exists`);
+      assert.ok(readFileSync(portraitUrl).includes(Buffer.from("ALPH")), `${person.name} portrait has real alpha transparency`);
       assert.ok(person.line.length > 30, `${person.name} has card copy`);
       assert.ok(person.bio.length > 60, `${person.name} has a full profile`);
       assert.ok(person.power.length > 25, `${person.name} has a power`);
@@ -127,6 +130,7 @@ test("Crumbhollow and Sandwich Kingdom use the complete world-page structure", (
     assert.match(source, new RegExp(`id=["']${section}["']`), `${section} is present`);
   }
   assert.match(source, /<WorldCharacters/);
+  assert.match(source, /world-experience__atmosphere/, "each world includes an illustrated living-world section");
   assert.match(source, /scrollIntoView/, "world navigation scrolls without replacing the world route hash");
   assert.match(
     source,
@@ -135,12 +139,30 @@ test("Crumbhollow and Sandwich Kingdom use the complete world-page structure", (
   );
 });
 
+test("every secondary-world map location gets its own screen reaction", () => {
+  for (const [name, places] of [["sandwich", SANDWICH_PLACES], ["crumbhollow", CRUMBHOLLOW_PLACES]]) {
+    const reactions = WORLD_FX[name].reactions;
+    assert.equal(reactions.length, places.length, `${name} has one reaction per location`);
+    assert.equal(new Set(reactions).size, places.length, `${name} reactions are unique within the map`);
+  }
+});
+
 test("map dialogs escape page stacking contexts", () => {
   for (const file of ["MapHub.jsx", "WorldMap.jsx"]) {
     const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
     assert.match(source, /createPortal/);
     assert.match(source, /document\.body/);
   }
+});
+
+test("map hotspots use the numbers printed in the original artwork", () => {
+  for (const file of ["MapHub.jsx", "WorldMap.jsx"]) {
+    const source = readFileSync(new URL(`../src/components/${file}`, import.meta.url), "utf8");
+    assert.doesNotMatch(source, /map-hotspot__marker/, `${file} does not paint duplicate location numbers`);
+    assert.doesNotMatch(source, /map-hotspot__leader/, `${file} does not draw extra marker leaders`);
+  }
+  const worldMap = readFileSync(new URL("../src/components/WorldMap.jsx", import.meta.url), "utf8");
+  assert.doesNotMatch(worldMap, /map-label-correction/, "Crumbhollow keeps the original illustration free of pasted label panels");
 });
 
 test("every map location has a signature effect, and no two are alike", () => {
@@ -215,6 +237,10 @@ test("the colouring game is Piper's Strawberry Cottage", () => {
   assert.match(source, /floodFill/, "taps fill exact enclosed illustration areas");
   assert.match(source, /Quick paint:/, "keyboard users have named paint controls");
   assert.ok(existsSync(new URL("../public/images/games/strawberry-cottage-line-art.png", import.meta.url)), "the professional cottage line art exists");
+  const artwork = readFileSync(new URL("../public/images/games/strawberry-cottage-line-art.png", import.meta.url));
+  assert.ok(artwork.length > 100_000, "the cottage is detailed artwork rather than an empty placeholder canvas");
+  assert.equal(artwork.readUInt32BE(16), 1254, "the cottage keeps its full-resolution width");
+  assert.equal(artwork.readUInt32BE(20), 1254, "the cottage keeps its full-resolution height");
 });
 
 test("colour fill cannot cross the cottage ink boundary", () => {

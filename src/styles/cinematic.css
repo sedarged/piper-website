@@ -642,8 +642,38 @@ a { -webkit-tap-highlight-color: transparent; }
     rgba(4,11,25,.94);
   box-shadow: 0 38px 100px rgba(0,0,0,.46), inset 0 0 0 7px rgba(216,170,88,.03);
 }
+.map-viewbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+  padding: 9px 10px 9px 15px;
+  border: 1px solid rgba(216,170,88,.2);
+  border-radius: 10px;
+  background: rgba(2,8,20,.62);
+}
+.map-viewbar > div:first-child { display: flex; align-items: baseline; gap: 10px; }
+.map-viewbar strong { color: var(--parchment); font: 600 14px/1 var(--u); }
+.map-zoom-controls { display: flex; align-items: stretch; overflow: hidden; border: 1px solid rgba(216,170,88,.4); border-radius: 8px; }
+.map-zoom-controls button {
+  min-width: 42px;
+  min-height: 38px;
+  padding: 7px 13px;
+  border: 0;
+  border-right: 1px solid rgba(216,170,88,.25);
+  background: rgba(216,170,88,.07);
+  color: var(--parchment);
+  font: 700 13px/1 var(--u);
+  cursor: pointer;
+}
+.map-zoom-controls button:last-child { border-right: 0; }
+.map-zoom-controls button:hover,
+.map-zoom-controls button.on { background: rgba(216,170,88,.2); color: var(--gold-bright); }
+.map-zoom-controls button:disabled { opacity: .35; cursor: default; }
 .map-scroll {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   overscroll-behavior-inline: contain;
   scrollbar-color: var(--gold) rgba(216,170,88,.12);
   scrollbar-width: thin;
@@ -660,26 +690,6 @@ a { -webkit-tap-highlight-color: transparent; }
   box-shadow: 0 26px 64px rgba(0,0,0,.38), 0 0 0 6px rgba(216,170,88,.04);
 }
 .map-f img { width: 100%; height: 100%; object-fit: cover; }
-.map-label-correction {
-  position: absolute;
-  left: var(--label-x);
-  top: var(--label-y);
-  z-index: 2;
-  display: grid;
-  align-content: center;
-  width: var(--label-width);
-  min-height: var(--label-height);
-  translate: -50% -50%;
-  padding: .35% .55%;
-  border: 1px solid rgba(91,52,25,.78);
-  border-radius: 999px;
-  background: rgba(239,210,151,.97);
-  color: #4e2b18;
-  box-shadow: inset 0 0 0 1px rgba(255,244,206,.55), 0 1px 3px rgba(25,12,5,.32);
-  text-align: center;
-  font: 700 clamp(3.2px,.68vw,10px)/1.05 var(--d);
-  pointer-events: none;
-}
 .map-f::after {
   content: '';
   position: absolute;
@@ -699,29 +709,18 @@ a { -webkit-tap-highlight-color: transparent; }
   width: 48px;
   height: 48px;
   translate: -50% -50%;
-  border: 2px solid transparent;
+  border: 0;
   border-radius: 50%;
   background: transparent;
-  transition: background .22s ease, border-color .22s ease, box-shadow .22s ease, scale .22s ease;
+  outline: 0 solid transparent;
+  outline-offset: -7px;
+  transition: outline-color .18s ease, outline-width .18s ease, background .18s ease;
 }
 .map-hotspot:hover,
-.map-hotspot.on {
-  scale: 1.14;
-  border-color: var(--gold-bright);
-  background: color-mix(in srgb, var(--hotspot-accent) 25%, transparent);
-  box-shadow: 0 0 0 5px rgba(3,9,23,.52), 0 0 0 7px rgba(243,208,138,.58), 0 0 28px rgba(243,208,138,.38);
-}
-.map-hotspot.seen::after {
-  content: '';
-  position: absolute;
-  inset: 7px;
-  border: 2px solid rgba(255,247,232,.9);
-  border-radius: 50%;
-}
-.map-hotspot.wow-spot { animation: mapWowPulse 2.6s ease-in-out infinite; }
-@keyframes mapWowPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(216,170,88,0); }
-  50% { box-shadow: 0 0 0 8px rgba(216,170,88,.22); }
+.map-hotspot:focus-visible {
+  outline-width: 2px;
+  outline-color: rgba(255,247,232,.9);
+  background: rgba(243,208,138,.12);
 }
 .map-pan-hint {
   display: none;
@@ -760,7 +759,7 @@ a { -webkit-tap-highlight-color: transparent; }
 .map-selection p { margin-top: 7px; color: var(--ink60); font-size: 17px; }
 .map-index {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
+  grid-template-columns: repeat(3, minmax(0,1fr));
   gap: 1px;
   margin-top: 22px;
   border: 1px solid rgba(216,170,88,.18);
@@ -776,7 +775,7 @@ a { -webkit-tap-highlight-color: transparent; }
   background: rgba(3,9,23,.92);
   color: rgba(247,236,215,.72);
   text-align: left;
-  font: 500 13px/1.25 var(--u);
+  font: 500 15px/1.3 var(--u);
   transition: background .2s ease, color .2s ease;
 }
 .map-index-item:hover,
@@ -1166,6 +1165,7 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
   .cast-g > * { grid-column: auto; }
   .map-heading { grid-template-columns: 1fr; align-items: start; }
   .map-heading__actions { align-items: flex-start; width: 100%; }
+  .map-viewbar { align-items: flex-start; }
   .map-pan-hint { display: block; }
   .map-selection { grid-template-columns: 68px minmax(0,1fr); }
   .map-selection-number { width: 64px; height: 64px; font-size: 25px; }
@@ -1210,14 +1210,18 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
   .story-fact .eyebrow { font-size: 8px; letter-spacing: .12em; }
   .explore-counter { padding: 8px 13px; font-size: 13px; }
   .map-atlas.panel { margin-inline: calc(var(--pad) * -.45); padding: 9px; border-radius: 12px; }
+  .map-viewbar { flex-direction: column; }
+  .map-viewbar > div:first-child { width: 100%; justify-content: space-between; }
+  .map-zoom-controls { width: 100%; }
+  .map-zoom-controls button { flex: 1; }
   .map-scroll { border-radius: 7px; }
-  .map-f { width: 920px; border-radius: 7px; }
-  .map-hotspot { width: 52px; height: 52px; }
+  .map-f { border-radius: 7px; }
+  .map-hotspot { width: 48px; height: 48px; }
   .map-selection { grid-template-columns: 54px minmax(0,1fr); padding: 18px; border-radius: 8px; }
   .map-selection-number { width: 52px; height: 52px; font-size: 20px; }
   .map-selection h3 { font-size: 27px; }
   .map-selection p { font-size: 15px; }
-  .map-index { grid-template-columns: 1fr; }
+  .map-index { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .map-index-item { min-height: 56px; }
   .place-dialog-scrim { place-items: end center; padding: 0; }
   .place-dialog {
@@ -1281,6 +1285,10 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
   .colo { display: grid; gap: 7px; }
 }
 
+@media (max-width: 340px) {
+  .map-index { grid-template-columns: 1fr; }
+}
+
 /* Last-resort recovery is intentionally calm and parent-readable. */
 .error-screen {
   min-height: 100svh;
@@ -1306,7 +1314,6 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
 
 @media (prefers-reduced-motion: reduce) {
   body::before { opacity: .45; }
-  .map-hotspot.wow-spot,
   .place-dialog-scrim,
   .place-dialog { animation: none; }
   .world-image img { animation: none; transition: none; }

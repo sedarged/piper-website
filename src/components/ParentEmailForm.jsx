@@ -15,6 +15,7 @@ export function ParentEmailForm({ chime, burst, payloadExtra = {}, onSuccess, ct
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const unavailable = !MAILING_ENDPOINT;
 
   const submit = async () => {
     setError("");
@@ -46,21 +47,22 @@ export function ParentEmailForm({ chime, burst, payloadExtra = {}, onSuccess, ct
         <input
           className="m-in" type="email" inputMode="email" placeholder="Parent or guardian email"
           value={email} onChange={(e) => setEmail(e.target.value)} aria-label="Parent or guardian email"
+          disabled={unavailable}
           onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
         />
-        <button className="btn b-mint" onClick={submit} disabled={sending}>
-          {sending ? "Sending…" : ctaLabel}
+        <button className="btn b-mint" onClick={submit} disabled={sending || unavailable}>
+          {unavailable ? "Opening soon" : sending ? "Sending…" : ctaLabel}
         </button>
       </div>
       <label className="cons">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
+        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} disabled={unavailable} />
         <span>
           I'm the parent or guardian and I'm happy to receive the welcome pack and occasional
           news about new Piper books. Unsubscribe any time, one click.
         </span>
       </label>
       {error && <p role="alert" style={{ color: "var(--straw)", fontSize: 15, marginTop: 12, fontWeight: 600 }}>{error}</p>}
-      {!MAILING_ENDPOINT && <p style={{ fontSize: 12.5, color: "var(--ink40)", marginTop: 12, fontStyle: "italic" }}>The welcome pack delivery is being prepared and cannot send email yet.</p>}
+      {unavailable && <p className="mailing-status">The parent mailing list is being prepared. No details can be submitted yet.</p>}
     </div>
   );
 }

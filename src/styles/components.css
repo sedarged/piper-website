@@ -203,7 +203,7 @@
 .coloring-paint-canvas{display:block;width:100%;height:auto;cursor:crosshair;touch-action:none}
 .coloring-loading{position:absolute;inset:0;display:grid;place-items:center;padding:20px;background:#fff;color:var(--ink60);font-size:14px;text-align:center}
 .coloring-quick{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;color:var(--ink60);font-size:12px}
-.coloring-quick__button{min-height:32px;padding:5px 10px;border:1px solid rgba(90,21,59,.22);border-radius:999px;background:rgba(255,255,255,.55);color:var(--plum);font:700 11px/1 var(--sans);text-transform:capitalize;cursor:pointer}
+.coloring-quick__button{min-height:44px;padding:8px 12px;border:1px solid rgba(90,21,59,.22);border-radius:999px;background:rgba(255,255,255,.55);color:var(--plum);font:700 12px/1 var(--sans);text-transform:capitalize;cursor:pointer}
 .coloring-quick__button:hover{background:#fff;border-color:var(--plum)}
 .coloring-quick__button:focus-visible,.coloring-paint-canvas:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
 .coloring-hint{color:var(--ink60);font-size:14px;text-align:center}
@@ -427,6 +427,7 @@
 .character-atlas__cards{margin-top:clamp(32px,5vw,56px)}
 .character-atlas__cards .cc-f{background:#fff8ea}
 .character-atlas__cards .cc-f img{object-position:center}
+@media (min-width:1181px){.character-atlas__cards--5>:last-child{grid-column:5/span 3}}
 .snackville-legends{padding-bottom:clamp(34px,5vw,72px)}
 .world-experience__characters{padding-inline:clamp(16px,4vw,32px)}
 .world-experience__characters+.world-experience__characters .character-atlas{padding-top:0}

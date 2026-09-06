@@ -18,7 +18,9 @@ export function Nav({ active, onNavigate, onHome }) {
 
   const go = (id) => {
     onNavigate?.(id);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    // Snackville is a very long page; smooth-scrolling between distant
+    // chapters leaves phone users travelling for several seconds.
+    document.getElementById(id)?.scrollIntoView({ behavior: "instant", block: "start" });
     setSheetOpen(false);
   };
 

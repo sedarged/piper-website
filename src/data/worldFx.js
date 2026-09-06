@@ -34,7 +34,7 @@ export const WORLD_FX = {
         { f: 1046, t: 0.26, d: 0.18 }, { f: 1397, t: 0.39, d: 0.5 },
       ],
     },
-    reactions: ["spring", "waft", "glow", "pop", "drift"],
+    reactions: ["spring", "waft", "glow", "pop", "drift", "beam", "sway", "hop", "dash", "breathe", "ripple", "rustle", "zoom", "flicker"],
   },
 
   crumbhollow: {
@@ -53,6 +53,6 @@ export const WORLD_FX = {
         { f: 392, t: 0.28, d: 0.2 }, { f: 523, t: 0.42, d: 0.5 },
       ],
     },
-    reactions: ["hush", "rustle", "roll", "breathe", "hop"],
+    reactions: ["hush", "rustle", "roll", "breathe", "hop", "glow", "ripple", "drift", "sway", "spring", "pop", "beam"],
   },
 };
