@@ -60,12 +60,12 @@ export const SNACKVILLE_CHARACTERS = [
     secret: "The fiercest-looking dragon in Snackville loves marshmallow tea.",
   },
   {
-    key: "custard-queen", n: "07", name: "Custard Queen", role: "Royal Protector", img: "/images/characters/snackville/custard-queen.webp",
-    ink: "#B7892F", badge: "Royal",
-    line: "A bold custard monarch with a kingdom-sized heart.",
-    bio: "The Custard Queen arrives with a jewelled spoon crown, a magnificent purple cape and enough confidence to fill a palace. She learns that the strongest royal order can be an act of kindness.",
-    power: "Her custard sceptre raises golden shields around anyone who needs help.",
-    secret: "She keeps every thank-you note tucked inside her crown box.",
+    key: "custard-queen", n: "07", name: "Custard Queen", role: "Custard Queen", img: "/images/characters/snackville/custard-queen.webp",
+    ink: "#B7892F", badge: "Cunning",
+    line: "The sly ruler behind Snackville's custard-alien trouble.",
+    bio: "The Custard Queen arrives with a jewelled spoon crown, a magnificent purple cape and a plan to take control of Snackville. Piper and the Snack Squad must be braver and kinder than her tricks.",
+    power: "A swirling custard spell that can trap a path beneath wobbly golden goo.",
+    secret: "She hates admitting that Piper's friendship is stronger than any royal order.",
   },
   {
     key: "ice-cream-robots", n: "08", name: "Ice Cream Robots", role: "Frozen Friends", img: "/images/characters/snackville/ice-cream-robots.webp",
