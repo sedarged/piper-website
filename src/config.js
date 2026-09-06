@@ -34,7 +34,7 @@ export const ASSET = {
   piper: "/images/characters/snack-squad/piper.webp",
   croissant: "/images/characters/snack-squad/croissant-kitty.webp",
   toast: "/images/characters/snack-squad/toast-kitty.webp",
-  sandwich: "/images/characters/snack-squad/sandwich-kitty.webp",
+  sandwich: "/images/characters/snack-squad/sandwich-kitty-no-ears.webp",
   squad: "/images/inside/custard-page-31.webp",
   map: "1D3b_j8XpcwmPWaXaaXXBd-3vhMhk759Z",
   book1: "/images/books/custard-alien-invasion.webp",
