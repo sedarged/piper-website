@@ -673,6 +673,7 @@ a { -webkit-tap-highlight-color: transparent; }
 .map-zoom-controls button:disabled { opacity: .35; cursor: default; }
 .map-scroll {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   overscroll-behavior-inline: contain;
   scrollbar-color: var(--gold) rgba(216,170,88,.12);
   scrollbar-width: thin;
@@ -1274,11 +1275,24 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
   .map-scroll { border-radius: 7px; }
   .map-f { border-radius: 7px; }
   .map-hotspot { width: 48px; height: 48px; }
+  .map-f--fit .map-hotspot__leader { width: 16px; }
+  .map-f--fit .map-hotspot__marker {
+    width: 18px;
+    height: 18px;
+    transform: translate(calc(-50% + var(--marker-fit-shift)), calc(-50% - 12px));
+    border-width: 1px;
+    box-shadow: 0 1px 5px rgba(3,9,23,.9), 0 0 0 2px rgba(3,9,23,.55);
+    font-size: 8px;
+  }
+  .map-f--fit .map-hotspot:hover .map-hotspot__marker,
+  .map-f--fit .map-hotspot.on .map-hotspot__marker {
+    box-shadow: 0 1px 5px rgba(3,9,23,.9), 0 0 0 2px rgba(3,9,23,.65), 0 0 0 3px rgba(243,208,138,.65);
+  }
   .map-selection { grid-template-columns: 54px minmax(0,1fr); padding: 18px; border-radius: 8px; }
   .map-selection-number { width: 52px; height: 52px; font-size: 20px; }
   .map-selection h3 { font-size: 27px; }
   .map-selection p { font-size: 15px; }
-  .map-index { grid-template-columns: 1fr; }
+  .map-index { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .map-index-item { min-height: 56px; }
   .place-dialog-scrim { place-items: end center; padding: 0; }
   .place-dialog {
@@ -1340,6 +1354,10 @@ section.sec.wrap:has(> .panel .gu) { padding-top: clamp(54px, 6vw, 86px); }
   .foot-g { gap: 36px; }
   .foot-g { grid-template-columns: 1fr; }
   .colo { display: grid; gap: 7px; }
+}
+
+@media (max-width: 340px) {
+  .map-index { grid-template-columns: 1fr; }
 }
 
 /* Last-resort recovery is intentionally calm and parent-readable. */

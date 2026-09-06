@@ -23,7 +23,9 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
   const dialogRef = useRef(null);
   const mapScrollRef = useRef(null);
   const [mapZoom, setMapZoom] = useState(1);
-  const [fitMap, setFitMap] = useState(false);
+  const [fitMap, setFitMap] = useState(() => (
+    typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches
+  ));
   const seenCount = PLACES.filter((place) => visitedPlaceIds.has(place.id)).length;
 
   const closePlace = useCallback(() => setOpenPlace(null), []);
@@ -105,6 +107,7 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
                 style={{
                   "--hotspot-x": `${place.x}%`, "--hotspot-y": `${place.y}%`, "--hotspot-accent": place.ink,
                   "--marker-shift": place.x > 82 ? "-19px" : "19px",
+                  "--marker-fit-shift": place.x > 82 ? "-12px" : "12px",
                   "--marker-angle": place.x > 82 ? "-135deg" : "-45deg",
                 }}
                 onClick={() => pick(place)}
@@ -119,7 +122,9 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
           </div>
         </div>
 
-        <p className="map-pan-hint u">Drag or swipe to travel across the enlarged map. Use Fit map whenever you want the complete view.</p>
+        <p className="map-pan-hint u">{fitMap
+          ? "Tap a numbered point to open its field note. Choose Actual size to read the illustrated labels closely."
+          : "Drag or swipe to travel across the enlarged map. Use Fit map whenever you want the complete view."}</p>
 
         <div className="map-selection" style={{ "--place-accent": selected.ink }} aria-live="polite">
           <span className="map-selection-number d">{String(selected.n).padStart(2, "0")}</span>

@@ -281,7 +281,29 @@
 .world-experience__footer button:hover { color: var(--gold-bright); }
 
 @media (max-width: 640px) {
-  .world-experience__bar { flex-wrap: wrap; padding: 12px 14px; }
+  .world-experience {
+    min-height: 100svh;
+    background: #071126;
+  }
+  .world-experience .living-world,
+  .snackville-experience .living-world {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    height: min(100svh, 900px);
+  }
+  .living-world > img,
+  .living-world__glow,
+  .living-world__drift { animation: none; }
+  .world-experience__bar {
+    position: relative;
+    flex-wrap: wrap;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 10px;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
   .world-experience__brand {
     min-width: 0;
     max-width: calc(100vw - 104px);
@@ -289,17 +311,51 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  .world-experience__nav { order: 3; flex-basis: 100%; padding-top: 4px; }
+  .world-experience__nav {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding-top: 2px;
+    border-top: 1px solid rgba(244,234,213,.08);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .world-experience__nav::-webkit-scrollbar { display: none; }
+  .world-experience__nav a {
+    flex: 1 0 auto;
+    min-height: 42px;
+    display: grid;
+    place-items: center;
+    padding-inline: 14px;
+    font-size: 12px;
+  }
   .world-experience__hero {
     margin-top: 10px;
     margin-bottom: 32px;
     padding-inline: 17px;
   }
-  .world-experience__hero--with-cover { gap: 26px; }
-  .world-experience__hero-facts { grid-template-columns: 1fr; }
-  .world-experience__trail { padding: 58px 18px; }
-  .world-experience__trail-grid { grid-template-columns: 1fr; }
-  .world-experience__trail-grid a { min-height: 0; }
+  .world-experience__hero--with-cover { gap: 22px; }
+  .world-experience__hero-facts { grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: 22px; }
+  .world-experience__hero-facts > span { align-content: start; padding: 11px 8px; }
+  .world-experience__hero-facts strong { font-size: 12px; }
+  .world-experience__cover { width: min(86vw,340px); }
+  .world-experience__trail { overflow: hidden; padding: 58px 18px; }
+  .world-experience__trail-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    margin-inline: -18px;
+    padding: 0 18px 10px;
+    border: 0;
+    background: transparent;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .world-experience__trail-grid::-webkit-scrollbar { display: none; }
+  .world-experience__trail-grid a { flex: 0 0 min(78vw,300px); min-height: 210px; scroll-snap-align: start; border: 1px solid rgba(216,170,88,.22); }
   .world-experience__map { padding-inline: 12px; }
   .world-experience .world-map-atlas { margin-inline: 0; }
   .world-experience .world-map-frame { border-radius: 8px; }
@@ -312,9 +368,10 @@
     min-height: 48px;
   }
   .world-experience .map-selection { gap: 13px; }
-  .world-experience__story { padding: 58px 18px; }
+  .world-experience__story { padding: 52px 18px; border-radius: 14px; }
+  .world-experience__story-copy .world-experience__section-number { margin-bottom: 20px; }
   .world-experience__story-facts article { grid-template-columns: 78px 1fr; padding: 17px; }
-  .world-experience__book { grid-template-columns: 1fr; padding: 58px 18px 74px; text-align: center; }
+  .world-experience__book { grid-template-columns: 1fr; padding: 52px 18px calc(68px + env(safe-area-inset-bottom,0px)); border-radius: 14px; text-align: center; }
   .world-experience__book-cover { width: min(82vw, 330px); margin-inline: auto; }
   .world-experience__footer { justify-content: center; text-align: center; }
 }
@@ -326,7 +383,9 @@
 }
 
 @media (max-width: 390px) {
-  .world-experience__hero h1 { font-size: 36px; }
+  .world-experience__hero h1 { font-size: 34px; }
+  .world-experience__tagline { margin-top: 10px; line-height: 1.45; }
+  .world-experience__jump { margin-top: 16px; }
   .world-experience .map-heading { margin-bottom: 22px; }
   .world-experience .map-heading .h2 { font-size: 38px; }
   .world-experience .map-heading__actions .btn { width: 100%; justify-content: center; }
