@@ -118,10 +118,19 @@ test("each storyworld exposes its approved character cast", () => {
     assert.ok(existsSync(new URL(`../public${ASSET[key]}`, import.meta.url)), `${key} approved reference exists`);
   }
 
+  assert.match(ASSET.sandwich, /sandwich-kitty-no-ears\.webp$/, "Sandwich Kitty uses the canonical no-ear portrait");
+
   assert.ok(existsSync(new URL("../public/images/sandwich-interactive-map.jpeg", import.meta.url)), "official Sandwich Kingdom map exists");
   assert.ok(existsSync(new URL("../public/images/worlds/sandwich-cover.webp", import.meta.url)), "official Sandwich Kingdom cover exists");
   assert.ok(existsSync(new URL("../public/images/home/snack-squad-portal.webp", import.meta.url)), "new Snack Squad portal exists");
   assert.ok(existsSync(new URL("../public/images/home/toast-kitty-reading.webp", import.meta.url)), "new reading Toast Kitty exists");
+});
+
+test("world character cut-outs are not placed on copied-paper rectangles", () => {
+  const styles = readFileSync(new URL("../src/styles/components.css", import.meta.url), "utf8");
+  const cardRule = styles.match(/\.character-atlas__cards \.cc-f\{([^}]*)\}/)?.[1] ?? "";
+  assert.doesNotMatch(cardRule, /background\s*:\s*#fff8ea/i);
+  assert.match(cardRule, /background\s*:\s*(?:linear-gradient|transparent)/i);
 });
 
 test("Crumbhollow and Sandwich Kingdom use the complete world-page structure", () => {

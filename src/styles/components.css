@@ -425,7 +425,9 @@
 .character-atlas__heading .h2{margin-top:12px;font-size:clamp(40px,6vw,70px);text-wrap:balance}
 .character-atlas__heading .lead{margin:16px auto 0;max-width:58ch;font-weight:400}
 .character-atlas__cards{margin-top:clamp(32px,5vw,56px)}
-.character-atlas__cards .cc-f{background:#fff8ea}
+/* Portrait WEBPs are true cut-outs.  A copied-paper fill here made the
+   transparent edges read as pale rectangles against every world backdrop. */
+.character-atlas__cards .cc-f{background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(3,9,23,.06) 52%,rgba(3,9,23,.24))}
 .character-atlas__cards .cc-f img{object-position:center}
 @media (min-width:1181px){.character-atlas__cards--5>:last-child{grid-column:5/span 3}}
 .snackville-legends{padding-bottom:clamp(34px,5vw,72px)}
