@@ -42,10 +42,13 @@ export function WorldMap({ places, mapSrc, mapAlt, mapWidth, mapHeight, eyebrow,
   const dialogRef = useRef(null);
   const certRef = useRef(null);
   const mapScrollRef = useRef(null);
-  const [mapZoom, setMapZoom] = useState(1);
-  const [fitMap, setFitMap] = useState(() => (
-    typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches
+  const [mapZoom, setMapZoom] = useState(() => (
+    typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches ? .75 : 1
   ));
+  // Keep printed names readable on a phone. Fit-to-screen compressed a
+  // 1536px illustrated map into roughly 330px and defeated the point of
+  // placing the invisible touch targets on the map's own numbers.
+  const [fitMap, setFitMap] = useState(false);
   const reduceMotion = useReducedMotion();
   // Whether every location has been visited, and the certificate for it
   // hasn't been shown yet — checked (and, once true, immediately

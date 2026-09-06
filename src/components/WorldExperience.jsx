@@ -19,7 +19,7 @@ import { AMAZON_URL } from "../config.js";
  * App.jsx — see the note in styles/wow.css for why the reaction is an
  * attribute on a root rather than a transform on a wrapper.
  */
-export function WorldExperience({ worldClass, brandLabel, title, tagline, coverSrc, backgroundSrc, coverAlt, story, mapEyebrow, mapHeading, mapLead, places, mapSrc, mapAlt, mapWidth, mapHeight, fx, characterFeatures = [], book, onBackHome }) {
+export function WorldExperience({ worldClass, brandLabel, title, tagline, coverSrc, backgroundSrc, coverAlt, story, atmosphere = [], mapEyebrow, mapHeading, mapLead, places, mapSrc, mapAlt, mapWidth, mapHeight, fx, characterFeatures = [], book, onBackHome }) {
   const rootRef = useRef(null);
   const reactionTimer = useRef(null);
 
@@ -30,7 +30,10 @@ export function WorldExperience({ worldClass, brandLabel, title, tagline, coverS
 
   const jumpTo = useCallback((event, id) => {
     event.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Smooth scrolling can leave a mobile visitor halfway between chapters
+    // for several seconds on a long world page. Section navigation should
+    // land immediately and reliably.
+    event.currentTarget.ownerDocument.getElementById(id)?.scrollIntoView({ behavior: "instant", block: "start" });
   }, []);
 
   return (
@@ -106,6 +109,29 @@ export function WorldExperience({ worldClass, brandLabel, title, tagline, coverS
             ))}
           </div>
         </section>
+
+        {atmosphere.length > 0 && (
+          <section className="world-experience__atmosphere wrap" aria-labelledby="world-atmosphere-title">
+            <div className="world-experience__atmosphere-heading">
+              <p className="universe-kicker">Life inside the world</p>
+              <h2 id="world-atmosphere-title">Look closer. The whole world is moving.</h2>
+              <p>These are details from the official illustrated map — the places, paths and neighbours that make {title} feel alive.</p>
+            </div>
+            <div className="world-experience__atmosphere-grid">
+              {atmosphere.map((detail, index) => (
+                <article key={detail.title} className="world-experience__atmosphere-card">
+                  <img src={mapSrc} alt="" loading="lazy" decoding="async" style={{ objectPosition: detail.focus }} />
+                  <div>
+                    <span className="d">{String(index + 1).padStart(2, "0")}</span>
+                    <p className="universe-kicker">{detail.eyebrow}</p>
+                    <h3>{detail.title}</h3>
+                    <p>{detail.copy}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div id="world-characters" className="world-experience__chapter world-experience__chapter--characters">
           <span className="world-experience__chapter-number" aria-hidden="true">02</span>

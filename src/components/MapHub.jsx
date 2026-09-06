@@ -22,10 +22,13 @@ export function MapHub({ visitedPlaceIds, mark, onWow, chime }) {
   const [openPlace, setOpenPlace] = useState(null);
   const dialogRef = useRef(null);
   const mapScrollRef = useRef(null);
-  const [mapZoom, setMapZoom] = useState(1);
-  const [fitMap, setFitMap] = useState(() => (
-    typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches
+  const [mapZoom, setMapZoom] = useState(() => (
+    typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches ? .75 : 1
   ));
+  // Start enlarged on phones as well: the printed labels are part of the
+  // illustration and become unreadable when the entire atlas is squeezed
+  // into a 375 px viewport. Visitors can still choose Fit map at any time.
+  const [fitMap, setFitMap] = useState(false);
   const seenCount = PLACES.filter((place) => visitedPlaceIds.has(place.id)).length;
 
   const closePlace = useCallback(() => setOpenPlace(null), []);

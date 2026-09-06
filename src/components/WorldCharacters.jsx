@@ -15,7 +15,7 @@ export function WorldCharacters({ feature, className = "" }) {
         <p className="lead on-sky-s">{feature.lead}</p>
       </Reveal>
 
-      <div className="cast-g character-atlas__cards">
+      <div className={`cast-g character-atlas__cards character-atlas__cards--${feature.people.length}`}>
         {feature.people.map((person, index) => (
           <Reveal key={person.key} delay={index * 55}>
             <button className="cc" onClick={() => setSelected(index)} aria-label={`Open ${person.name}'s character profile`}>

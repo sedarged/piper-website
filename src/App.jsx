@@ -596,6 +596,11 @@ export default function App() {
           body: "Piper and the Snack Squad cross floating fields, mustard marshes and secret tunnels after Sandwich Kingdom's Togetherstone cracks. The mystery leads beneath the castle, where a forgotten builder is still waiting to be welcomed home.",
           facts: [["Adventure", "A floating castle mystery"], ["Heart", "Nobody should be left out"], ["Magic", "The Togetherstone"]],
         }}
+        atmosphere={[
+          { eyebrow: "Above the clouds", title: "A road made of cheese", copy: "The glowing Cheese Road curls from Cloud Landing towards the Bread-Slice Gates and the castle beyond.", focus: "12% 12%" },
+          { eyebrow: "Across the kingdom", title: "Forests, marshes and tunnels", copy: "Mustard reeds, bread-trunk trees and tomato-red passages make every leg of the journey feel different.", focus: "66% 47%" },
+          { eyebrow: "Beneath the foundations", title: "Where belonging is rebuilt", copy: "The hidden staircase, Cheese Caves and Crumbly's home reveal the heart of the kingdom's story.", focus: "74% 82%" },
+        ]}
         mapEyebrow="The official illustrated map"
         mapHeading="Choose your next stop"
         mapLead="Every numbered place holds a piece of the kingdom's story. Select a location to read its field note."
@@ -633,6 +638,11 @@ export default function App() {
           body: "Far below the berry-bright streets of Snackville lies Crumbhollow: a lantern-lit Pie-Rat village of tunnels, canals and biscuit docks. Piper discovers that even the smallest crumbs can point toward a much bigger truth.",
           facts: [["Adventure", "A hidden-village rescue"], ["Crew", "Pie-Rats and pirates"], ["Home", "Lantern canals below town"]],
         }}
+        atmosphere={[
+          { eyebrow: "Along the waterways", title: "Lanterns guide every boat", copy: "Crumb Canal Harbor and Jam-Jar Lantern Square glow across the underground water, even when Snackville sleeps above.", focus: "43% 45%" },
+          { eyebrow: "Built from found treasures", title: "A pantry-sized village", copy: "A cake-tin town hall, biscuit-box bakery and patchwork burrows turn ordinary objects into warm, lived-in places.", focus: "70% 24%" },
+          { eyebrow: "A crew in every tunnel", title: "No corner moves alone", copy: "Woofer, Biscuit and the Pie-Rats keep the docks, ropehouse, barrel yard and market working together.", focus: "22% 70%" },
+        ]}
         mapEyebrow="The official illustrated map"
         mapHeading="Choose your next stop"
         mapLead="Every numbered place holds a piece of the village's story. Select a location to read its field note."

@@ -48,7 +48,7 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
   useDialogTrap(menuRef, closeMenu, menuOpen);
 
   const go = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "instant", block: "start" });
     setMenuOpen(false);
   };
 

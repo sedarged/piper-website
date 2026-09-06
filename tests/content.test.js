@@ -15,6 +15,7 @@ import { PRINTABLES } from "../src/data/printables.js";
 import { floodFill } from "../src/lib/floodFill.js";
 import { ASSET } from "../src/config.js";
 import { CRUMBHOLLOW_CAST, SANDWICH_CAST } from "../src/data/worldCharacters.js";
+import { WORLD_FX } from "../src/data/worldFx.js";
 
 test("content identifiers remain unique", () => {
   for (const collection of [BOOKS, CAST, PLACES, TREASURES, SECTIONS]) {
@@ -129,12 +130,21 @@ test("Crumbhollow and Sandwich Kingdom use the complete world-page structure", (
     assert.match(source, new RegExp(`id=["']${section}["']`), `${section} is present`);
   }
   assert.match(source, /<WorldCharacters/);
+  assert.match(source, /world-experience__atmosphere/, "each world includes an illustrated living-world section");
   assert.match(source, /scrollIntoView/, "world navigation scrolls without replacing the world route hash");
   assert.match(
     source,
     /<WorldMap\s+key=\{title\}/,
     "each world remounts its map so dialogs and progress cannot leak into another world"
   );
+});
+
+test("every secondary-world map location gets its own screen reaction", () => {
+  for (const [name, places] of [["sandwich", SANDWICH_PLACES], ["crumbhollow", CRUMBHOLLOW_PLACES]]) {
+    const reactions = WORLD_FX[name].reactions;
+    assert.equal(reactions.length, places.length, `${name} has one reaction per location`);
+    assert.equal(new Set(reactions).size, places.length, `${name} reactions are unique within the map`);
+  }
 });
 
 test("map dialogs escape page stacking contexts", () => {
@@ -227,6 +237,10 @@ test("the colouring game is Piper's Strawberry Cottage", () => {
   assert.match(source, /floodFill/, "taps fill exact enclosed illustration areas");
   assert.match(source, /Quick paint:/, "keyboard users have named paint controls");
   assert.ok(existsSync(new URL("../public/images/games/strawberry-cottage-line-art.png", import.meta.url)), "the professional cottage line art exists");
+  const artwork = readFileSync(new URL("../public/images/games/strawberry-cottage-line-art.png", import.meta.url));
+  assert.ok(artwork.length > 100_000, "the cottage is detailed artwork rather than an empty placeholder canvas");
+  assert.equal(artwork.readUInt32BE(16), 1254, "the cottage keeps its full-resolution width");
+  assert.equal(artwork.readUInt32BE(20), 1254, "the cottage keeps its full-resolution height");
 });
 
 test("colour fill cannot cross the cottage ink boundary", () => {
