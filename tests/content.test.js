@@ -126,6 +126,19 @@ test("each storyworld exposes its approved character cast", () => {
   assert.ok(existsSync(new URL("../public/images/home/toast-kitty-reading.webp", import.meta.url)), "new reading Toast Kitty exists");
 });
 
+test("Custard Queen remains the Snackville antagonist", () => {
+  const queen = SNACKVILLE_CHARACTERS.find((character) => character.key === "custard-queen");
+  assert.equal(queen.role, "Custard Queen");
+  assert.match(queen.line, /trouble/i);
+  assert.doesNotMatch(`${queen.bio} ${queen.power}`, /royal protector|golden shields|thank-you note/i);
+});
+
+test("Snackville uses approved world artwork rather than legacy SVG scenery", () => {
+  const app = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  assert.match(app, /LivingWorldBackdrop src="\/images\/worlds\/snackville-environment\.webp"/);
+  assert.doesNotMatch(app, /Land\.clouds|Land\.sugar|Land\.mountain|Land\.town|Land\.grass/);
+});
+
 test("world character cut-outs are not placed on copied-paper rectangles", () => {
   const styles = readFileSync(new URL("../src/styles/components.css", import.meta.url), "utf8");
   const cardRule = styles.match(/\.character-atlas__cards \.cc-f\{([^}]*)\}/)?.[1] ?? "";
