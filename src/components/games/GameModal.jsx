@@ -36,7 +36,7 @@ export function GameScoreboard({ best, bestLabel, suffix = "" }) {
  * useDialogTrap) and its `.place-dialog` visuals, so a game feels like
  * part of the same storybook rather than a bolted-on widget.
  */
-export function GameModal({ title, eyebrow, onClose, children }) {
+export function GameModal({ title, eyebrow, onClose, children, gameId }) {
   const dialogRef = useRef(null);
   useDialogTrap(dialogRef, onClose, true);
 
@@ -44,7 +44,7 @@ export function GameModal({ title, eyebrow, onClose, children }) {
   // cannot cover game controls, particularly on narrow screens.
   return createPortal(
     <div className="place-dialog-scrim" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <article ref={dialogRef} className="place-dialog game-dialog" role="dialog" aria-modal="true" aria-labelledby="game-dialog-title">
+      <article ref={dialogRef} className={`place-dialog game-dialog game-dialog--${gameId || "studio"}`} role="dialog" aria-modal="true" aria-labelledby="game-dialog-title">
         <div className="place-dialog-topline">
           <span className="eyebrow">{eyebrow}</span>
           <button className="place-dialog-close u" onClick={onClose}>Close</button>

@@ -146,6 +146,37 @@ test("world character cut-outs are not placed on copied-paper rectangles", () =>
   assert.match(cardRule, /background\s*:\s*(?:linear-gradient|transparent)/i);
 });
 
+test("Snackville Studio ships finished print-ready downloads", () => {
+  const prints = PRINTABLES.filter((item) => item.kind === "print");
+  assert.equal(prints.length, 2);
+  for (const printable of prints) {
+    assert.match(printable.url, /^\/printables\/.+\.pdf$/);
+    assert.match(printable.preview, /^\/images\/printables\/.+\.webp$/);
+    assert.ok(existsSync(new URL(`../public${printable.url}`, import.meta.url)), `${printable.name} PDF exists`);
+    assert.ok(existsSync(new URL(`../public${printable.preview}`, import.meta.url)), `${printable.name} preview exists`);
+    assert.doesNotMatch(printable.note, /coming soon/i);
+  }
+});
+
+test("the homepage has a neutral generated living background", () => {
+  const styles = readFileSync(new URL("../src/styles/universe-home.css", import.meta.url), "utf8");
+  assert.match(styles, /storyworld-crossroads-v2\.png/);
+  assert.match(styles, /universe-scene-breathe/);
+  assert.match(styles, /universe-motes/);
+  assert.ok(existsSync(new URL("../public/images/home/storyworld-crossroads-v2.png", import.meta.url)));
+});
+
+test("games use dedicated illustrated objects instead of generic site icons", () => {
+  const objects = readFileSync(new URL("../src/components/games/GameObjects.jsx", import.meta.url), "utf8");
+  for (const kind of ["berry", "croix", "donut", "chilli", "star", "bean", "scale", "basket"]) {
+    assert.match(objects, new RegExp(`${kind}:`), `${kind} has a bespoke game object`);
+  }
+  for (const file of ["MemoryMatch.jsx", "WhackASnack.jsx", "SnackPattern.jsx", "BerryCatch.jsx"]) {
+    const source = readFileSync(new URL(`../src/components/games/${file}`, import.meta.url), "utf8");
+    assert.match(source, /GameObject/);
+  }
+});
+
 test("Crumbhollow and Sandwich Kingdom use the complete world-page structure", () => {
   const source = readFileSync(new URL("../src/components/WorldExperience.jsx", import.meta.url), "utf8");
   for (const section of ["world-story", "world-characters", "world-map", "world-book"]) {
@@ -249,7 +280,7 @@ test("every studio game card maps to a real game", () => {
   // Cards that aren't games must be honest about it rather than
   // rendering a dead download link.
   for (const print of PRINTABLES.filter((p) => p.kind === "print")) {
-    assert.ok(print.url === "" || /^https?:\/\//.test(print.url), `${print.id} is a real link or empty`);
+    assert.ok(print.url === "" || /^https?:\/\//.test(print.url) || /^\/printables\/.+\.pdf$/.test(print.url), `${print.id} is a real link or empty`);
   }
 });
 

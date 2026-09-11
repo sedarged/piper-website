@@ -15,6 +15,11 @@ markers, leader lines, labels or replacement map art.
 | AQ-02 | Sandwich Kitty’s published Snackville portrait showed cat ears, which conflicts with the character canon. | Added a dedicated no-ear, alpha-transparent canonical portrait and pointed `ASSET.sandwich` at it; original source remains untouched. | iPhone 390 profile drawer visually checked: the bread/sandwich hood has a continuous rounded silhouette and no ears. |
 | AQ-03 | Custard Queen was incorrectly described as a benevolent “Royal Protector”, contradicting the Custard Alien Invasion story. | Reframed her card and profile as the mischievous antagonist; preserved child-safe language and the existing approved portrait. | Regression test asserts the antagonist copy and excludes the former protector language. |
 | AQ-04 | The official Snackville environment was still overlaid with legacy generic SVG scenery. | Removed the mounted SVG landscape layers; the supplied Snackville environment remains the sole scenic artwork, with its established subtle actors. | Regression test rejects any mounted legacy landscape layer. |
+| AQ-05 | The universe homepage was a flat near-black field and borrowed Snackville imagery for its main visual identity. | Added a new neutral Piper-style storyworld crossroads plate, animated depth breathing and independent drifting light motes; no single world is represented. | Desktop and 390px hero/menu screenshots checked with reduced-motion fallback covered by CSS. |
+| AQ-06 | Homepage navigation labels visually ran together. | Gave every desktop destination its own bordered tile inside a wider navigation rail with clear hover/focus states. | Desktop header checked at full width; mobile retains the dedicated sheet. |
+| AQ-07 | Game boards reused small generic site icons and flat surfaces unrelated to their scenes. | Added eight bespoke illustrated game objects and art-directed each modal/board against a location-appropriate Piper environment. | All five games opened in browser; object scale, contrast and touch targets checked. |
+| AQ-08 | The map and badge Studio cards were dead “Coming soon” placeholders. | Built a full-bleed A3 map PDF and four-character A4 badge sheet, plus honest in-card previews and direct downloads. | Both PDFs rendered and inspected at page size; browser links open the real files. |
+| AQ-09 | Piper’s floating helper only replayed one passive tip. | Turned the helper into an expandable FAQ guide with four useful navigation/exploration answers and moved it inward/downward. | Open/close, all question buttons and narrow-screen fit checked. |
 
 ## Verified interaction inventory
 
@@ -36,7 +41,7 @@ caused by clicking through a dialog during its exit transition.
 
 ## Automated final gate
 
-- `npm run check`: pass (lint, 25 tests, production build).
+- `npm run check`: pass (lint, full Node test suite, production build).
 - `git diff --check`: pass.
 - `world character cut-outs are not placed on copied-paper rectangles`: pass.
 - Character WEBPs: verified to carry an alpha channel, including the new

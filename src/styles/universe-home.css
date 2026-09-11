@@ -9,10 +9,7 @@
   min-height: 100vh;
   overflow: hidden;
   color: var(--universe-cream);
-  background:
-    radial-gradient(circle at 72% 12%, rgba(41, 82, 132, .24), transparent 28rem),
-    radial-gradient(circle at 15% 42%, rgba(42, 79, 124, .14), transparent 34rem),
-    var(--universe-bg);
+  background: var(--universe-bg);
 }
 
 .universe-home::before {
@@ -21,14 +18,37 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: .8;
+  opacity: .66;
+  background:
+    linear-gradient(180deg, rgba(2,11,26,.18), rgba(2,11,26,.78) 72%, #020b1a),
+    url('/images/home/storyworld-crossroads-v2.png') center top / max(100vw, 1500px) auto no-repeat;
+  animation: universe-scene-breathe 24s ease-in-out infinite alternate;
+  transform-origin: 52% 24%;
+}
+
+.universe-home::after {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .72;
   background-image:
-    radial-gradient(circle, rgba(255, 218, 134, .95) 0 1px, transparent 1.6px),
-    radial-gradient(circle, rgba(255,255,255,.72) 0 .7px, transparent 1.4px),
-    radial-gradient(circle, rgba(231,183,88,.7) 0 1.1px, transparent 1.8px);
-  background-size: 89px 89px, 137px 137px, 211px 211px;
-  background-position: 17px 11px, 61px 84px, 123px 39px;
-  mask-image: linear-gradient(to bottom, #000 0 72%, transparent 96%);
+    radial-gradient(circle, rgba(255,218,134,.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.72) 0 .8px, transparent 1.6px),
+    radial-gradient(circle, rgba(231,183,88,.7) 0 1.3px, transparent 2.2px);
+  background-size: 113px 113px, 173px 173px, 247px 247px;
+  animation: universe-motes 18s linear infinite;
+  mask-image: linear-gradient(to bottom, #000 0 76%, transparent 98%);
+}
+
+@keyframes universe-scene-breathe {
+  from { transform: scale(1.015) translate3d(-.35%, -.2%, 0); filter: saturate(.92) brightness(.76); }
+  to { transform: scale(1.055) translate3d(.5%, .45%, 0); filter: saturate(1.08) brightness(.88); }
+}
+@keyframes universe-motes {
+  from { transform: translate3d(0, 2%, 0) rotate(0deg); }
+  to { transform: translate3d(3%, -5%, 0) rotate(2deg); }
 }
 
 .universe-home button,
@@ -85,7 +105,7 @@
   text-transform: uppercase;
 }
 
-.universe-nav__links { display: flex; gap: clamp(14px, 2.2vw, 28px); }
+.universe-nav__links { display: flex; gap: 10px; padding: 7px; border: 1px solid rgba(231,183,88,.2); border-radius: 12px; background: rgba(2,11,26,.5); }
 .universe-nav__links button,
 .universe-footer nav button {
   min-height: 44px;
@@ -98,15 +118,14 @@
   cursor: pointer;
   transition: color .2s ease, transform .2s ease;
 }
+.universe-nav__links button { padding-inline: clamp(14px,1.5vw,22px); border: 1px solid rgba(231,183,88,.16); border-radius: 7px; background: rgba(255,242,214,.035); }
 .universe-nav__links button::after {
-  content: "✦";
-  margin-left: clamp(14px, 2.2vw, 28px);
-  color: rgba(231,183,88,.4);
-  font-size: 8px;
+  display: none;
 }
 .universe-nav__links button:last-child::after { display: none; }
 .universe-nav__links button:hover,
 .universe-footer nav button:hover { color: var(--universe-gold-bright); transform: translateY(-1px); }
+.universe-nav__links button:hover { background: rgba(231,183,88,.12); border-color: rgba(255,216,137,.58); }
 
 .universe-nav__end { justify-self: end; display: flex; align-items: center; gap: 18px; }
 .universe-nav__cta {

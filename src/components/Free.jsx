@@ -10,8 +10,7 @@ import { GAME_COMPONENTS } from "./games/registry.js";
  * oriented printable that used to live here — read-aloud notes — now
  * lives in the Parents' Corner, see GrownUps.jsx). Five cards open a
  * real playable mini-game right in the browser; the rest are prints
- * still waiting on final artwork and show an honest "coming soon"
- * state instead of a dead link.
+ * are finished, previewed in-card and download as print-ready PDFs.
  */
 export function Free({ mark, burst, chime, showToast }) {
   const [openGameId, setOpenGameId] = useState(null);
@@ -56,6 +55,7 @@ export function Free({ mark, burst, chime, showToast }) {
               </button>
             ) : p.url ? (
               <a className="fc" href={p.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                {p.preview && <span className="fc-preview"><img src={p.preview} alt="" loading="lazy" decoding="async" /></span>}
                 <span className="fc-icon" aria-hidden="true">{FI[p.id]()}</span>
                 <span className="d" style={{ fontSize: 21 }}>{p.name}</span>
                 <span className="eyebrow">{p.n}</span>
@@ -81,6 +81,7 @@ export function Free({ mark, burst, chime, showToast }) {
         <GameModal
           title={openGame.name}
           eyebrow="Snackville studio"
+          gameId={openGame.id}
           onClose={closeGame}
         >
           <GameComponent chime={chime} onComplete={() => complete(openGame)} />
