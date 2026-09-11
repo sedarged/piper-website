@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { I, ICON_NAMES } from "../Icons.jsx";
+import { ICON_NAMES } from "../Icons.jsx";
+import { GameObject } from "./GameObjects.jsx";
 import { useBestScore } from "../../hooks/useBestScore.js";
 import { GameCompleteButton, GameRetryButton, GameScoreboard } from "./GameModal.jsx";
 
@@ -139,7 +140,7 @@ export function SnackPattern({ onComplete, chime }) {
             disabled={phase !== "input"}
             aria-label={ICON_NAMES[tile]}
           >
-            {I[tile]()}
+            <GameObject kind={tile} />
           </button>
         ))}
       </div>

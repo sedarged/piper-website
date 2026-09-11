@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TI, ICON_NAMES } from "../Icons.jsx";
+import { ICON_NAMES } from "../Icons.jsx";
+import { GameObject } from "./GameObjects.jsx";
 import { useBestScore } from "../../hooks/useBestScore.js";
 import { GameCompleteButton, GameRetryButton, GameScoreboard } from "./GameModal.jsx";
 
@@ -141,7 +142,7 @@ export function MemoryMatch({ onComplete, chime }) {
                   appearing in its place. */}
               <span className="memory-card-inner">
                 <span className="memory-card-back" aria-hidden="true" />
-                <span className="memory-card-face">{TI[card.key]()}</span>
+                <span className="memory-card-face"><GameObject kind={card.key} /></span>
               </span>
             </button>
           );

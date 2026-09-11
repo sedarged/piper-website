@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { I } from "../Icons.jsx";
-import { C } from "../../styles/tokens.js";
+import { GameObject } from "./GameObjects.jsx";
 import { useReducedMotion } from "../../hooks/useReducedMotion.js";
 import { useBestScore } from "../../hooks/useBestScore.js";
 import { GameCompleteButton, GameRetryButton, GameScoreboard } from "./GameModal.jsx";
@@ -12,10 +11,10 @@ const KEY_STEP = 7;
 
 /** What can fall, how much it's worth, and how it sounds when caught. */
 const DROPS = [
-  { kind: "berry", icon: (s) => I.berry(s), points: 1, weight: 5, pitch: 660 },
-  { kind: "croix", icon: () => I.croix(), points: 1, weight: 3, pitch: 720 },
-  { kind: "star", icon: () => I.star(), points: 3, weight: 1, pitch: 1046 },
-  { kind: "chilli", icon: () => I.chilli(), points: -1, weight: 2, pitch: 200 },
+  { kind: "berry", points: 1, weight: 5, pitch: 660 },
+  { kind: "croix", points: 1, weight: 3, pitch: 720 },
+  { kind: "star", points: 3, weight: 1, pitch: 1046 },
+  { kind: "chilli", points: -1, weight: 2, pitch: 200 },
 ];
 
 const WEIGHTED = DROPS.flatMap((drop) => Array(drop.weight).fill(drop));
@@ -246,11 +245,11 @@ export function BerryCatch({ onComplete, chime }) {
             className={`catch-drop catch-drop--${drop.kind} ${reduceMotion.current ? "is-still" : ""}`}
             style={{ left: `${drop.x}%`, top: `${drop.y}%` }}
           >
-            {DROPS.find((d) => d.kind === drop.kind).icon(C.strawberry)}
+            <GameObject kind={drop.kind} />
           </span>
         ))}
         <span ref={basketRef} className="catch-basket" style={{ left: "50%" }}>
-          {I.basket()}
+          <GameObject kind="basket" />
         </span>
       </div>
 

@@ -2,10 +2,7 @@ import { C } from "../styles/tokens.js";
 
 /**
  * The Snackville studio grid: five playable mini-games (no download
- * needed — they run right in the browser) plus two printables still
- * waiting on their final artwork. See /docs/asset-list.md for the print
- * generation prompts. Every game card opens its game in a modal; every
- * print card shows a "coming soon" state instead of a dead link.
+ * needed — they run right in the browser) plus two finished printables.
  *
  * The five games deliberately ask for five different things: colouring
  * is open-ended, memory is recall, whack is reaction, pattern is
@@ -18,6 +15,6 @@ export const PRINTABLES = [
   { id: "whack", name: "Whack-a-Snack", n: "Play now", kind: "game", ink: C.ember, note: "Tap the treats before they disappear. How high can you score?" },
   { id: "pattern", name: "Piper's Pattern", n: "Play now", kind: "game", ink: C.grape, note: "Watch the pattern light up, then copy it back. How many rounds can you remember?" },
   { id: "catch", name: "Berry Catch", n: "Play now", kind: "game", ink: C.sky, note: "Catch the falling treats in Piper's basket — and let the chillies drop." },
-  { id: "map", name: "The Snackville map", n: "A3 poster", kind: "print", url: "", ink: C.grape, note: "The endpaper map, blank and ready to colour. Coming soon in the welcome pack." },
-  { id: "badge", name: "Snack Squad badge", n: "Cut & wear", kind: "print", url: "", ink: C.butter, note: "Print, cut out, tape to a jumper. Coming soon in the welcome pack." },
+  { id: "map", name: "The Snackville map", n: "A3 poster · PDF", kind: "print", url: "/printables/snackville-map-a3.pdf", preview: "/images/printables/snackville-map-poster.webp", ink: C.grape, note: "The complete official map as a full-bleed A3 adventure poster." },
+  { id: "badge", name: "Snack Squad badges", n: "A4 · cut & wear", kind: "print", url: "/printables/snack-squad-badges-a4.pdf", preview: "/images/printables/snack-squad-badges.webp", ink: C.butter, note: "Four premium character badges with clear cut lines and grown-up instructions." },
 ];

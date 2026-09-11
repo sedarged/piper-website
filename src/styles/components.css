@@ -171,6 +171,9 @@
 .fc-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .fc-soon{cursor:default}
 .fc-soon:hover{transform:none;box-shadow:0 8px 0 rgba(42,26,46,.08)}
+.fc-preview{height:150px;margin:-12px -12px 10px;overflow:hidden;border:1px solid rgba(134,94,43,.22);border-radius:12px;background:#f4e8d4}
+.fc-preview img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+.fc:hover .fc-preview img{transform:scale(1.035)}
 
 /* ─── mini-games ─── */
 /* ─── the Snackville studio mini-games ───────────────────────────────
@@ -178,20 +181,30 @@
    The shared furniture — the scoreboard strip, the record banner, the
    action row and the difficulty chips — is styled once here so a new
    game doesn't have to reinvent it. */
-.game-dialog{max-width:660px}
+.game-dialog{max-width:760px;overflow:hidden;border:1px solid rgba(243,208,138,.72);background:#071426;color:var(--cream);box-shadow:0 40px 120px rgba(0,0,0,.72),inset 0 0 0 7px rgba(216,170,88,.045)}
+.game-dialog::before{content:"";position:absolute;inset:0;z-index:-2;background-position:center;background-size:cover;filter:saturate(.9) brightness(.43);transform:scale(1.04)}
+.game-dialog::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(3,9,23,.62),rgba(3,9,23,.94) 72%),radial-gradient(circle at 50% 32%,rgba(216,170,88,.15),transparent 52%)}
+.game-dialog--colour::before{background-image:url('/images/worlds/snackville-environment.webp')}
+.game-dialog--memory::before{background-image:url('/images/home/storyworld-crossroads-v2.png');background-position:20% 42%}
+.game-dialog--whack::before{background-image:url('/images/snackville-interactive-map.jpeg');background-position:50% 54%}
+.game-dialog--pattern::before{background-image:url('/images/home/storyworld-crossroads-v2.png');background-position:70% 20%}
+.game-dialog--catch::before{background-image:url('/images/worlds/snackville-environment.webp');background-position:78% 44%}
+.game-dialog .place-dialog-topline,.game-dialog>h3,.game-dialog .game-body{position:relative;z-index:1}
+.game-dialog .place-dialog-close{border-color:rgba(243,208,138,.45);background:rgba(3,9,23,.68);color:var(--cream)}
+.game-dialog>h3{color:var(--gold-bright);font-size:clamp(30px,5vw,52px);text-shadow:0 4px 24px rgba(0,0,0,.5)}
 .game-body{margin-top:22px;display:flex;flex-direction:column;align-items:center;gap:16px}
 .game-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center}
 .game-best{display:inline-flex;align-items:center;gap:9px;padding:6px 14px;border-radius:100px;
-  background:rgba(42,26,46,.06);font-size:13px;color:var(--ink60)}
+  border:1px solid rgba(216,170,88,.3);background:rgba(3,9,23,.62);font-size:13px;color:rgba(255,246,233,.72)}
 .game-best__label{text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;font-weight:700}
-.game-best__value{font-weight:700;color:var(--plum);font-size:14.5px}
+.game-best__value{font-weight:700;color:var(--gold-bright);font-size:14.5px}
 .game-record{color:var(--straw);font-weight:700;font-size:15px;text-align:center;
   animation:recordIn .5s cubic-bezier(.3,1.6,.5,1)}
 @keyframes recordIn{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:none}}
 .game-levels{display:flex;gap:8px;justify-content:center}
-.game-level{padding:7px 16px;border-radius:100px;font-family:var(--u);font-weight:700;font-size:13px;
-  background:rgba(42,26,46,.06);color:var(--ink60);transition:background .2s,color .2s,transform .2s}
-.game-level.on{background:var(--plum);color:var(--cream);transform:scale(1.04)}
+.game-level{min-height:44px;padding:7px 16px;border:1px solid rgba(216,170,88,.28);border-radius:8px;font-family:var(--u);font-weight:700;font-size:13px;background:rgba(3,9,23,.62);color:rgba(255,246,233,.72);transition:background .2s,color .2s,transform .2s}
+.game-level.on{background:linear-gradient(180deg,#bd3551,#8f1c36);border-color:var(--gold);color:var(--cream);transform:scale(1.04)}
+.game-object{display:block;width:100%;height:100%;overflow:visible}
 
 /* colouring */
 .coloring-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
@@ -210,7 +223,7 @@
 
 /* memory */
 .memory-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
-.memory-status{color:var(--ink60);font-size:14px}
+.memory-status,.whack-status,.pattern-status,.catch-status{color:rgba(255,246,233,.8)!important;font-size:14px}
 .memory-grid{display:grid;gap:9px;width:100%;max-width:340px}
 .memory-grid--tricky{grid-template-columns:repeat(4,1fr)}
 .memory-grid--easy{grid-template-columns:repeat(4,1fr);max-width:280px}
@@ -223,9 +236,8 @@
 .memory-card.up .memory-card-inner{transform:rotateY(180deg)}
 .memory-card-back,.memory-card-face{position:absolute;inset:0;border-radius:14px;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;padding:11px}
-.memory-card-back{background:var(--plum);box-shadow:0 5px 0 rgba(42,26,46,.18);
-  background-image:radial-gradient(circle at 50% 50%,rgba(216,170,88,.32) 0 22%,transparent 23%)}
-.memory-card-face{background:#fff;box-shadow:inset 0 0 0 3px rgba(42,26,46,.08);transform:rotateY(180deg)}
+.memory-card-back{border:1px solid rgba(243,208,138,.5);background:linear-gradient(145deg,#431d46,#151429);box-shadow:0 9px 18px rgba(0,0,0,.32);background-image:radial-gradient(circle at 50% 50%,rgba(216,170,88,.32) 0 22%,transparent 23%)}
+.memory-card-face{border:1px solid rgba(243,208,138,.55);background:linear-gradient(145deg,#fff4dc,#e9d3ac);box-shadow:inset 0 0 0 4px rgba(122,78,37,.08);transform:rotateY(180deg)}
 .memory-card:not(:disabled):hover .memory-card-inner{transform:translateY(-3px)}
 .memory-card.matched .memory-card-face{box-shadow:inset 0 0 0 3px rgba(111,156,126,.6);background:#F1FBF4}
 .memory-card-face svg{width:100%;height:100%}
@@ -239,23 +251,23 @@
 .whack-status{color:var(--ink60);font-size:14px;text-align:center;min-height:20px}
 .whack-timer{width:100%;max-width:300px;height:8px;border-radius:100px;background:rgba(42,26,46,.1);overflow:hidden}
 .whack-timer span{display:block;height:100%;border-radius:100px;background:var(--straw);transition:width 1s linear}
-.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:300px}
-.whack-cell{aspect-ratio:1;border-radius:16px;border:2px solid rgba(42,26,46,.12);background:rgba(42,26,46,.06);
+.whack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:360px;padding:18px;border:1px solid rgba(216,170,88,.3);border-radius:24px;background:linear-gradient(180deg,rgba(63,39,25,.64),rgba(22,13,12,.82));box-shadow:inset 0 12px 28px rgba(0,0,0,.3)}
+.whack-cell{aspect-ratio:1;border-radius:50%;border:4px solid #734329;background:radial-gradient(ellipse at 50% 68%,#160d0c 0 42%,#4b2b20 45% 62%,#8f613d 65% 72%,transparent 74%);
   padding:11px;transition:transform .16s cubic-bezier(.3,1.7,.5,1),background .16s,border-color .16s}
-.whack-cell.up{border-color:transparent;background:#FFE3C0;transform:scale(1.06)}
-.whack-cell.up.is-chilli{background:#FFD7D2}
+.whack-cell.up{border-color:#d8aa58;background:radial-gradient(ellipse at 50% 74%,#21100f 0 45%,#6e3d27 48% 70%,#c49655 73%);transform:scale(1.06)}
+.whack-cell.up.is-chilli{background:radial-gradient(ellipse at 50% 74%,#20100e 0 45%,#713128 48% 70%,#c7604e 73%)}
 .whack-icon{width:100%;height:100%;display:block;animation:whackPop .22s cubic-bezier(.3,1.8,.5,1)}
 @keyframes whackPop{0%{transform:scale(.3) translateY(14px)}100%{transform:none}}
 
 /* piper's pattern */
 .pattern-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 .pattern-status{color:var(--ink60);font-size:14px;min-height:20px;text-align:center}
-.pattern-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:300px}
-.pattern-tile{aspect-ratio:1;border-radius:16px;background:rgba(42,26,46,.06);display:flex;
+.pattern-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:350px;padding:16px;border:1px solid rgba(216,170,88,.3);border-radius:28px;background:rgba(3,9,23,.58)}
+.pattern-tile{aspect-ratio:1;border:1px solid rgba(216,170,88,.32);border-radius:50% 50% 42% 42%;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.12),rgba(72,42,92,.62));display:flex;
   align-items:center;justify-content:center;padding:13px;transition:transform .16s,background .16s,box-shadow .16s}
 .pattern-tile:not(:disabled):hover{transform:translateY(-2px)}
 .pattern-tile:disabled{cursor:default}
-.pattern-tile.lit{background:#fff;transform:scale(1.08);box-shadow:0 0 0 3px rgba(155,107,255,.35)}
+.pattern-tile.lit{background:radial-gradient(circle,#fff5cf,#d8aa58 66%,#7f4fa4);transform:scale(1.08);box-shadow:0 0 0 3px rgba(255,216,137,.55),0 0 38px rgba(255,216,137,.48)}
 .pattern-tile.wrong{background:#FFE2DE;box-shadow:0 0 0 3px rgba(199,51,47,.5);animation:tileWrong .4s ease}
 @keyframes tileWrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .pattern-progress{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:280px}
@@ -265,17 +277,16 @@
 /* berry catch */
 .catch-game{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
 .catch-status{color:var(--ink60);font-size:14px;text-align:center;min-height:20px}
-.catch-area{position:relative;width:100%;max-width:340px;aspect-ratio:3/4;border-radius:18px;overflow:hidden;
-  background:linear-gradient(180deg,#DCEEFB,#F6E9D2 78%,#E3D2B4);touch-action:none;cursor:grab;
-  box-shadow:inset 0 0 0 2px rgba(42,26,46,.1)}
+.catch-area{position:relative;width:100%;max-width:390px;aspect-ratio:3/4;border:1px solid rgba(243,208,138,.58);border-radius:24px;overflow:hidden;background:linear-gradient(180deg,rgba(8,24,47,.04),rgba(29,65,48,.25)),url('/images/worlds/snackville-environment.webp') center/cover;touch-action:none;cursor:grab;box-shadow:inset 0 0 60px rgba(3,9,23,.5),0 22px 50px rgba(0,0,0,.35)}
+.catch-area::after{content:"";position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,transparent,rgba(31,73,43,.75));pointer-events:none}
 .catch-drop{position:absolute;width:30px;height:30px;margin-left:-15px;pointer-events:none;
   animation:catchSpin 1.8s linear infinite}
 .catch-drop.is-still{animation:none}
 @keyframes catchSpin{to{transform:rotate(360deg)}}
-.catch-basket{position:absolute;bottom:6%;width:22%;margin-left:-11%;pointer-events:none;
+.catch-basket{position:absolute;bottom:4%;z-index:2;width:25%;margin-left:-12.5%;pointer-events:none;
   filter:drop-shadow(0 4px 6px rgba(42,26,46,.28))}
 .catch-controls{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap}
-.catch-hint{color:var(--ink40);font-size:13px}
+.catch-hint{color:rgba(255,246,233,.68);font-size:13px}
 
 @media (prefers-reduced-motion:reduce){
   .memory-card-inner,.whack-icon,.game-record,.catch-drop{animation:none;transition:none}
@@ -298,7 +309,7 @@
  * where it would sit on top of map hotspots, book-card chips and quiz
  * answer buttons. Stacking keeps its footprint in the empty bottom-right
  * corner instead. */
-.guide{position:fixed;right:14px;bottom:80px;z-index:335;display:flex;align-items:flex-end;
+.guide{position:fixed;right:28px;bottom:56px;z-index:335;display:flex;align-items:flex-end;
   gap:10px;flex-direction:column-reverse;pointer-events:none}
 .guide-av{width:78px;height:78px;border-radius:50%;overflow:hidden;border:4px solid var(--cream);
   background:#FFE3C0;box-shadow:0 8px 24px rgba(42,26,46,.3);pointer-events:auto;cursor:pointer;
@@ -311,6 +322,11 @@
 @keyframes bIn{0%{opacity:0;transform:scale(.7) translateY(14px)}100%{opacity:1;transform:none}}
 .guide-x{position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;background:var(--plum);
   color:var(--cream);font-size:12px;display:flex;align-items:center;justify-content:center;pointer-events:auto}
+.piper-help{width:min(340px,calc(100vw - 28px));padding:20px;border:1px solid rgba(216,170,88,.65);border-radius:18px 18px 4px 18px;background:rgba(3,9,23,.97);color:var(--cream);box-shadow:0 24px 70px rgba(0,0,0,.55);pointer-events:auto;animation:bIn .35s cubic-bezier(.3,1.4,.4,1)}
+.piper-help__answer{min-height:54px;margin:10px 0 14px;font:500 15px/1.5 var(--u);color:rgba(255,246,233,.84)}
+.piper-help__questions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.piper-help__questions button{min-height:46px;padding:10px;border:1px solid rgba(216,170,88,.28);border-radius:9px;background:rgba(255,255,255,.05);color:var(--cream);font:600 12px/1.25 var(--u);text-align:left;transition:.2s}
+.piper-help__questions button:hover,.piper-help__questions button:focus-visible{border-color:var(--gold);background:rgba(216,170,88,.12)}
 
 /* ─── fx ─── */
 /* The Snackville map's twenty signature effects — the screen reactions,
@@ -368,9 +384,10 @@
   .free-g{grid-template-columns:1fr}
   .foot-g{grid-template-columns:1fr}
   .ring{left:10px;bottom:10px;padding:6px 13px 6px 6px}
-  .guide{right:10px;bottom:74px}
+  .guide{right:14px;bottom:64px}
   .guide-av{width:62px;height:62px}
   .bubble{max-width:180px;font-size:13.5px}
+  .piper-help{width:min(318px,calc(100vw - 24px));padding:16px}
   .mc-b{flex-direction:column;text-align:center}
   .land svg{width:520%}
 }

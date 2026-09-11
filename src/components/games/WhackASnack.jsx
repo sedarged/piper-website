@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { I } from "../Icons.jsx";
-import { C } from "../../styles/tokens.js";
+import { GameObject } from "./GameObjects.jsx";
 import { useBestScore } from "../../hooks/useBestScore.js";
 import { GameCompleteButton, GameRetryButton, GameScoreboard } from "./GameModal.jsx";
 
@@ -181,7 +180,7 @@ export function WhackASnack({ onComplete, chime }) {
             >
               {up && (
                 <span className="whack-icon">
-                  {chilli ? I.chilli() : I.donut(C.strawberry)}
+                  <GameObject kind={chilli ? "chilli" : "donut"} />
                 </span>
               )}
             </button>
