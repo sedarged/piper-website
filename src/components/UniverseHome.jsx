@@ -82,6 +82,12 @@ export function UniverseHome({ onEnterSnackville, onEnterSandwich, onEnterCrumbh
 
       <main>
         <section className="universe-hero" aria-labelledby="universe-title">
+          <img
+            className="universe-hero__worldscape"
+            src="/images/home/storyworld-crossroads-v2.webp"
+            alt=""
+            aria-hidden="true"
+          />
           <div className="universe-hero__copy">
             <p className="universe-kicker">The Piper Storyworld</p>
             <h1 id="universe-title">Choose a world <em>to step into.</em></h1>

@@ -160,10 +160,14 @@ test("Snackville Studio ships finished print-ready downloads", () => {
 
 test("the homepage has a neutral generated living background", () => {
   const styles = readFileSync(new URL("../src/styles/universe-home.css", import.meta.url), "utf8");
-  assert.match(styles, /storyworld-crossroads-v2\.png/);
+  assert.match(styles, /storyworld-crossroads-v2\.webp/);
   assert.match(styles, /universe-scene-breathe/);
   assert.match(styles, /universe-motes/);
-  assert.ok(existsSync(new URL("../public/images/home/storyworld-crossroads-v2.png", import.meta.url)));
+  const home = readFileSync(new URL("../src/components/UniverseHome.jsx", import.meta.url), "utf8");
+  assert.match(home, /universe-hero__worldscape/);
+  assert.match(home, /storyworld-crossroads-v2\.webp/);
+  assert.match(styles, /universe-hero-alive/);
+  assert.ok(existsSync(new URL("../public/images/home/storyworld-crossroads-v2.webp", import.meta.url)));
 });
 
 test("games use dedicated illustrated objects instead of generic site icons", () => {

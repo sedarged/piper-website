@@ -185,9 +185,9 @@
 .game-dialog::before{content:"";position:absolute;inset:0;z-index:-2;background-position:center;background-size:cover;filter:saturate(.9) brightness(.43);transform:scale(1.04)}
 .game-dialog::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(3,9,23,.62),rgba(3,9,23,.94) 72%),radial-gradient(circle at 50% 32%,rgba(216,170,88,.15),transparent 52%)}
 .game-dialog--colour::before{background-image:url('/images/worlds/snackville-environment.webp')}
-.game-dialog--memory::before{background-image:url('/images/home/storyworld-crossroads-v2.png');background-position:20% 42%}
+.game-dialog--memory::before{background-image:url('/images/home/storyworld-crossroads-v2.webp');background-position:20% 42%}
 .game-dialog--whack::before{background-image:url('/images/snackville-interactive-map.jpeg');background-position:50% 54%}
-.game-dialog--pattern::before{background-image:url('/images/home/storyworld-crossroads-v2.png');background-position:70% 20%}
+.game-dialog--pattern::before{background-image:url('/images/home/storyworld-crossroads-v2.webp');background-position:70% 20%}
 .game-dialog--catch::before{background-image:url('/images/worlds/snackville-environment.webp');background-position:78% 44%}
 .game-dialog .place-dialog-topline,.game-dialog>h3,.game-dialog .game-body{position:relative;z-index:1}
 .game-dialog .place-dialog-close{border-color:rgba(243,208,138,.45);background:rgba(3,9,23,.68);color:var(--cream)}

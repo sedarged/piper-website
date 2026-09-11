@@ -20,6 +20,7 @@ markers, leader lines, labels or replacement map art.
 | AQ-07 | Game boards reused small generic site icons and flat surfaces unrelated to their scenes. | Added eight bespoke illustrated game objects and art-directed each modal/board against a location-appropriate Piper environment. | All five games opened in browser; object scale, contrast and touch targets checked. |
 | AQ-08 | The map and badge Studio cards were dead “Coming soon” placeholders. | Built a full-bleed A3 map PDF and four-character A4 badge sheet, plus honest in-card previews and direct downloads. | Both PDFs rendered and inspected at page size; browser links open the real files. |
 | AQ-09 | Piper’s floating helper only replayed one passive tip. | Turned the helper into an expandable FAQ guide with four useful navigation/exploration answers and moved it inward/downward. | Open/close, all question buttons and narrow-screen fit checked. |
+| AQ-10 | The neutral homepage PNG contained a damaged image stream: Chrome decoded only its top strip, leaving the “Choose a world” hero looking black even though the CSS animation was running. | Re-encoded the original master as a compact, fully valid WebP and made it a real full-bleed animated hero layer. Reduced and repositioned the Snackville portal so the neutral crossroads remains the dominant scene, with a translucent reading panel above it. | The complete illustration renders on desktop and iPhone 375/390; both mobile widths retain the menu, readable actions and zero page-level horizontal overflow. |
 
 ## Verified interaction inventory
 

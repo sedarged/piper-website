@@ -21,7 +21,7 @@
   opacity: .66;
   background:
     linear-gradient(180deg, rgba(2,11,26,.18), rgba(2,11,26,.78) 72%, #020b1a),
-    url('/images/home/storyworld-crossroads-v2.png') center top / max(100vw, 1500px) auto no-repeat;
+    url('/images/home/storyworld-crossroads-v2.webp') center top / max(100vw, 1500px) auto no-repeat;
   animation: universe-scene-breathe 24s ease-in-out infinite alternate;
   transform-origin: 52% 24%;
 }
@@ -150,16 +150,78 @@
 .universe-footer { position: relative; z-index: 2; }
 
 .universe-hero {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(300px, .78fr) minmax(520px, 1.22fr);
   align-items: center;
-  width: min(100% - 64px, 1380px);
+  width: 100%;
   min-height: min(820px, calc(100vh - 96px));
   margin-inline: auto;
-  padding: 70px 0 54px;
+  padding: 70px max(32px, calc((100vw - 1380px) / 2)) 54px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,216,137,.28);
+  box-shadow: inset 0 -90px 110px -90px rgba(2,11,26,.94);
 }
 
-.universe-hero__copy { position: relative; z-index: 3; max-width: 520px; padding-left: clamp(0px, 2vw, 24px); }
+.universe-hero__worldscape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 43%;
+  filter: saturate(1.12) brightness(1.02);
+  transform: scale(1.025);
+  animation: universe-hero-alive 22s ease-in-out infinite alternate;
+}
+
+.universe-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .72;
+  background:
+    radial-gradient(circle at 58% 48%, rgba(255,205,115,.28), transparent 20%),
+    radial-gradient(circle at 75% 24%, rgba(123,119,255,.2), transparent 24%);
+  animation: universe-hero-glow 8s ease-in-out infinite alternate;
+}
+
+.universe-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .64;
+  background-image:
+    radial-gradient(circle, rgba(255,218,134,.9) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(255,255,255,.6) 0 .7px, transparent 1.5px);
+  background-size: 121px 121px, 193px 193px;
+  animation: universe-motes 18s linear infinite;
+}
+
+@keyframes universe-hero-alive {
+  from { transform: scale(1.025) translate3d(-.35%, -.25%, 0); filter: saturate(1.07) brightness(.98); }
+  to { transform: scale(1.065) translate3d(.45%, .35%, 0); filter: saturate(1.18) brightness(1.08); }
+}
+@keyframes universe-hero-glow { to { opacity: 1; transform: scale(1.08) translate3d(1.5%, -.8%, 0); } }
+
+.universe-hero__copy {
+  position: relative;
+  z-index: 3;
+  max-width: 540px;
+  padding: clamp(26px,3vw,42px);
+  border: 1px solid rgba(255,216,137,.28);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(31,19,37,.7), rgba(5,18,42,.48));
+  box-shadow: 0 28px 90px rgba(1,7,18,.38), inset 0 1px rgba(255,242,214,.08);
+  backdrop-filter: blur(7px) saturate(1.08);
+  -webkit-backdrop-filter: blur(7px) saturate(1.08);
+}
 .universe-kicker {
   margin: 0 0 16px;
   color: var(--universe-gold);
@@ -219,9 +281,11 @@
 .universe-note { margin: 22px 0 0; color: rgba(255,242,214,.68); font: italic 500 15px/1.4 var(--d); }
 
 .universe-portal {
-  position: relative;
-  justify-self: end;
-  width: min(100%, 780px);
+  position: absolute;
+  z-index: 2;
+  right: max(32px, calc((100vw - 1380px) / 2));
+  bottom: 42px;
+  width: min(25vw, 330px);
   aspect-ratio: 1.05;
   border: 0;
   background: transparent;
@@ -396,11 +460,15 @@
   .universe-menu span { display: block; width: 20px; height: 1px; background: var(--universe-gold-bright); }
   .universe-mobile-nav { position: fixed; inset: calc(78px + env(safe-area-inset-top, 0px)) 18px auto; z-index: 50; display: grid; gap: 4px; max-height: calc(100svh - 96px - env(safe-area-inset-bottom, 0px)); padding: 18px; overflow-y: auto; overscroll-behavior: contain; border: 1px solid rgba(231,183,88,.46); border-radius: 12px; background: rgba(3,12,27,.98); box-shadow: 0 28px 80px rgba(0,0,0,.65); }
   .universe-mobile-nav button { min-height: 48px; border: 0; border-bottom: 1px solid rgba(231,183,88,.18); background: transparent; color: var(--universe-cream); font: 500 20px/1 var(--d); text-align: left; }
-  .universe-hero { grid-template-columns: 1fr; width: min(100% - 36px, 720px); min-height: auto; padding: 54px 0 70px; }
-  .universe-hero__copy { max-width: 620px; text-align: center; margin-inline: auto; padding: 0; }
+  .universe-hero { grid-template-columns: 1fr; width: 100%; min-height: auto; padding: 54px 18px 70px; }
+  .universe-hero__worldscape { object-position: 56% center; }
+  .universe-hero::after {
+    opacity: .52;
+  }
+  .universe-hero__copy { max-width: 620px; text-align: center; margin-inline: auto; padding: 28px clamp(18px,5vw,38px); border: 1px solid rgba(255,216,137,.24); border-radius: 18px; background: rgba(2,11,26,.46); box-shadow: 0 24px 70px rgba(2,11,26,.34); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); }
   .universe-hero h1 { margin-inline: auto; }
   .universe-lede { margin-inline: auto; }
-  .universe-portal { grid-row: 2; justify-self: center; width: min(84%, 500px); margin: 42px auto 0; }
+  .universe-portal { position: relative; right: auto; bottom: auto; grid-row: 2; justify-self: center; width: min(84%, 500px); margin: 42px auto 0; }
   .worlds-section { width: min(100% - 36px, 720px); }
   .universe-home .world-grid { grid-template-columns: repeat(3, 82%); gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 1px; scrollbar-width: none; padding-bottom: 8px; overscroll-behavior-inline: contain; touch-action: pan-x pan-y; }
   .universe-home .world-grid::-webkit-scrollbar { display: none; }
@@ -415,7 +483,9 @@
   .universe-brand span { font-size: 8px; letter-spacing: .32em; }
   .universe-nav__inner { width: min(100% - 28px, 720px); }
   .universe-mobile-nav { inset-inline: 12px; }
-  .universe-hero { width: min(100% - 28px, 720px); padding: 42px 0 58px; }
+  .universe-hero { width: 100%; padding: 30px 14px 54px; }
+  .universe-hero__worldscape { object-position: 61% center; }
+  .universe-hero__copy { padding: 24px 18px 26px; }
   .universe-hero h1 { max-width: 8ch; font-size: clamp(52px, 16.5vw, 70px); line-height: .86; }
   .universe-hero h1 em { margin-top: 12px; }
   .universe-lede { max-width: 34ch; margin-top: 24px; margin-bottom: 24px; font-size: 16px; line-height: 1.5; }
