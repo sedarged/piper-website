@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Build the two production-ready Snackville Studio printables."""
 
+from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 from reportlab.lib.pagesizes import A3, landscape
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,12 +31,18 @@ def map_poster():
     source = PUBLIC / "images" / "snackville-interactive-map.jpeg"
     output = OUT / "snackville-map-a3.pdf"
     width, height = landscape(A3)
+    # Re-encode the approved illustration before embedding it. ReportLab otherwise
+    # expands this particular JPEG enough to exceed the repository connector's
+    # binary transfer ceiling, which can silently truncate the deployed PDF.
+    image = Image.open(source).convert("RGB")
+    print_image = BytesIO()
+    image.save(print_image, "JPEG", quality=82, optimize=True, progressive=True, subsampling=0)
+    print_image.seek(0)
     pdf = canvas.Canvas(str(output), pagesize=(width, height), pageCompression=1)
     # Full bleed and deliberately no frame/title/footer: the official art is the poster.
-    pdf.drawImage(str(source), 0, 0, width=width, height=height, preserveAspectRatio=False, mask="auto")
+    pdf.drawImage(ImageReader(print_image), 0, 0, width=width, height=height, preserveAspectRatio=False, mask="auto")
     pdf.showPage()
     pdf.save()
-    image = Image.open(source).convert("RGB")
     image.thumbnail((1600, 1131), Image.Resampling.LANCZOS)
     image.save(PREVIEWS / "snackville-map-poster.webp", "WEBP", quality=88, method=6)
 
