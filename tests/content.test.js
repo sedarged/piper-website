@@ -158,6 +158,18 @@ test("Snackville Studio ships finished print-ready downloads", () => {
   }
 });
 
+test("printable PDFs are complete files rather than truncated binary uploads", () => {
+  for (const printable of PRINTABLES.filter((item) => item.kind === "print")) {
+    const pdf = readFileSync(new URL(`../public${printable.url}`, import.meta.url));
+    const header = pdf.subarray(0, 8).toString("latin1");
+    const tail = pdf.subarray(-4096).toString("latin1");
+
+    assert.match(header, /^%PDF-/, `${printable.name} has a PDF header`);
+    assert.match(tail, /xref[\s\S]*trailer[\s\S]*startxref[\s\S]*%%EOF\s*$/, `${printable.name} has a complete PDF trailer`);
+    assert.ok(pdf.length > 100_000, `${printable.name} contains its print artwork`);
+  }
+});
+
 test("the homepage has a neutral generated living background", () => {
   const styles = readFileSync(new URL("../src/styles/universe-home.css", import.meta.url), "utf8");
   assert.match(styles, /storyworld-crossroads-v2\.webp/);
